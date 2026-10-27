@@ -1,0 +1,37 @@
+# Testversion auf GitHub Pages (neu.entwurf.medialyte.de)
+# Baut bei jedem Push auf main die Testversion (noindex, Demo-Formular) und legt sie
+# in den Branch gh-pages. GitHub Pages muss auf „Deploy from a branch: gh-pages / (root)“ stehen.
+name: Testversion
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Testversion bauen
+        run: python3 build.py --mode staging --cname neu.entwurf.medialyte.de
+
+      - name: In gh-pages veröffentlichen
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd staging
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Testversion ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages

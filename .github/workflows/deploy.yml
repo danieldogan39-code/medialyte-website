@@ -1,0 +1,42 @@
+# Baut die Website bei jedem Push auf main und lädt sie per SFTP zu IONOS hoch.
+# Benötigte Secrets im GitHub-Repository (Settings → Secrets and variables → Actions):
+#   IONOS_SFTP_HOST   z. B. access-5012345678.webspace-host.com
+#   IONOS_SFTP_USER   SFTP-Benutzer aus dem IONOS-Kundenbereich
+#   IONOS_SFTP_PASS   Passwort des SFTP-Benutzers
+#   IONOS_SFTP_PATH   Zielordner, z. B. /medialyte  (der Ordner, auf den die Domain zeigt)
+name: Deploy medialyte.de
+
+on:
+  # Zum Livegang hier „push: branches: [main]“ ergänzen. Bis dahin nur manuell starten.
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Website bauen
+        run: python3 build.py --mode prod
+
+      - name: Hochladen per SFTP
+        env:
+          HOST: ${{ secrets.IONOS_SFTP_HOST }}
+          USER: ${{ secrets.IONOS_SFTP_USER }}
+          PASS: ${{ secrets.IONOS_SFTP_PASS }}
+          TARGET: ${{ secrets.IONOS_SFTP_PATH }}
+        run: |
+          if [ -z "$HOST" ]; then echo "Noch keine IONOS-Zugangsdaten hinterlegt – Upload übersprungen."; exit 0; fi
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          # config.php und data/ auf dem Server bleiben unangetastet (--exclude)
+          lftp -u "$USER","$PASS" "sftp://$HOST" -e "
+            set sftp:auto-confirm yes;
+            set net:max-retries 2;
+            mirror --reverse --delete --verbose --parallel=4 \
+              --exclude-glob api/config.php --exclude-glob api/data/ \
+              dist/ $TARGET/;
+            bye"

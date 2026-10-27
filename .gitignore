@@ -1,0 +1,7 @@
+preview/
+dist/
+staging/
+api/config.php
+api/data/
+__pycache__/
+.DS_Store

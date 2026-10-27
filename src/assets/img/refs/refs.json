@@ -1,0 +1,14 @@
+{
+ "rechnungsradar": {
+  "desktop_full_h": 5896,
+  "mobile_full_h": 9000
+ },
+ "rubin": {
+  "desktop_full_h": 2322,
+  "mobile_full_h": 5400
+ },
+ "ritz": {
+  "desktop_full_h": 6811,
+  "mobile_full_h": 9000
+ }
+}

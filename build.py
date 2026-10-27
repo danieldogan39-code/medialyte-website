@@ -125,7 +125,7 @@ def _logo_svg():
 
 
 LOGO = _logo_svg()                                   # Monogramm „ML“ (Handschrift)
-WORDMARK = (ROOT / "tools/wordmark.svg").read_text()  # Wortmarke „MEDIALYTE“ als Pfad
+WORDMARK = (ROOT / "tools/wordmark.svg").read_text()  # Wortmarke „medialyte“ als Pfad
 BRAND = LOGO + WORDMARK
 
 

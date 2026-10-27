@@ -22,8 +22,9 @@ CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site
 ## Gestaltung in Kürze
 
 - Nachtblau `#0E192A` als Grund, Stahlblau und Weiß für alles Informative.
-- Korallrot `#FF5757` nur für das Logo und die wichtigste Aktion je Ansicht („Erstgespräch buchen“).
-- Schrift Outfit; Wortmarke „MEDIALYTE“ als Pfad in `tools/wordmark.svg` (neu erzeugen: `python3 tools/wordmark.py`).
+- Korallrot `#FF5757` für das Logo und die wichtigste Aktion je Ansicht („Erstgespräch buchen“, immer mit weißer Schrift), dazu wenige bewusste Akzente (Fortschritt der Kundenreise, Ablauf, offene FAQ, empfohlenes Paket).
+- Schrift Outfit; Wortmarke „medialyte“ in Red Hat Display Italic (leicht geschwungen, gleiche Neigung wie das ML) als Pfad in `tools/wordmark.svg` (neu erzeugen: `python3 tools/wordmark.py`, Schrift liegt in `tools/fonts/`).
+- Partner-Logos laufen als Laufband (`marquee_rows()` in `parts.py`), auf der Referenzen-Seite zweireihig gegenläufig.
 - Bewegung nur über `transform` und `opacity`, keine Layoutsprünge; bei „Bewegung reduzieren“ stehen alle Darstellungen sofort im Endzustand. Ohne JavaScript bleibt alles lesbar.
 - Kundenreise (`journey()` in `parts.py`, Skript `src/js/28-stage.js`): ab 1000 × 640 px eine angeheftete Bühne, Scrollen schaltet die vier Stationen um, die Darstellungen werden passend skaliert. Mobil, ohne Skript und bei reduzierter Bewegung stehen die Stationen untereinander.
 - Demos starten erst, wenn sie wirklich zu sehen sind (`ML.presence` in `src/js/00-core.js`, berücksichtigt die aktive Station).

@@ -17,7 +17,7 @@ ML.module("idea", function (ML) {
     }
     function schedule() {
       clearTimeout(timer);
-      if (!auto || !inView) return;
+      if (!auto || !inView || hold) return;
       timer = setTimeout(function () { if (!document.hidden) select((cur + 1) % tabs.length); else schedule(); }, DUR);
     }
     function manual() { auto = false; clearTimeout(timer); root.classList.add("is-manual"); }
@@ -32,6 +32,11 @@ ML.module("idea", function (ML) {
       });
     });
     if (ML.reduce) root.classList.add("is-manual");
+    /* Beim Lesen nicht weiterschalten: Zeiger oder Fokus im Bereich hält an */
+    var hold = false;
+    root.addEventListener("mouseenter", function () { hold = true; clearTimeout(timer); root.classList.add("is-hold"); });
+    root.addEventListener("mouseleave", function () { hold = false; root.classList.remove("is-hold"); if (auto) select(cur); });
+    root.addEventListener("focusin", function () { manual(); });
     ML.watch(root, function (v) {
       inView = v;
       if (orb) orb.classList.toggle("is-paused", !v);

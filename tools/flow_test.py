@@ -13,7 +13,8 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
-PREV = ROOT / "preview"
+import os
+PREV = Path(os.environ.get("ML_PREVIEW", ROOT / "preview"))
 OUT = Path(sys.argv[1]); OUT.mkdir(parents=True, exist_ok=True)
 (PREV / "_qa.html").write_text('<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>' + (PREV / "index.html").read_text() + '</body></html>')
 

@@ -29,12 +29,41 @@ ML.module("journey", function (ML) {
       });
       fire();
     }
+    /* Welche Station gerade gelesen wird – angeheftet die aktive, untereinander die oben im Bild */
+    function reading() {
+      if (pinned) return cur;
+      var line = window.innerHeight * 0.4, k = 0;
+      sts.forEach(function (s, j) { if (s.getBoundingClientRect().top <= line) k = j; });
+      return k;
+    }
+    /* Untereinander die zuletzt gelesene Station merken – aber nicht während sich die Fenstergröße ändert,
+       denn dann verschiebt der Browser selbst die Seite */
+    var lastRead = 0, vw0 = window.innerWidth, vh0 = window.innerHeight, resizedAt = 0;
+    ML.onScroll(function (y, vh) {
+      if (window.innerWidth !== vw0 || vh !== vh0) { vw0 = window.innerWidth; vh0 = vh; resizedAt = Date.now(); return; }
+      if (pinned || Date.now() - resizedAt < 600) return;
+      var r = jr.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      lastRead = reading();
+    });
+    var ready = false;
     function setMode(on) {
+      /* Wechselt die Darstellung, während man in der Kundenreise ist (Fenster größer/kleiner),
+         bleibt man bei derselben Station statt an eine andere Stelle zu springen */
+      var vh = window.innerHeight, r = jr.getBoundingClientRect();
+      var inside = ready && r.top < vh * 0.5 && r.bottom > vh * 0.5, keep = pinned ? cur : lastRead;
+      lastRead = keep;
       pinned = on;
       jr.classList.toggle("journey--pin", on);
       if (rail) { rail.hidden = !on; if (on) rail.setAttribute("role", "tablist"); else rail.removeAttribute("role"); }
       steps.forEach(function (b) { if (on) b.setAttribute("role", "tab"); else b.removeAttribute("role"); });
       sts.forEach(function (s) { if (on) s.setAttribute("role", "tabpanel"); else s.removeAttribute("role"); });
+      if (inside) {
+        cur = keep;
+        var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+        var t = on ? top() + span() * ((keep + 0.5) / n) : sts[keep].getBoundingClientRect().top + (window.scrollY || 0) - pad;
+        window.scrollTo({ top: Math.round(t), behavior: "instant" });
+      }
       activate(cur, true);
       ML.tick();
     }
@@ -104,5 +133,6 @@ ML.module("journey", function (ML) {
     window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(check, 180); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(check);
     check();
+    ready = true;
   });
 });

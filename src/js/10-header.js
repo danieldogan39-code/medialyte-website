@@ -74,8 +74,31 @@ ML.module("header", function (ML) {
      Beim Weiterlesen nach unten tritt er zur Seite und kommt beim Zurückscrollen wieder – so verdeckt er keinen Text. */
   var fab = $(".fab");
   if (fab) {
-    var hero = $(".hero"), away = new Set(), pastHero = false, reading = false, lastY = window.scrollY || 0, acc = 0;
-    var update = function () { fab.classList.toggle("is-on", pastHero && away.size === 0 && !reading); };
+    var hero = $(".hero"), away = new Set(), pastHero = false, reading = false, covered = false, lastY = window.scrollY || 0, acc = 0;
+    var update = function () { fab.classList.toggle("is-on", pastHero && away.size === 0 && !reading && !covered); };
+    /* Liegt unter dem Knopf gerade ein Link, Knopf oder Feld? Dann tritt er zur Seite, damit alles erreichbar bleibt.
+       Gemessen an der festen Position (ohne Einblend-Bewegung) an fünf Punkten. */
+    var CTRL = 'a[href],button:not([disabled]),input,select,textarea,summary,label,[role="button"],[role="tab"],[role="radio"],[role="slider"],[tabindex]:not([tabindex="-1"])';
+    var hitAt = 0, idleT = null;
+    function underFab() {
+      if (!document.elementsFromPoint) return false;
+      var x = fab.offsetLeft, y = fab.offsetTop, w = fab.offsetWidth, h = fab.offsetHeight, m = 6;
+      var pts = [[x + w / 2, y + h / 2], [x + m, y + m], [x + w - m, y + m], [x + m, y + h - m], [x + w - m, y + h - m]];
+      for (var i = 0; i < pts.length; i++) {
+        var els = document.elementsFromPoint(pts[i][0], pts[i][1]);
+        for (var j = 0; j < els.length; j++) {
+          if (els[j] === fab || fab.contains(els[j])) continue;
+          if (els[j].closest(CTRL)) return true;
+          break;
+        }
+      }
+      return false;
+    }
+    function checkCover() {
+      hitAt = Date.now();
+      var c = pastHero && underFab();
+      if (c !== covered) { covered = c; update(); }
+    }
     ML.onScroll(function (y, vh) {
       var limit = hero ? hero.offsetTop + hero.offsetHeight * 0.55 : vh * 0.6;
       var p = y > limit - vh * 0.3;
@@ -86,7 +109,12 @@ ML.module("header", function (ML) {
       if (acc > 60) r = true;
       else if (acc < -40) r = false;
       if (p !== pastHero || r !== reading) { pastHero = p; reading = r; update(); }
+      if (Date.now() - hitAt > 120) checkCover();
+      clearTimeout(idleT); idleT = setTimeout(checkCover, 160);
     });
+    /* Klappt etwas auf (FAQ, Menüs, Formularschritte), kann sich darunter etwas ändern */
+    document.addEventListener("toggle", function () { setTimeout(checkCover, 50); }, true);
+    document.addEventListener("click", function () { setTimeout(checkCover, 400); }, true);
     if (ML.hasIO) {
       var io = new IntersectionObserver(function (es) {
         es.forEach(function (en) { if (en.isIntersecting) away.add(en.target); else away.delete(en.target); });

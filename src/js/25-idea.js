@@ -32,10 +32,23 @@ ML.module("idea", function (ML) {
       });
     });
     if (ML.reduce) root.classList.add("is-manual");
-    /* Beim Lesen nicht weiterschalten: Zeiger oder Fokus im Bereich hält an */
-    var hold = false;
-    root.addEventListener("mouseenter", function () { hold = true; clearTimeout(timer); root.classList.add("is-hold"); });
-    root.addEventListener("mouseleave", function () { hold = false; root.classList.remove("is-hold"); if (auto) select(cur); });
+    /* Beim Lesen nicht weiterschalten: Maus über dem Bereich hält an, solange sie dort ist.
+       Ein Fingertipp hält für einige Sekunden an – Touch kennt kein „Verlassen“, sonst bliebe es stehen. */
+    var hold = false, touchT = null;
+    function setHold(v) {
+      if (v === hold) return;
+      hold = v;
+      root.classList.toggle("is-hold", v);
+      if (v) clearTimeout(timer); else if (auto) select(cur);
+    }
+    root.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") setHold(true); });
+    root.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") setHold(false); });
+    root.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse") return;
+      setHold(true);
+      clearTimeout(touchT);
+      touchT = setTimeout(function () { setHold(false); }, 9000);
+    });
     root.addEventListener("focusin", function () { manual(); });
     ML.watch(root, function (v) {
       inView = v;

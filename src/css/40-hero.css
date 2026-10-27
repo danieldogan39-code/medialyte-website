@@ -151,6 +151,19 @@
   .cp-kpi__v{font-size:1.9rem}
   .cp-feed{height:132px}
 }
+/* Sehr schmal: Uhrzeit weglassen, damit Art und Details der Anfrage ganz lesbar bleiben */
+@container cockpit (max-width:380px){
+  .cp-feed__item{grid-template-columns:30px minmax(0,1fr);column-gap:10px;padding:0 10px}
+  .cp-feed__item .ic{width:30px;height:30px}
+  .cp-feed__item time{display:none}
+}
+@container cockpit (max-width:300px){
+  .cp-side .cp-card{padding-left:10px;padding-right:10px}
+  .cp-feed__item{grid-template-columns:26px minmax(0,1fr);column-gap:8px;padding:0 8px}
+  .cp-feed__item .ic{width:26px;height:26px;border-radius:8px}
+  .cp-feed__item b{font-size:.8rem}
+  .cp-feed__item small{font-size:.7rem}
+}
 
 @media (max-width:640px){
   .hero__in{justify-items:start;text-align:left}

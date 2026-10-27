@@ -339,12 +339,27 @@ def pipeline():
 
 # ---------------------------------------------------------------- Kundenreise: KI-Agent zum Ausprobieren
 AGENT_ASKS = [
-    {"id": "mittag", "label": "Mittagstisch ändern", "me": "Heute gibt’s Kürbisrisotto als Mittagstisch, 12,50 €. Bitte auf die Website.",
-     "agent": "Erledigt. Der Mittagstisch ist online.", "k": "Mittagstisch heute", "v": "Kürbisrisotto · 12,50 €"},
-    {"id": "zeiten", "label": "Öffnungszeiten anpassen", "me": "Am 24.12. haben wir nur bis 14 Uhr geöffnet. Kannst du das eintragen?",
-     "agent": "Ist eingetragen. Heiligabend: 11–14 Uhr.", "k": "Heiligabend", "v": "Geöffnet 11–14 Uhr"},
-    {"id": "event", "label": "Veranstaltung ankündigen", "me": "Am 15.11. ist Weinabend mit Menü für 49 €. Bitte groß auf die Startseite.",
-     "agent": "Steht drauf, inklusive Button zum Reservieren.", "k": "Weinabend am 15.11.", "v": "4-Gänge-Menü · 49 €"},
+    # Jede Anfrage hat mehrere Varianten: Wer zweimal klickt, sieht eine neue Änderung statt derselben noch einmal.
+    {"id": "mittag", "label": "Mittagstisch ändern", "variants": [
+        {"me": "Heute gibt’s Kürbisrisotto als Mittagstisch, 12,50 €. Bitte auf die Website.",
+         "agent": "Erledigt. Der Mittagstisch ist online.", "k": "Mittagstisch heute", "v": "Kürbisrisotto · 12,50 €"},
+        {"me": "Risotto ist aus. Ab jetzt Saltimbocca mit Rosmarinkartoffeln, 14,90 €.",
+         "agent": "Ist getauscht. Gäste sehen jetzt die Saltimbocca.", "k": "Mittagstisch heute", "v": "Saltimbocca · 14,90 €"},
+        {"me": "Morgen gibt’s Lasagne della nonna für 12,90 €. Kannst du das schon vorbereiten?",
+         "agent": "Ist vorbereitet und geht morgen um 10 Uhr online.", "k": "Mittagstisch morgen", "v": "Lasagne della nonna · 12,90 €"},
+    ]},
+    {"id": "zeiten", "label": "Öffnungszeiten anpassen", "variants": [
+        {"me": "Am 24.12. haben wir nur bis 14 Uhr geöffnet. Kannst du das eintragen?",
+         "agent": "Ist eingetragen. Heiligabend: 11–14 Uhr.", "k": "Heiligabend", "v": "Geöffnet 11–14 Uhr"},
+        {"me": "Silvester sind wir bis 1 Uhr nachts da. Bitte auch bei Google ändern.",
+         "agent": "Steht auf der Website und im Google-Profil.", "k": "Silvester", "v": "Geöffnet 18–1 Uhr"},
+    ]},
+    {"id": "event", "label": "Veranstaltung ankündigen", "variants": [
+        {"me": "Am 15.11. ist Weinabend mit Menü für 49 €. Bitte groß auf die Startseite.",
+         "agent": "Steht drauf, inklusive Button zum Reservieren.", "k": "Weinabend am 15.11.", "v": "4-Gänge-Menü · 49 €"},
+        {"me": "Am 29.11. machen wir einen Trüffelabend, 5 Gänge für 69 €. Kannst du das ankündigen?",
+         "agent": "Ist angekündigt. Reservierungen landen direkt im Cockpit.", "k": "Trüffelabend am 29.11.", "v": "5-Gänge-Menü · 69 €"},
+    ]},
 ]
 
 

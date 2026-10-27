@@ -238,6 +238,7 @@
 .finder__res b{font-size:1.25rem;font-weight:600}
 .finder__res p{color:var(--text-2);max-width:62ch}
 .finder__res .finder__fit{color:var(--text);margin-top:4px}
+@media (max-width:420px){.finder__out .btn{width:100%;white-space:normal;padding:12px 20px;line-height:1.25}}
 .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .plan{position:relative;display:grid;grid-template-rows:auto auto 1fr auto;gap:20px;padding:clamp(26px,2.6vw,36px);border-radius:var(--r-lg);border:1px solid var(--line-2);background:rgba(255,255,255,.02);transition:border-color .35s ease,background-color .35s ease,opacity .35s ease,transform .45s var(--ease-out)}
 .plan__head{display:grid;gap:8px}

@@ -128,6 +128,29 @@ ML.module("pipeline", function (ML) {
     }
     function say(t) { if (msgEl) msgEl.textContent = t; }
     function restore() { board.innerHTML = initial; say(initialMsg); counts(); }
+    /* Platz für die längste Agent-Nachricht freihalten, damit beim Wechsel nichts springt
+       (gemessen an einer unsichtbaren Kopie in derselben Breite) */
+    var agentBox = msgEl ? msgEl.closest(".pl__agent") : null;
+    function reserve() {
+      if (!agentBox || !agentBox.offsetWidth) return;
+      var names = $$(".pl__card b", pl).map(function (b) { return b.textContent; }).concat(["Familie Ahrens"]);
+      var longest = names.reduce(function (a, b) { return b.length > a.length ? b : a; }, "");
+      var texts = [initialMsg].concat(STEPS.map(function (s) { return s[2]; }));
+      Object.keys(SAY).forEach(function (k) { texts.push(SAY[k](longest)); });
+      var probe = agentBox.cloneNode(true);
+      probe.removeAttribute("aria-live");
+      probe.setAttribute("aria-hidden", "true");
+      probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;left:0;top:0;min-height:0;width:" + agentBox.offsetWidth + "px";
+      agentBox.parentNode.appendChild(probe);
+      var pm = probe.querySelector("[data-plmsg]"), max = 0;
+      texts.forEach(function (t) { pm.textContent = t; max = Math.max(max, probe.offsetHeight); });
+      probe.remove();
+      agentBox.style.minHeight = max ? max + "px" : "";
+    }
+    reserve();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reserve);
+    var rsT = null;
+    window.addEventListener("resize", function () { clearTimeout(rsT); rsT = setTimeout(reserve, 150); }, { passive: true });
     function cycle() {
       tl.clear();
       STEPS.forEach(function (st, i) {
@@ -215,15 +238,23 @@ ML.module("agent", function (ML) {
       btns.forEach(function (b) { b.disabled = false; });
     }, fast ? 50 : 2100);
   }
+  /* Jede Anfrage hat mehrere Varianten – wer erneut klickt, schickt die nächste Änderung */
+  var seen = {};
+  function next(ask) {
+    var vs = ask.variants || [ask], i = seen[ask.id] || 0;
+    seen[ask.id] = i + 1;
+    return vs[i % vs.length];
+  }
   btns.forEach(function (b) {
     b.addEventListener("click", function () {
+      if (busy) return;
       touched = true;
       var a = asks.filter(function (x) { return x.id === b.getAttribute("data-ask-id"); })[0];
-      if (a) run(a, b);
+      if (a) run(next(a), b);
     });
   });
   ML.presentOnce(root, function () {
-    setTimeout(function () { if (!touched) run(asks[0], btns[0]); }, 900);
+    setTimeout(function () { if (!touched) run(next(asks[0]), btns[0]); }, 900);
   }, { threshold: 0.5 });
 });
 

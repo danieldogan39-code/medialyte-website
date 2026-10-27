@@ -40,7 +40,12 @@ ML.module("relaunch", function (ML) {
       setP(Math.round(p * 10) / 10, false);
     });
     /* Wechselt die Darstellung (z. B. Fenster schmaler), steht die neue Seite fertig da */
-    if (jr) jr.addEventListener("ml:station", function (ev) { if (!manual && ev.detail && !ev.detail.pinned && parseFloat(rl.style.getPropertyValue("--p")) < 100) setP(100, false); });
+    if (jr) jr.addEventListener("ml:station", function (ev) {
+      var d = ev.detail || {};
+      /* Wer die Station verlässt, findet bei der Rückkehr wieder den Scroll-Ablauf vor */
+      if (d.pinned && d.index !== 0) manual = false;
+      if (!manual && !d.pinned && parseFloat(rl.style.getPropertyValue("--p")) < 100) setP(100, false);
+    });
     /* Sonst: einmal automatisch, sobald sichtbar */
     ML.presentOnce(rl, function () {
       if (manual || pinned()) return;
@@ -52,18 +57,32 @@ ML.module("relaunch", function (ML) {
 ML.module("pipeline", function (ML) {
   var $ = ML.$, $$ = ML.$$;
   $$("[data-pipeline]").forEach(function (pl) {
-    var initial = pl.querySelector(".pl__board").innerHTML;
+    var board = $(".pl__board", pl), initial = board.innerHTML;
     var msgEl = $("[data-plmsg]", pl), kOpen = $("[data-plk=open]", pl), kOff = $("[data-plk=offers]", pl);
     var initialMsg = msgEl ? msgEl.textContent : "";
-    var tl = ML.timeline(), running = false;
+    var tl = ML.timeline(), running = false, manual = false;
+    var COLS = ["neu", "gespraech", "angebot", "auftrag"];
     var STEPS = [
-      ["c1", "gespraech", "Termin mit Familie Petersen ist eingetragen. Die Erinnerung geht morgen raus.", 6, 3],
-      ["c3", "angebot", "Das Angebot für die Weber GmbH ist verschickt.", 5, 4],
-      ["c4", "auftrag", "Frau Lindner hat angenommen – aus dem Angebot wird ein Auftrag.", 5, 3],
-      ["new", "neu", "Neue Anfrage über die Website: Familie Ahrens, Garderobe nach Maß.", 6, 3]
+      ["c1", "gespraech", "Termin mit Familie Petersen ist eingetragen. Die Erinnerung geht morgen raus."],
+      ["c3", "angebot", "Das Angebot für die Weber GmbH ist verschickt."],
+      ["c4", "auftrag", "Frau Lindner hat angenommen – aus dem Angebot wird ein Auftrag."],
+      ["new", "neu", "Neue Anfrage über die Website: Familie Ahrens, Garderobe nach Maß."]
     ];
+    /* Was der Agent sagt, wenn jemand eine Karte von Hand weiterschiebt */
+    var SAY = {
+      gespraech: function (n) { return "Termin mit " + n + " ist eingetragen. Die Erinnerung geht automatisch raus."; },
+      angebot: function (n) { return "Ich bereite das Angebot für " + n + " vor – Sie geben es nur noch frei."; },
+      auftrag: function (n) { return n + " hat angenommen. Der Auftrag ist angelegt, die Rechnung folgt nach Abschluss."; },
+      fertig: function (n) { return "Für " + n + " ist alles erledigt. Ziehen Sie gern eine andere Karte weiter."; }
+    };
     function colName(col) { var h = col.querySelector("h5"); return h && h.firstChild ? String(h.firstChild.textContent).trim() : ""; }
-    function counts() { $$(".pl__col", pl).forEach(function (c) { var n = c.querySelector("[data-colcount]"); if (n) n.textContent = c.querySelectorAll(".pl__card").length; }); }
+    /* Spaltenzähler und Kennzahlen aus dem, was auf dem Board liegt (plus Karten außerhalb des Ausschnitts) */
+    function counts() {
+      $$(".pl__col", pl).forEach(function (c) { var n = c.querySelector("[data-colcount]"); if (n) n.textContent = c.querySelectorAll(".pl__card").length; });
+      var n = function (k) { return $$('[data-col="' + k + '"] .pl__card', pl).length; };
+      if (kOpen) kOpen.textContent = 2 + n("neu") + n("gespraech") + n("angebot");
+      if (kOff) kOff.textContent = 2 + n("angebot");
+    }
     /* FLIP für alle Karten: Auch Karten, die nur nachrücken, gleiten an ihren neuen Platz */
     function flip(change) {
       var cards = $$(".pl__card", pl), before = cards.map(function (c) { return c.getBoundingClientRect(); });
@@ -85,20 +104,10 @@ ML.module("pipeline", function (ML) {
       }
       counts();
     }
-    function move(id, col) {
+    function moveCard(c, col) {
       var target = $('[data-col="' + col + '"]', pl);
-      if (!target) return;
+      if (!c || !target) return;
       flip(function () {
-        if (id === "new") {
-          var card = document.createElement("div");
-          card.className = "pl__card is-moved";
-          card.setAttribute("data-st", col);
-          card.innerHTML = "<b>Familie Ahrens</b><small>Garderobe · Website</small><span class=\"pl__tag\">gerade eben</span><span class=\"pl__st\">" + colName(target) + "</span>";
-          target.insertBefore(card, target.children[1] || null);
-          return card;
-        }
-        var c = $('[data-card="' + id + '"]', pl);
-        if (!c) return null;
         target.appendChild(c);
         /* In der Listenansicht (schmale Bildschirme) wechselt außerdem der Status der Karte */
         c.setAttribute("data-st", col);
@@ -107,32 +116,61 @@ ML.module("pipeline", function (ML) {
         return null;
       });
     }
-    function cycle() {
-      tl.clear();
-      STEPS.forEach(function (s, i) {
-        tl.at(900 + i * 2300, function () {
-          move(s[0], s[1]);
-          if (msgEl) msgEl.textContent = s[2];
-          if (kOpen) kOpen.textContent = s[3];
-          if (kOff) kOff.textContent = s[4];
-        });
-      });
-      tl.at(900 + STEPS.length * 2300 + 2600, function () {
-        pl.querySelector(".pl__board").innerHTML = initial;
-        if (msgEl) msgEl.textContent = initialMsg;
-        if (kOpen) kOpen.textContent = "6";
-        if (kOff) kOff.textContent = "3";
-        if (running) cycle();
+    function addNew(col) {
+      var target = $('[data-col="' + col + '"]', pl);
+      if (!target) return;
+      flip(function () {
+        var card = document.createElement("button");
+        card.type = "button";
+        card.className = "pl__card is-moved";
+        card.setAttribute("data-card", "c6");
+        card.setAttribute("data-st", col);
+        card.setAttribute("aria-label", "Familie Ahrens: in den nächsten Schritt schieben");
+        card.innerHTML = "<b>Familie Ahrens</b><small>Garderobe · Website</small><span class=\"pl__tag\">gerade eben</span><span class=\"pl__st\">" + colName(target) + "</span>";
+        target.insertBefore(card, target.children[1] || null);
+        return card;
       });
     }
+    /* Die Rückfrage des Agenten lässt sich beantworten („Ja, nachfassen“) */
+    var reply = $("[data-plreply]", pl);
+    function say(t, ask) { if (msgEl) msgEl.textContent = t; if (reply) reply.hidden = !ask; }
+    function restore() { board.innerHTML = initial; say(initialMsg, true); counts(); }
+    if (reply) reply.addEventListener("click", function () {
+      if (!manual) { manual = true; tl.clear(); }
+      var c = $('[data-card="c4"]', pl), tag = c && c.querySelector(".pl__tag");
+      if (tag) { tag.textContent = "erinnert"; c.classList.add("is-moved"); }
+      say("Mache ich: Frau Lindner bekommt heute eine kurze Erinnerung zum Angebot.");
+      var k = $(".pl__agent", pl); if (k) { k.classList.remove("is-ok"); void k.offsetWidth; k.classList.add("is-ok"); }
+    });
+    function cycle() {
+      tl.clear();
+      STEPS.forEach(function (st, i) {
+        tl.at(900 + i * 2300, function () {
+          if (st[0] === "new") addNew(st[1]); else moveCard($('[data-card="' + st[0] + '"]', pl), st[1]);
+          say(st[2]);
+        });
+      });
+      tl.at(900 + STEPS.length * 2300 + 2600, function () { restore(); if (running && !manual) cycle(); });
+    }
+    /* Von Hand: Karte antippen schiebt sie einen Schritt weiter (die Vorführung hält dann an) */
+    board.addEventListener("click", function (ev) {
+      var c = ev.target.closest(".pl__card");
+      if (!c || !board.contains(c)) return;
+      if (!manual) { manual = true; tl.clear(); }
+      var name = (c.querySelector("b") || {}).textContent || "";
+      var col = c.closest("[data-col]").getAttribute("data-col"), i = COLS.indexOf(col);
+      if (i >= COLS.length - 1) { say(SAY.fertig(name)); c.classList.remove("is-nudge"); void c.offsetWidth; c.classList.add("is-nudge"); return; }
+      var next = COLS[i + 1];
+      moveCard(c, next);
+      say(SAY[next](name));
+      c.focus({ preventScroll: true });
+    });
+    counts();
     if (ML.reduce) return;
     ML.presence(pl, function (v) {
+      if (manual) return;
       if (v && !running) { running = true; cycle(); }
-      else if (!v && running) {
-        running = false; tl.clear();
-        pl.querySelector(".pl__board").innerHTML = initial;
-        if (msgEl) msgEl.textContent = initialMsg;
-      }
+      else if (!v && running) { running = false; tl.clear(); restore(); }
     }, { threshold: 0.45 });
   });
 });
@@ -143,53 +181,70 @@ ML.module("agent", function (ML) {
   var asks = ML.json("agent-data");
   if (!root || !asks) return;
   var body = $("[data-wa]", root), btns = $$(".ad__ask", root), live = $("[data-agent-live]", root);
-  var info = $(".ms__info", root), k = $(".ms__k", root), vOld = $(".v-old", root), vNew = $(".v-new", root);
-  var busy = false, touched = false;
+  var ms = $(".ms", root), info = $(".ms__info", root), k = $(".ms__k", root), vOld = $(".v-old", root), vNew = $(".v-new", root);
+  var ev = $(".ms__event", root);
+  var busy = false, pending = null, touched = false, autoDone = false, uses = {};
+  var fast = ML.reduce;
   var tick = '<svg viewBox="0 0 16 11" width="16" height="11" fill="none" stroke="#53BDEB" stroke-width="1.6" aria-hidden="true" style="display:inline-block;vertical-align:-1px;margin-left:3px"><path d="M1 6l3 3 6-7M6 9l1 .8L14 2"/></svg>';
   /* Feste, glaubwürdige Uhrzeiten statt der echten Uhr: jede Nachricht eine Minute später */
   var minute = 9 * 60 + 38;
   function stamp() { var h = Math.floor(minute / 60), m = minute % 60; minute++; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m; }
+  function trim() { var all = $$(".cp-msg, .cp-typing", body); while (all.length > 3) { all.shift().remove(); } }
   function bubble(cls, txt, isMe) {
     var d = document.createElement("div");
     d.className = "cp-msg " + cls + " is-pop";
     d.innerHTML = ML.esc(txt) + "<time>" + stamp() + (isMe ? tick : "") + "</time>";
     body.appendChild(d);
     /* Höchstens drei Blasen, damit die neueste Antwort immer ganz zu sehen ist */
-    var all = $$(".cp-msg, .cp-typing", body);
-    while (all.length > 3) { all.shift().remove(); }
+    trim();
     return d;
   }
-  function updateSite(a) {
+  /* Kleine Infozeile der Website (Mittagstisch, Öffnungszeiten) */
+  function updateInfo(v) {
     if (!info) return;
     $$(".ms__v > span", info).forEach(function (s) { s.style.transition = "none"; });
     if (info.classList.contains("is-upd")) vOld.textContent = vNew.textContent;
     info.classList.remove("is-upd", "is-flash");
     void info.offsetWidth;
     $$(".ms__v > span", info).forEach(function (s) { s.style.transition = ""; });
-    k.textContent = a.k;
-    vNew.textContent = a.v;
+    k.textContent = v.k;
+    vNew.textContent = v.v;
     void info.offsetWidth;
     info.classList.add("is-upd", "is-flash");
     setTimeout(function () { info.classList.remove("is-flash"); }, 1500);
   }
+  /* Veranstaltung: erscheint groß im Startbereich, mit Button */
+  function showEvent(v) {
+    if (!ms || !ev) return;
+    var map = { k: v.ek, t: v.et, p: v.ep, b: v.eb };
+    Object.keys(map).forEach(function (key) { var el = $('[data-ev="' + key + '"]', ev); if (el) el.textContent = map[key]; });
+    if (ms.classList.contains("is-event")) { ev.classList.remove("is-flash"); void ev.offsetWidth; ev.classList.add("is-flash"); }
+    else ms.classList.add("is-event");
+  }
+  /* Jede Nachricht hat Varianten: Ein erneuter Klick zeigt eine neue Änderung */
+  function next(a) { var i = uses[a.id] || 0; uses[a.id] = i + 1; return a.variants[i % a.variants.length]; }
+  function mark(btn) { btns.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); }); }
   function run(a, btn) {
-    if (busy) return;
+    /* Läuft gerade eine Antwort, kommt die neue Nachricht direkt danach – kein Klick geht verloren */
+    if (busy) { pending = { a: a, btn: btn }; mark(btn); return; }
     busy = true;
-    btns.forEach(function (b) { b.disabled = true; b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
-    bubble("cp-msg--me", a.me, true);
-    var fast = ML.reduce;
+    mark(btn);
+    btns.forEach(function (b) { b.classList.remove("is-hint"); });
+    var v = next(a);
+    bubble("cp-msg--me", v.me, true);
     setTimeout(function () {
       var t = document.createElement("div"); t.className = "cp-typing is-pop"; t.innerHTML = "<i></i><i></i><i></i>"; body.appendChild(t);
-      var all = $$(".cp-msg, .cp-typing", body); while (all.length > 3) { all.shift().remove(); }
-    }, fast ? 0 : 700);
+      trim();
+    }, fast ? 0 : 650);
     setTimeout(function () {
       var t = $(".cp-typing", body); if (t) t.remove();
-      bubble("cp-msg--agent", a.agent, false);
-      updateSite(a);
-      if (live) live.textContent = "KI-Agent: " + a.agent + " Website: " + a.k + ", " + a.v + ".";
+      bubble("cp-msg--agent", v.agent, false);
+      if (v.type === "event") showEvent(v); else updateInfo(v);
+      if (live) live.textContent = "KI-Agent: " + v.agent + " Website: " + (v.type === "event" ? v.ek + ", " + v.et + ", " + v.ep : v.k + ", " + v.v) + ".";
       busy = false;
-      btns.forEach(function (b) { b.disabled = false; });
-    }, fast ? 50 : 2100);
+      if (pending) { var p = pending; pending = null; setTimeout(function () { run(p.a, p.btn); }, fast ? 0 : 450); }
+      else if (!touched && btns[1]) btns[1].classList.add("is-hint");
+    }, fast ? 50 : 1900);
   }
   btns.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -198,8 +253,13 @@ ML.module("agent", function (ML) {
       if (a) run(a, b);
     });
   });
-  ML.presentOnce(root, function () {
-    setTimeout(function () { if (!touched) run(asks[0], btns[0]); }, 900);
+  /* Vorführung einmal von selbst – aber erst, wenn die Demo kurz in Ruhe zu sehen war
+     (schnelles Durchscrollen verbraucht sie nicht) */
+  var dwell = null;
+  ML.presence(root, function (v) {
+    clearTimeout(dwell);
+    if (!v || touched || autoDone) return;
+    dwell = setTimeout(function () { if (!touched && !autoDone) { autoDone = true; run(asks[0], btns[0]); } }, fast ? 0 : 1300);
   }, { threshold: 0.5 });
 });
 

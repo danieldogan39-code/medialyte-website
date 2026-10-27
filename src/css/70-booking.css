@@ -17,7 +17,7 @@
 .rd__view{min-height:0;height:100%;display:grid;place-items:start center;overflow:hidden}
 .rd__frame{width:100%;height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);box-shadow:none}
 .rd__scroll{overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line-3) transparent;background:#fff}
-.rd__scroll img{width:100%;height:auto}
+.rd__scroll img{width:100%;height:auto;transition:opacity .25s ease}
 .rd__frame--mobile{width:min(360px,100%);border-radius:36px;padding:7px;background:#05080E;grid-template-rows:minmax(0,1fr)}
 .rd__frame--mobile .frame__bar{display:none}
 .rd__frame--mobile .rd__scroll{border-radius:29px}
@@ -33,12 +33,16 @@
 .rd__nums b{display:block;font-size:1.6rem;font-weight:600;letter-spacing:-.03em;line-height:1.1}
 .rd__nums small{color:var(--steel);font-size:.84rem}
 .rd__actions{display:grid;gap:10px}
+/* Schmale Bildschirme: Vorschau und Infos untereinander in EINER scrollbaren Fläche,
+   der Schließen-Knopf bleibt dabei immer oben rechts sichtbar */
 @media (max-width:900px){
-  .rd__in{grid-template-columns:minmax(0,1fr);overflow-y:auto;height:auto}
-  .rd__stage{padding:14px}
+  .rd__in{grid-template-columns:minmax(0,1fr);grid-template-rows:max-content max-content;height:calc(100vh - 24px);height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+  .rd__close{position:sticky;top:12px;right:auto;grid-area:1/1/3/2;align-self:start;justify-self:end;margin:12px 12px 0 0}
+  .rd__stage{grid-area:1/1;padding:14px}
+  .rd__info{grid-area:2/1;overflow:visible;padding:24px 20px 32px}
   .rd__view{height:auto}
-  .rd__frame{height:58dvh}
-  .rd__info{overflow:visible;padding:24px 20px 28px}
+  .rd__frame{height:min(58vh,560px);height:min(58dvh,560px)}
+  .rd__scroll{overscroll-behavior:auto}
 }
 
 /* ---------- Terminbuchung ---------- */

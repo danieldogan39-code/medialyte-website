@@ -2,7 +2,7 @@
 ML.module("idea", function (ML) {
   var $ = ML.$, $$ = ML.$$;
   ML.$$("[data-idea]").forEach(function (root) {
-    var tabs = $$(".orb__node", root), panels = $$(".idea__panel", root), arcs = $$(".orb__arc", root), dots = $$(".idea__dots i", root);
+    var tabs = $$(".orb__node", root), panels = $$(".idea__panel", root), arcs = $$(".orb__arc", root), dots = $$(".idea__dot", root);
     var orb = $(".orb", root);
     var cur = 0, timer = null, auto = !ML.reduce, inView = false, DUR = 7000;
     root.style.setProperty("--dur", DUR + "ms");
@@ -21,6 +21,7 @@ ML.module("idea", function (ML) {
       timer = setTimeout(function () { if (!document.hidden) select((cur + 1) % tabs.length); else schedule(); }, DUR);
     }
     function manual() { auto = false; clearTimeout(timer); root.classList.add("is-manual"); }
+    dots.forEach(function (d, i) { d.addEventListener("click", function () { manual(); select(i); }); });
     tabs.forEach(function (t, i) {
       t.addEventListener("click", function () { manual(); select(i); });
       t.addEventListener("keydown", function (e) {
@@ -32,10 +33,11 @@ ML.module("idea", function (ML) {
       });
     });
     if (ML.reduce) root.classList.add("is-manual");
-    /* Beim Lesen nicht weiterschalten: Zeiger oder Fokus im Bereich hält an */
+    /* Beim Lesen nicht weiterschalten: Mauszeiger oder Fokus im Bereich hält an
+       (nur echte Maus – ein Antippen auf dem Handy darf den Kreis nicht dauerhaft anhalten) */
     var hold = false;
-    root.addEventListener("mouseenter", function () { hold = true; clearTimeout(timer); root.classList.add("is-hold"); });
-    root.addEventListener("mouseleave", function () { hold = false; root.classList.remove("is-hold"); if (auto) select(cur); });
+    root.addEventListener("pointerenter", function (e) { if (e.pointerType !== "mouse") return; hold = true; clearTimeout(timer); root.classList.add("is-hold"); });
+    root.addEventListener("pointerleave", function (e) { if (e.pointerType !== "mouse") return; hold = false; root.classList.remove("is-hold"); if (auto) select(cur); });
     root.addEventListener("focusin", function () { manual(); });
     ML.watch(root, function (v) {
       inView = v;

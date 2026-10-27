@@ -1,22 +1,26 @@
-"""Erzeugt die Wortmarke „MEDIALYTE“ als SVG-Pfad (Outfit, gesperrt) – unabhängig vom Laden der Schrift.
+"""Erzeugt die Wortmarke „medialyte“ als SVG-Pfad – unabhängig vom Laden einer Schrift.
+
+Schrift: Red Hat Display Italic (SIL Open Font License, tools/fonts/). Modern, leicht geschwungen
+und mit derselben Neigung wie das handgeschriebene ML-Zeichen daneben.
 
 Aufruf: python3 tools/wordmark.py  → tools/wordmark.svg
 """
 import io
 from pathlib import Path
 
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 
 ROOT = Path(__file__).resolve().parent.parent
-FONT = ROOT / "src/assets/fonts/outfit-latin-wght-normal.woff2"
-TEXT = "MEDIALYTE"
-WEIGHT = 540
-TRACK = 0.20          # Sperrung in em
+FONT = ROOT / "tools/fonts/red-hat-display-latin-wght-italic.woff2"
+TEXT = "medialyte"
+WEIGHT = 640
+TRACK = -0.012        # Laufweite in em (leicht enger, wirkt geschlossener)
 # Optischer Ausgleich einzelner Paare (in Font-Einheiten, negativ = enger)
-PAIRS = {("L", "Y"): -55, ("Y", "T"): -35, ("A", "L"): 0, ("I", "A"): -10, ("D", "I"): 0}
+PAIRS = {("l", "y"): -14, ("y", "t"): -10, ("i", "a"): 6, ("d", "i"): 4}
 
 f = TTFont(str(FONT))
 f.flavor = None
@@ -27,39 +31,40 @@ upm = font["head"].unitsPerEm
 gs = font.getGlyphSet()
 cmap = font.getBestCmap()
 hmtx = font["hmtx"]
-cap_h = font["OS/2"].sCapHeight
+os2 = font["OS/2"]
+x_h = os2.sxHeight
 track = TRACK * upm
 
-paths, x = [], 0.0
+# Kerning der Schrift (GPOS) ist für diese kurze Zeichenfolge vernachlässigbar; Paare oben gleichen aus.
+pos, x = [], 0.0
 for i, ch in enumerate(TEXT):
     g = cmap[ord(ch)]
-    pen = SVGPathPen(gs)
-    # y nach unten: an Versalhöhe ausrichten
-    gs[g].draw(TransformPen(pen, (1, 0, 0, -1, x, cap_h)))
-    paths.append(pen.getCommands())
-    adv = hmtx[g][0]
-    x += adv
+    pos.append((g, x))
+    x += hmtx[g][0]
     if i < len(TEXT) - 1:
         x += track + PAIRS.get((ch, TEXT[i + 1]), 0)
 
-# Bounding Box über alle Glyphen
-from fontTools.pens.boundsPen import BoundsPen
-bx = []
-xx = 0.0
-for i, ch in enumerate(TEXT):
-    g = cmap[ord(ch)]
+# Grenzen aller Glyphen (y nach oben)
+x0s, x1s, y0s, y1s = [], [], [], []
+for g, gx in pos:
     bp = BoundsPen(gs)
     gs[g].draw(bp)
     if bp.bounds:
-        x0, y0, x1, y1 = bp.bounds
-        bx.append((xx + x0, xx + x1))
-    xx += hmtx[g][0]
-    if i < len(TEXT) - 1:
-        xx += track + PAIRS.get((ch, TEXT[i + 1]), 0)
-left = min(a for a, b in bx); right = max(b for a, b in bx)
-w = right - left
+        a, b, c, d = bp.bounds
+        x0s.append(gx + a); x1s.append(gx + c); y0s.append(b); y1s.append(d)
+left, right, bottom, top = min(x0s), max(x1s), min(y0s), max(y1s)
+
+paths = []
+for g, gx in pos:
+    pen = SVGPathPen(gs)
+    # y nach unten, Oberkante der höchsten Glyphe = 0
+    gs[g].draw(TransformPen(pen, (1, 0, 0, -1, gx, top)))
+    paths.append(pen.getCommands())
+w, h = right - left, top - bottom
 d = " ".join(paths)
-svg = (f'<svg class="wordmark" viewBox="{left:.0f} 0 {w:.0f} {cap_h}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
+svg = (f'<svg class="wordmark" viewBox="{left:.0f} 0 {w:.0f} {h:.0f}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'
        f'<path fill="currentColor" d="{d}"/></svg>')
 (ROOT / "tools/wordmark.svg").write_text(svg)
-print("cap", cap_h, "width", round(w), "ratio", round(w / cap_h, 3), "bytes", len(svg))
+# Maße für das CSS: Höhe der Marke in em der Schriftgröße, Lage der Grundlinie und Mittellänge
+print(f"upm {upm}  Höhe {h:.0f} ({h / upm:.3f} em)  Breite {w:.0f} ({w / h:.3f} × Höhe)  "
+      f"Grundlinie bei {top / h:.3f} der Höhe  x-Höhe {x_h} ({x_h / h:.3f} der Höhe)  bytes {len(svg)}")

@@ -27,7 +27,7 @@ ML.module("booking", function (ML) {
     $$("[data-ask]").forEach(function (b) {
       b.addEventListener("click", function () {
         var ask = b.getAttribute("data-ask");
-        if (ask) preselect(ask.split(","));
+        if (ask) { $$('input[name="anliegen"]', form).forEach(function (i) { i.checked = false; }); preselect(ask.split(",")); }
         var br = b.getAttribute("data-branche");
         if (br && form.elements.branche) { form.elements.branche.value = br; persist(); }
         if (step !== 1) go(1, true);
@@ -226,7 +226,10 @@ ML.module("booking", function (ML) {
       prog.forEach(function (li) { var p = +li.getAttribute("data-p"); li.classList.toggle("is-on", p === n); li.classList.toggle("is-done", p < n); });
       btnBack.hidden = n === 1 || n === 5;
       navBar.hidden = n === 5;
-      btnNext.textContent = n === 4 ? "Termin anfragen" : "Weiter";
+      var isCb = cbOnly && cbOnly.checked;
+      btnNext.textContent = n === 4 ? (isCb ? "Rückruf anfordern" : "Termin anfragen") : "Weiter";
+      var lead4 = $('[data-step="4"] > p', root);
+      if (lead4) lead4.textContent = isCb ? "Fast geschafft. Wir rufen Sie im gewünschten Zeitraum zurück." : "Fast geschafft. Wir bestätigen Ihren Termin per E-Mail.";
       if (n === 4) renderPick();
       if (!quiet) {
         var h = $(".bk__step:not([hidden]) h3", root);
@@ -297,11 +300,16 @@ ML.module("booking", function (ML) {
       go(5);
       var first = d.name.split(" ")[0];
       $(".done__name", root).textContent = first ? ", " + first : "";
-      var when = d.termin ? fmtDate(d.termin.datum, true) + ", " + d.termin.uhrzeit + " Uhr (" + d.format_text + ")" : "Rückruf, " + d.rueckruf.zeitfenster;
-      $(".done__when", root).textContent = when;
+      var ZF = { vormittags: "vormittags", nachmittags: "nachmittags", flexibel: "wann es Ihnen passt" };
+      var when = d.termin ? fmtDate(d.termin.datum, true) + ", " + d.termin.uhrzeit + " Uhr (" + d.format_text + ")" : "Rückruf, " + (ZF[d.rueckruf.zeitfenster] || d.rueckruf.zeitfenster);
+      var line = $(".done__line", root);
+      if (line) {
+        if (d.termin) { line.innerHTML = 'Ihre Anfrage für <b class="done__when"></b> ist bei uns eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.'; line.querySelector("b").textContent = when; }
+        else { line.innerHTML = 'Ihre Rückrufbitte ist bei uns eingegangen. Wir melden uns <b class="done__when"></b> bei Ihnen.'; line.querySelector("b").textContent = ZF[d.rueckruf.zeitfenster] || "zeitnah"; }
+      }
       var sum = $(".done .summary", root);
       sum.innerHTML = [
-        ["Termin", when], ["Anliegen", d.anliegen_text.join(", ")], ["Unternehmen", d.firma + (d.branche ? " · " + d.branche : "")], ["Kontakt", d.email + (d.telefon ? " · " + d.telefon : "")]
+        [d.termin ? "Termin" : "Rückruf", d.termin ? when : (ZF[d.rueckruf.zeitfenster] || d.rueckruf.zeitfenster)], ["Anliegen", d.anliegen_text.join(", ")], ["Unternehmen", d.firma + (d.branche ? " · " + d.branche : "")], ["Kontakt", d.email + (d.telefon ? " · " + d.telefon : "")]
       ].map(function (r) { return "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("");
       var ics = $("[data-ics]", root);
       if (ics) {
@@ -349,6 +357,8 @@ ML.module("booking", function (ML) {
       });
       if (o.sel) sel = { date: o.sel.date || null, time: o.sel.time || null };
       if (sel.date && sel.date < today) sel = { date: null, time: null };
+      /* Termin aus der letzten Sitzung: nur behalten, wenn er noch weit genug in der Zukunft liegt */
+      if (sel.date && sel.time) { try { if (slotEpoch(sel.date, sel.time) < Date.now() + LEAD * 3600000) sel.time = null; } catch (e) { sel.time = null; } }
       if (cbOnly && cbOnly.checked) { calWrap.hidden = true; cbWrap.hidden = false; }
     }
     if (saved) restore(saved);

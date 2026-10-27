@@ -31,7 +31,12 @@
   --steel-2:#66778F;
   --coral:#FF5757;
   --coral-hi:#FF6E6E;
-  --coral-ink:#0E192A;
+  /* Hauptaktion: eine Spur tiefer als die Logofarbe, damit weiße Schrift gut lesbar ist */
+  --coral-btn:#F44C4C;
+  --coral-btn-2:#E94343;
+  --coral-ink:#FFFFFF;
+  --coral-soft:rgba(255,87,87,.14);
+  --coral-line:rgba(255,87,87,.55);
   --ok:#3DD68C;
   --ok-soft:rgba(61,214,140,.14);
   --wa:#25D366;
@@ -91,7 +96,8 @@ strong,b{color:var(--text);font-weight:600}
 .tnum{font-variant-numeric:tabular-nums}
 
 @media (max-width:600px){
-  h1,h2,h3{hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:12 6 5}
+  /* nur sehr lange Wörter trennen („Zufriedenheitsgarantie“), kürzere rutschen in die nächste Zeile */
+  h1,h2,h3{hyphens:auto;-webkit-hyphens:auto;hyphenate-limit-chars:14 7 6}
 }
 
 /* ---------- Typografie ---------- */

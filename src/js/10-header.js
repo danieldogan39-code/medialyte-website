@@ -20,7 +20,9 @@ ML.module("header", function (ML) {
     });
     item.addEventListener("focusout", function (e) { if (!item.contains(e.relatedTarget)) set(false); });
     document.addEventListener("click", function (e) { if (!item.contains(e.target)) set(false); });
-    item.addEventListener("mouseleave", function () { if (document.activeElement !== btn) set(false); });
+    /* Maus verlässt das Menü: zu – außer es wurde per Tastatur geöffnet */
+    function kb() { try { return btn.matches(":focus-visible"); } catch (e) { return document.activeElement === btn; } }
+    item.addEventListener("mouseleave", function () { if (!kb()) set(false); });
   });
 
   /* Mobiles Menü */
@@ -92,7 +94,8 @@ ML.module("header", function (ML) {
         es.forEach(function (en) { if (en.isIntersecting) away.add(en.target); else away.delete(en.target); });
         update();
       }, { threshold: 0.08 });
-      $$("#booking, .footer, .closing").forEach(function (el) { io.observe(el); });
+      /* Über Buchung, Fußzeile, Abschluss und den Häufigen Fragen (Plus-Zeichen rechts) bleibt er weg */
+      $$("#booking, .footer, .closing, .faq__list").forEach(function (el) { io.observe(el); });
     }
   }
 });

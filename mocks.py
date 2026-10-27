@@ -55,38 +55,107 @@ _LOCK = icon("lock")
 # ---------------------------------------------------------------- Beispiel-Websites
 # Jede Seite zeigt das, was sie für den Betrieb leisten soll: reservieren, anfragen, Termin buchen.
 # Rechts steht deshalb kein Bild, sondern die wichtigste Funktion der Seite als Karte.
-def _widget(key):
+# Was ein Besucher auf der Beispiel-Website auswählen kann – und was danach im Cockpit ankommt.
+# {v} wird durch die Auswahl ersetzt.
+FORMS = {
+    "gastro": {"groups": {"time": ("Uhrzeit", ["18:30", "19:00", "19:30", "20:00"], "19:30")},
+               # Antippen wechselt den Tag; Personen über − und +
+               "cycles": {"date": [{"label": "Fr, 20. Nov.", "dateShort": "Fr", "dateDay": "Freitag"},
+                                   {"label": "Sa, 21. Nov.", "dateShort": "Sa", "dateDay": "Samstag"},
+                                   {"label": "So, 22. Nov.", "dateShort": "So", "dateDay": "Sonntag"}]},
+               "persons": 2,
+               "feed": ["calendar", "Reservierung · {personsText}", "{dateShort}, {time} · gerade über die Website"],
+               "done": "Reserviert: {label}, {time} Uhr, {personsText}", "again": "Noch einen Tisch reservieren",
+               "agent": "Neue Reservierung für {dateDay}, {time} Uhr, {personsText}. Die Bestätigung ist schon beim Gast."},
+    "handwerk": {"groups": {"topic": ("Projekt", ["Küche", "Einbauschrank", "Treppe"], "Einbauschrank")},
+                 "feed": ["inbox", "Neue Anfrage mit 3 Fotos", "{topic} · gerade über die Website"],
+                 "done": "Anfrage gesendet: {topic}", "again": "Weitere Anfrage stellen",
+                 "agent": "Neue Anfrage zu „{topic}“ mit 3 Fotos. Ich habe einen Rückruf für morgen früh vorgeschlagen.",
+                 "area": {"Küche": "Neue Küche, etwa 4 m Zeile mit Insel, Eiche hell.",
+                          "Einbauschrank": "Einbauschrank unter der Dachschräge, ca. 3 m breit, Eiche hell.",
+                          "Treppe": "Treppe mit Stahlwange, 14 Stufen, Esche geölt."}},
+    "praxis": {"groups": {"day": ("Tag", ["Di 17", "Mi 18", "Do 19", "Fr 20"], "Mi 18"),
+                          "time": ("Uhrzeit", ["08:30", "10:00", "15:30"], "10:00")},
+               "cycles": {"treat": [{"label": "Kontrolle und Beratung", "treat": "Kontrolle"},
+                                    {"label": "Professionelle Zahnreinigung", "treat": "Zahnreinigung"},
+                                    {"label": "Beschwerden oder Schmerzen", "treat": "Akuttermin"}]},
+               "feed": ["calendar", "Online-Termin · {treat}", "{dayShort}, {time} · gerade über die Website"],
+               "done": "Termin gebucht: {dayLong}, {time} Uhr", "again": "Weiteren Termin buchen",
+               "agent": "Neuer Online-Termin am {dayShort} um {time} Uhr. Die Erinnerung geht am Vortag raus.",
+               "days": {"Di 17": ["Di, 17.11.", "Dienstag, 17. November"], "Mi 18": ["Mi, 18.11.", "Mittwoch, 18. November"],
+                        "Do 19": ["Do, 19.11.", "Donnerstag, 19. November"], "Fr 20": ["Fr, 20.11.", "Freitag, 20. November"]}},
+    "kanzlei": {"groups": {"topic": ("Anliegen", ["Kündigung erhalten", "Abfindung verhandeln", "Arbeitsvertrag prüfen"], "Kündigung erhalten")},
+                "feed": ["brief", "Neue Mandatsanfrage", "{topic} · gerade über die Website"],
+                "done": "Anfrage gesendet: {topic}", "again": "Weitere Anfrage stellen",
+                "agent": "Neue Mandatsanfrage: {topic}. Ich habe drei Termine für die Erstberatung vorgeschlagen."},
+}
+
+
+def _opts(key, name, live, render):
+    """Auswahlknöpfe einer Gruppe. Im Cockpit echte Knöpfe, sonst nur Darstellung."""
+    label, values, default = FORMS[key]["groups"][name]
+    out = ""
+    for v in values:
+        on = v == default
+        inner = render(v)
+        pm = ' mc__pm' if (key == "praxis" and v == "15:30") else ""
+        if live:
+            out += (f'<button type="button" class="mc__o{" is-on" if on else ""}{pm}" role="radio" aria-checked="{"true" if on else "false"}" '
+                    f'tabindex="{0 if on else -1}" data-v="{e(v)}">{inner}</button>')
+        else:
+            out += f'<span class="mc__o{" is-on" if on else ""}{pm}">{inner}</span>'
+    attrs = f' role="radiogroup" aria-label="{label}" data-msgroup="{name}"' if live else ""
+    return attrs, out
+
+
+def _widget(key, live=False):
+    """Funktionskarte der Beispiel-Website. live=True: bedienbar, das Ergebnis landet im Cockpit."""
+    f = FORMS[key]
+    def btn(text, cls="mc__btn", data=" data-mssubmit"):
+        return f'<button type="button" class="{cls}"{data}>{text}</button>' if live else f'<span class="{cls}">{text}</span>'
+    done = (f'<div class="mc__done" aria-live="polite"><span class="mc__ok">{_CHECK}</span><b data-msdone></b>'
+            f'<small data-mswhere>Steht jetzt im Dashboard bei den Anfragen.</small>{btn(f["again"], "mc__again", " data-msagain")}</div>') if live else ""
+    region = f' role="group" aria-label="Beispiel zum Ausprobieren" data-msform="{key}"' if live else ""
+    def cycle(name, label):
+        first = f["cycles"][name][0]["label"]
+        if live:
+            return (f'<button type="button" class="mc__f mc__f--sel mc__f--pick" data-mscycle="{name}" aria-label="{label}: {e(first)} – antippen zum Ändern">'
+                    f'<small>{label}</small><span data-mscyclev>{e(first)}</span></button>')
+        return f'<span class="mc__f mc__f--sel"><small>{label}</small>{e(first)}</span>'
     if key == "gastro":
-        return """<div class="ms__card">
-      <b class="mc__h">Tisch reservieren</b>
-      <div class="mc__row"><span class="mc__f"><small>Datum</small>Fr, 20. Nov.</span><span class="mc__f"><small>Personen</small>2</span></div>
-      <div class="mc__slots"><i>18:30</i><i>19:00</i><i class="is-on">19:30</i><i>20:00</i></div>
-      <span class="mc__btn">Jetzt reservieren</span>
-      <span class="mc__meta"><i class="mc__dot"></i>Heute noch 4 Tische frei</span>
-    </div>"""
-    if key == "handwerk":
-        return """<div class="ms__card">
-      <b class="mc__h">Projekt anfragen</b>
-      <div class="mc__chips"><i>Küche</i><i class="is-on">Einbauschrank</i><i>Treppe</i></div>
-      <span class="mc__area">Einbauschrank unter der Dachschräge, ca. 3 m breit, Eiche hell.</span>
+        ga, go = _opts(key, "time", live, lambda v: v)
+        n = f["persons"]
+        persons = (f'<span class="mc__f mc__f--step"><small>Personen</small><span class="mc__step">'
+                   f'<button type="button" data-msstep="-1" aria-label="Eine Person weniger">−</button><b data-mspersons aria-live="polite">{n}</b>'
+                   f'<button type="button" data-msstep="1" aria-label="Eine Person mehr">+</button></span></span>') if live else f'<span class="mc__f"><small>Personen</small>{n}</span>'
+        body = f"""<b class="mc__h">Tisch reservieren</b>
+      <div class="mc__row">{cycle("date", "Datum")}{persons}</div>
+      <div class="mc__slots"{ga}>{go}</div>
+      {btn("Jetzt reservieren")}
+      <span class="mc__meta"><i class="mc__dot"></i>Heute noch 4 Tische frei</span>"""
+    elif key == "handwerk":
+        ga, go = _opts(key, "topic", live, lambda v: v)
+        body = f"""<b class="mc__h">Projekt anfragen</b>
+      <div class="mc__chips"{ga}>{go}</div>
+      <span class="mc__area" data-msarea>{f["area"]["Einbauschrank"]}</span>
       <div class="mc__photos"><i class="p1"></i><i class="p2"></i><i class="p3"></i><span>3 Fotos angehängt</span></div>
-      <span class="mc__btn">Anfrage senden</span>
-    </div>"""
-    if key == "praxis":
-        return """<div class="ms__card">
-      <b class="mc__h">Online-Termin</b>
-      <span class="mc__f mc__f--sel"><small>Behandlung</small>Kontrolle und Beratung</span>
-      <div class="mc__days"><i><small>Di</small>17</i><i class="is-on"><small>Mi</small>18</i><i><small>Do</small>19</i><i><small>Fr</small>20</i></div>
-      <div class="mc__slots mc__slots--3"><i>08:30</i><i class="is-on">10:00</i><i class="mc__pm">15:30</i></div>
-      <span class="mc__btn">Termin buchen</span>
-    </div>"""
-    return """<div class="ms__card">
-      <b class="mc__h">Erstberatung anfragen</b>
+      {btn("Anfrage senden")}"""
+    elif key == "praxis":
+        da, do = _opts(key, "day", live, lambda v: f"<small>{v[:2]}</small>{v[3:]}")
+        ta, to = _opts(key, "time", live, lambda v: v)
+        body = f"""<b class="mc__h">Online-Termin</b>
+      {cycle("treat", "Behandlung")}
+      <div class="mc__days"{da}>{do}</div>
+      <div class="mc__slots mc__slots--3"{ta}>{to}</div>
+      {btn("Termin buchen")}"""
+    else:
+        ga, go = _opts(key, "topic", live, lambda v: f"<i></i>{v}")
+        body = f"""<b class="mc__h">Erstberatung anfragen</b>
       <span class="mc__q">Worum geht es?</span>
-      <ul class="mc__opts"><li class="is-on"><i></i>Kündigung erhalten</li><li><i></i>Abfindung verhandeln</li><li><i></i>Arbeitsvertrag prüfen</li></ul>
-      <span class="mc__btn">Anfrage senden</span>
-      <span class="mc__meta">Antwort innerhalb von 24 Stunden</span>
-    </div>"""
+      <div class="mc__opts"{ga}>{go}</div>
+      {btn("Anfrage senden")}
+      <span class="mc__meta">Antwort innerhalb von 24 Stunden</span>"""
+    return f'<div class="ms__card"{region}><div class="mc__form">{body}</div>{done}</div>'
 
 
 _MORE = {
@@ -122,8 +191,14 @@ def _more(key):
     return f'<div class="ms__more"><b class="ms__more-h">{h}</b><div class="ms__tiles">{tiles}</div><div class="ms__strip">{strip}</div></div>'
 
 
-def mini_site(key, extra_cls=""):
-    """Kleine Beispiel-Website eines Betriebs. Der Block .ms__info wird vom KI-Agenten „geändert“."""
+_EVENT = ('<div class="ms__event"><small data-ev="k"></small><b data-ev="t"></b><span data-ev="p"></span>'
+          '<span class="ms__event-btn" data-ev="b"></span><span class="ms__event-new">Neu</span></div>')
+
+
+def mini_site(key, extra_cls="", live=False, event=False):
+    """Kleine Beispiel-Website eines Betriebs. Der Block .ms__info wird vom KI-Agenten „geändert“.
+    live=True (Cockpit): Die Funktionskarte ist bedienbar, der Rest bleibt Darstellung.
+    event=True (Agent-Demo): Platz für eine Veranstaltung, die groß im Startbereich erscheint."""
     b = BRANCHES[key]
     flag = f'<span class="ms__flag">{_CHECK} Aktualisiert</span>'
     notice = ""
@@ -150,16 +225,22 @@ def mini_site(key, extra_cls=""):
         info = (f'<span class="ms__k">Ihr Team</span><span class="ms__v"><span class="v-old">4 Anwältinnen und Anwälte</span><span class="v-new">5 Anwältinnen und Anwälte</span></span>'
                 f'<span class="ms__avatars"><i>KL</i><i>JM</i><i>AB</i><i>TS</i><i class="is-add">SY</i></span>')
     eyebrow, title, sub, cta, btn = copy
-    return f"""<div class="ms ms--{key}{extra_cls}" aria-hidden="true">
+    h = ' aria-hidden="true"'
+    root_h = "" if live else h
+    part_h = h if live else ""
+    cta_el = (f'<button type="button" class="ms__cta" data-mscta>{cta}</button>' if live else f'<span class="ms__cta">{cta}</span>')
+    nav_btn = (f'<button type="button" class="ms__btn" data-mscta tabindex="-1">{btn}</button>' if live else f'<span class="ms__btn">{btn}</span>')
+    return f"""<div class="ms ms--{key}{extra_cls}"{root_h}>
   {notice}<div class="ms__page">
-  <div class="ms__nav"><span class="ms__logo">{e(b['name'])}</span><span class="ms__links">{nav}</span><span class="ms__btn">{btn}</span><span class="ms__burger"></span></div>
+  <div class="ms__nav"><span class="ms__logo"{part_h}>{e(b['name'])}</span><span class="ms__links"{part_h}>{nav}</span>{nav_btn}<span class="ms__burger"{part_h}></span></div>
   <div class="ms__hero">
-    <div class="ms__copy"><span class="ms__eyebrow">{eyebrow}</span><b class="ms__title">{title}</b><span class="ms__sub">{sub}</span><span class="ms__cta">{cta}</span></div>
-    {_widget(key)}
+    <div class="ms__copy"><span class="ms__eyebrow"{part_h}>{eyebrow}</span><b class="ms__title"{part_h}>{title}</b><span class="ms__sub"{part_h}>{sub}</span>{cta_el}</div>
+    {_EVENT if event else ""}{_widget(key, live)}
   </div>
-  <div class="ms__info">{info}</div>
-  {_more(key)}
+  <div class="ms__info"{part_h}>{info}</div>
+  <div{part_h}>{_more(key)}</div>
   </div>
+  {'<p class="ms__toast" role="status" data-mstoast></p>' if live else ''}
 </div>"""
 
 
@@ -175,17 +256,17 @@ def cockpit(ctx):
     tabs = "".join(
         f'<button class="cp-tab" type="button" role="tab" id="cpt-{k}" aria-controls="cp-panel" aria-selected="{"true" if k == "gastro" else "false"}" data-branch="{k}" tabindex="{0 if k == "gastro" else -1}">{BRANCHES[k]["chip"]}</button>'
         for k in ORDER)
-    sites = "".join(mini_site(k) for k in ORDER)
+    sites = "".join(mini_site(k, live=True) for k in ORDER)
     feed = _feed_item(g["new"], 0, True) + _feed_item(g["feed"][0], 1) + _feed_item(g["feed"][1], 2)
-    data = {k: {kk: vv for kk, vv in v.items() if kk != "chip"} for k, v in BRANCHES.items()}
+    data = {k: {**{kk: vv for kk, vv in v.items() if kk != "chip"}, "form": {"feed": FORMS[k]["feed"], "done": FORMS[k]["done"], "agent": FORMS[k]["agent"], "area": FORMS[k].get("area"), "days": FORMS[k].get("days"), "cycles": FORMS[k].get("cycles"), "persons": FORMS[k].get("persons")}} for k, v in BRANCHES.items()}
     icons = {n: icon(n) for n in ["calendar", "phone", "search", "inbox", "layout", "video", "brief"]}
     return f"""
 <figure class="hero__stage" data-intro style="--i:6">
   <div class="cockpit" id="cockpit" data-branch="gastro" data-cockpit>
     <div class="cp-bar">
-      <span class="cp-bar__lead"><span class="cp-bar__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cp-bar__app">{LOGO}Cockpit</span></span>
+      <span class="cp-bar__lead"><span class="cp-bar__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cp-bar__app">{LOGO}Dashboard</span></span>
       <div class="cp-tabs" role="tablist" aria-label="Beispiel-Betrieb wählen">{tabs}<i class="cp-tabs__ind" aria-hidden="true"></i></div>
-      <span class="cp-bar__right"><button class="cp-pause" type="button" aria-pressed="false" aria-label="Animation anhalten">{icon('pause', 'i-pause')}{icon('play', 'i-play')}</button><span class="badge badge--ok"><span class="live" aria-hidden="true"></span>Live</span><span class="cp-time tnum">09:41</span></span>
+      <span class="cp-bar__right"><button class="cp-pause" type="button" aria-pressed="false" aria-label="Animation anhalten">{icon('pause', 'i-pause')}{icon('play', 'i-play')}</button><span class="badge badge--ok"><span class="live" aria-hidden="true"></span>Live</span><span class="cp-time tnum" data-cp="time">09:41</span></span>
     </div>
     <div class="cp-body" id="cp-panel" role="tabpanel" aria-labelledby="cpt-gastro" data-cp="panel">
       <div class="cp-site">
@@ -211,7 +292,8 @@ def cockpit(ctx):
       </div>
     </div>
   </div>
-  <figcaption class="cp-note">Beispiel mit erfundenen Betrieben: So arbeiten Website, Kundensystem und KI-Agent zusammen. Oben im Cockpit wechseln Sie die Branche.</figcaption>
+  <p class="sr-only" aria-live="polite" data-cp-live></p>
+  <figcaption class="cp-note">Beispiel mit erfundenen Betrieben. Probieren Sie es aus: Schicken Sie auf der Beispiel-Website eine Reservierung oder Anfrage ab – sie landet sofort im Dashboard. Oben wechseln Sie die Branche.</figcaption>
   <script type="application/json" id="cockpit-data">{json.dumps({"b": data, "order": ORDER, "icons": icons, "check": _CHECK}, ensure_ascii=False)}</script>
 </figure>"""
 
@@ -260,32 +342,44 @@ def pipeline():
     colhtml = ""
     for k, name in cols:
         inner = "".join(
-            f'<div class="pl__card" data-card="{cid}" data-st="{k}"><b>{e(n)}</b><small>{e(s)}</small><span class="pl__tag">{e(t)}</span><span class="pl__st">{names[k]}</span></div>'
+            f'<button type="button" class="pl__card" data-card="{cid}" data-st="{k}" aria-label="{e(n)}: in den nächsten Schritt schieben"><b>{e(n)}</b><small>{e(s)}</small><span class="pl__tag">{e(t)}</span><span class="pl__st">{names[k]}</span></button>'
             for cid, _, n, s, t in by[k])
         colhtml += f'<div class="pl__col" data-col="{k}"><h5>{name}<span data-colcount>{len(by[k])}</span></h5>{inner}</div>'
     return f"""
 <div class="st__frame">
-  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}cockpit.tischlerei-brandt.de</span></div>
-  <div class="pl" data-pipeline aria-hidden="true">
+  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}dashboard.tischlerei-brandt.de</span></div>
+  <div class="pl" data-pipeline>
     <div class="pl__kpis">
       <div class="pl__kpi"><small>Offene Anfragen</small><b data-plk="open">6</b></div>
       <div class="pl__kpi"><small>Termine diese Woche</small><b>9</b></div>
       <div class="pl__kpi"><small>Angebote offen</small><b data-plk="offers">3</b></div>
     </div>
     <div class="pl__board">{colhtml}</div>
-    <div class="pl__agent">{icon('bot')}<span><b>KI-Agent:</b> <span data-plmsg>Das Angebot für Frau Lindner läuft am Freitag ab. Soll ich nachfassen?</span></span></div>
+    <div class="pl__agent">{icon('bot')}<span aria-live="polite"><b>KI-Agent:</b> <span data-plmsg>Das Angebot für Frau Lindner läuft am Freitag ab. Soll ich nachfassen?</span></span><button type="button" class="pl__reply" data-plreply>Ja, nachfassen</button></div>
   </div>
 </div>"""
 
 
 # ---------------------------------------------------------------- Kundenreise: KI-Agent zum Ausprobieren
 AGENT_ASKS = [
-    {"id": "mittag", "label": "Mittagstisch ändern", "me": "Heute gibt’s Kürbisrisotto als Mittagstisch, 12,50 €. Bitte auf die Website.",
-     "agent": "Erledigt. Der Mittagstisch ist online.", "k": "Mittagstisch heute", "v": "Kürbisrisotto · 12,50 €"},
-    {"id": "zeiten", "label": "Öffnungszeiten anpassen", "me": "Am 24.12. haben wir nur bis 14 Uhr geöffnet. Kannst du das eintragen?",
-     "agent": "Ist eingetragen. Heiligabend: 11–14 Uhr.", "k": "Heiligabend", "v": "Geöffnet 11–14 Uhr"},
-    {"id": "event", "label": "Veranstaltung ankündigen", "me": "Am 15.11. ist Weinabend mit Menü für 49 €. Bitte groß auf die Startseite.",
-     "agent": "Steht drauf, inklusive Button zum Reservieren.", "k": "Weinabend am 15.11.", "v": "4-Gänge-Menü · 49 €"},
+    # Jede Nachricht hat Varianten: Ein zweiter Klick zeigt eine neue Änderung statt derselben noch einmal.
+    {"id": "mittag", "label": "Mittagstisch ändern", "variants": [
+        {"me": "Heute gibt’s Kürbisrisotto als Mittagstisch, 12,50 €. Bitte auf die Website.",
+         "agent": "Erledigt. Der Mittagstisch ist online.", "type": "info", "k": "Mittagstisch heute", "v": "Kürbisrisotto · 12,50 €"},
+        {"me": "Morgen gibt’s Saltimbocca mit Rosmarinkartoffeln, 14,90 €. Kannst du das schon eintragen?",
+         "agent": "Ist eingetragen – steht ab morgen früh auf der Website.", "type": "info", "k": "Mittagstisch morgen", "v": "Saltimbocca · 14,90 €"}]},
+    {"id": "zeiten", "label": "Öffnungszeiten anpassen", "variants": [
+        {"me": "Am 24.12. haben wir nur bis 14 Uhr geöffnet. Kannst du das eintragen?",
+         "agent": "Ist eingetragen. Heiligabend: 11–14 Uhr.", "type": "info", "k": "Heiligabend", "v": "Geöffnet 11–14 Uhr"},
+        {"me": "Silvester sind wir komplett ausgebucht. Bitte einen Hinweis auf die Seite.",
+         "agent": "Steht drauf. Reservierungen gibt es wieder ab dem 2.1.", "type": "info", "k": "Silvester", "v": "Ausgebucht – ab 2.1. wieder frei"}]},
+    {"id": "event", "label": "Veranstaltung ankündigen", "variants": [
+        {"me": "Am Samstag, 14.11., ist Weinabend mit Menü für 49 €. Bitte groß auf die Startseite.",
+         "agent": "Steht groß auf der Startseite – mit Button zum Reservieren.", "type": "event",
+         "ek": "Weinabend · Sa, 14.11.", "et": "4-Gänge-Menü mit Weinbegleitung", "ep": "49 € pro Person", "eb": "Platz reservieren"},
+        {"me": "Der Weinabend ist ausgebucht. Der nächste ist am 12.12. – kannst du das ändern?",
+         "agent": "Geändert: ausgebucht, der 12.12. ist schon buchbar.", "type": "event",
+         "ek": "Weinabend · Sa, 14.11. ausgebucht", "et": "Nächster Weinabend am 12.12.", "ep": "4 Gänge mit Wein · 49 €", "eb": "Jetzt vormerken"}]},
 ]
 
 
@@ -309,7 +403,7 @@ def agent_demo():
       <div class="ad__asks" role="group" aria-labelledby="ad-label">{asks}</div>
       <div class="ad__site" aria-hidden="true">
         <div class="cp-site__bar">{_LOCK}<span>trattoria-lume.de</span><span class="badge">Live</span></div>
-        <div class="cp-site__view">{mini_site("gastro", " ms--on ms--demo")}</div>
+        <div class="cp-site__view">{mini_site("gastro", " ms--on ms--demo", event=True)}</div>
       </div>
       <p class="sr-only" aria-live="polite" data-agent-live></p>
     </div>
@@ -320,7 +414,8 @@ def agent_demo():
 
 # ---------------------------------------------------------------- Kundenreise: Kampagne
 def campaign():
-    pts = [(0, 92), (30, 88), (60, 84), (90, 86), (120, 70), (150, 68), (180, 56), (210, 50), (240, 38), (270, 32), (300, 20)]
+    # flache Kurve (300 × 84), damit die Kampagne auch auf kleineren Laptops ohne Verkleinern passt
+    pts = [(0, 70), (30, 67), (60, 64), (90, 66), (120, 53), (150, 52), (180, 43), (210, 38), (240, 29), (270, 24), (300, 15)]
     line = " ".join(f"{'M' if i == 0 else 'L'}{x} {y}" for i, (x, y) in enumerate(pts))
     return f"""
 <div class="st__frame">
@@ -334,10 +429,10 @@ def campaign():
     </div>
     <div class="cg__panel">
       <div class="cg__head"><b>Kampagne „Mittagstisch“</b><span class="badge badge--ok"><span class="live"></span>Aktiv</span></div>
-      <svg class="cg__chart" viewBox="0 0 300 110">
+      <svg class="cg__chart" viewBox="0 0 300 84">
         <defs><linearGradient id="cgfill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#C3CDDC" stop-opacity=".22"/><stop offset="1" stop-color="#C3CDDC" stop-opacity="0"/></linearGradient></defs>
-        <g stroke="rgba(170,190,220,.1)"><path d="M0 27h300M0 55h300M0 83h300"/></g>
-        <path class="area" d="{line} L300 110 L0 110Z" fill="url(#cgfill)"/>
+        <g stroke="rgba(170,190,220,.1)"><path d="M0 21h300M0 42h300M0 63h300"/></g>
+        <path class="area" d="{line} L300 84 L0 84Z" fill="url(#cgfill)"/>
         <path class="line" d="{line}" fill="none" stroke="#F3F5F9" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" pathLength="1"/>
       </svg>
       <div class="cg__rows">
@@ -360,9 +455,9 @@ def report():
         for k, v in rows)
     return f"""
 <div class="st__frame">
-  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}cockpit.trattoria-lume.de/bericht</span></div>
+  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}dashboard.trattoria-lume.de/bericht</span></div>
   <div class="rp" data-report aria-hidden="true">
-    <div class="rp__head"><span><small>Monatsbericht Oktober</small><b>Trattoria Lume</b></span><span class="badge">Als PDF</span></div>
+    <div class="rp__head"><span><small>Monatsbericht Oktober</small><b>Trattoria Lume</b></span><span class="rp__stamp">Stand 31.10.</span></div>
     <div class="rp__sum"><small>Kurz gesagt</small><p>Die Anzeige für den Mittagstisch bringt die meisten Reservierungen. Freitags ist am meisten los – dort setzen wir im November mehr Budget ein.</p></div>
     <div class="rp__kpis">
       <div><small>Reservierungen</small><b data-count-to="88">88</b><span class="rp__d">+24 % zum Vormonat</span></div>
@@ -376,8 +471,8 @@ def report():
 
 # ---------------------------------------------------------------- KI-Agent: Änderungen im Dashboard (umfangreiche Systeme)
 AGENT_DONE = [("Sprechzeiten zwischen den Jahren eingetragen", "gestern"),
-              ("Ratgeber „Kündigung erhalten – was jetzt?“ veröffentlicht", "Mo"),
-              ("Stellenanzeige Rechtsanwaltsfachangestellte online", "12.11.")]
+              ("Ratgeber „Kündigung – was jetzt?“ veröffentlicht", "Mo"),
+              ("Stellenanzeige fürs Sekretariat veröffentlicht", "12.11.")]
 
 
 def agent_dashboard():
@@ -388,16 +483,16 @@ def agent_dashboard():
                   for ic, n in [("layout", "Übersicht"), ("inbox", "Anfragen"), ("brief", "Mandate"), ("globe", "Website"), ("bot", "KI-Agent")])
     return f"""
 <div class="st__frame">
-  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}cockpit.kanzlei-lindqvist.de</span></div>
-  <div class="adb" data-agentdash aria-hidden="true">
-    <div class="adb__side"><span class="adb__brand">{LOGO}Cockpit</span>{nav}</div>
+  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}dashboard.kanzlei-lindqvist.de</span></div>
+  <div class="adb" data-agentdash>
+    <div class="adb__side"><span class="adb__brand">{LOGO}Dashboard</span>{nav}</div>
     <div class="adb__main">
       <div class="adb__h"><b>Website</b><span class="badge badge--ok"><span class="live"></span>KI-Agent aktiv</span></div>
       <div class="adb__task">
         <span class="adb__who">{icon('bot')} KI-Agent · vor 2 Minuten</span>
         <b>{e(k['task'][0])}</b>
         <p>{e(k['task'][1])}</p>
-        <div class="adb__btns"><span class="adb__btn adb__btn--ghost">Vorschau ansehen</span><span class="adb__btn" data-adb-go>{_CHECK}<span>Veröffentlichen</span></span></div>
+        <div class="adb__btns"><button type="button" class="adb__btn" data-adb-go>{_CHECK}<span>Veröffentlichen</span></button><span class="adb__hint">Ein Klick – und das Profil ist online.</span></div>
       </div>
       <div class="adb__done"><small>Zuletzt erledigt</small><div class="adb__list" data-adb-list>{rows}</div></div>
     </div>

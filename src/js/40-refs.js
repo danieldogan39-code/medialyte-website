@@ -25,7 +25,7 @@ ML.module("ref-dialog", function (ML) {
   var $ = ML.$, $$ = ML.$$;
   var dlg = $("#ref-dialog"), data = ML.json("refs-data");
   if (!dlg || !data) return;
-  var view = "desktop", current = null, opener = null;
+  var view = "desktop", current = null, opener = null, leaving = false;
   function set(key, v) { var el = $("[data-rd=" + key + "]", dlg); if (el) el.textContent = v; }
   function render() {
     var r = data[current]; if (!r) return;
@@ -36,8 +36,15 @@ ML.module("ref-dialog", function (ML) {
     var link = $("[data-rd=link]", dlg); link.href = r.url; link.querySelector("span").textContent = r.visit;
     var frame = $(".rd__frame", dlg); frame.classList.toggle("rd__frame--mobile", isM);
     var img = $(".rd__scroll img", dlg);
-    img.width = isM ? 520 : 1200; img.height = isM ? r.mobileH : r.desktopH;
-    img.src = isM ? r.mobile : r.desktop;
+    /* Das Bild des vorigen Projekts nicht stehen lassen: erst zeigen, wenn das neue geladen ist */
+    var src = isM ? r.mobile : r.desktop;
+    if (img.getAttribute("src") !== src) {
+      img.style.opacity = "0";
+      img.onload = function () { img.style.opacity = ""; };
+      img.width = isM ? 520 : 1200; img.height = isM ? r.mobileH : r.desktopH;
+      img.src = src;
+      if (img.complete && img.naturalWidth) img.style.opacity = "";
+    }
     img.alt = "Vorschau der Website " + r.title + (isM ? " auf dem Smartphone" : " am Desktop");
     $$("[data-view]", dlg).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-view") === view ? "true" : "false"); });
     $(".rd__scroll", dlg).scrollTop = 0;
@@ -51,11 +58,26 @@ ML.module("ref-dialog", function (ML) {
     var c = $(".rd__close", dlg); if (c) c.focus();
   }
   function close() { if (typeof dlg.close === "function") dlg.close(); else { dlg.removeAttribute("open"); onClose(); } }
-  function onClose() { document.documentElement.style.overflow = ""; if (opener && opener.focus) opener.focus({ preventScroll: true }); }
+  function onClose() {
+    document.documentElement.style.overflow = "";
+    if (!leaving && opener && opener.focus) opener.focus({ preventScroll: true });
+    leaving = false;
+  }
   dlg.addEventListener("close", onClose);
   $$("[data-ref]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); open(b.getAttribute("data-ref"), b); }); });
   $(".rd__close", dlg).addEventListener("click", close);
-  $$("[data-close-dialog]", dlg).forEach(function (a) { a.addEventListener("click", close); });
+  /* „Ähnliches Projekt anfragen“: Dialog zu, der Fokus geht mit zur Terminbuchung statt zurück zum Projekt */
+  $$("[data-close-dialog]", dlg).forEach(function (a) {
+    a.addEventListener("click", function () {
+      leaving = true;
+      close();
+      var href = a.getAttribute("href") || "";
+      if (href.charAt(0) === "#") setTimeout(function () {
+        var t = document.querySelector(href);
+        if (t) { if (!t.hasAttribute("tabindex")) t.setAttribute("tabindex", "-1"); t.focus({ preventScroll: true }); }
+      }, 60);
+    });
+  });
   dlg.addEventListener("click", function (e) { if (e.target === dlg) close(); });
   $$("[data-view]", dlg).forEach(function (b) { b.addEventListener("click", function () { view = b.getAttribute("data-view"); render(); }); });
 });

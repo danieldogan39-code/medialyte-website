@@ -22,10 +22,12 @@ CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site
 ## Gestaltung in Kürze
 
 - Nachtblau `#0E192A` als Grund, Stahlblau und Weiß für alles Informative.
-- Korallrot `#FF5757` nur für das Logo und die wichtigste Aktion je Ansicht („Erstgespräch buchen“).
-- Schrift Outfit; Wortmarke „MEDIALYTE“ als Pfad in `tools/wordmark.svg` (neu erzeugen: `python3 tools/wordmark.py`).
+- Korallrot `#FF5757` für das Logo, die wichtigste Aktion je Ansicht („Erstgespräch buchen“, immer mit weißer Schrift) und sparsam für aktive Zustände (Kundenreise, Ablauf, Paket-Empfehlung, geöffnete Frage).
+- Schrift Outfit; Wortmarke „medialyte“ in Red Hat Display Italic (SIL OFL, `tools/fonts/`) als Pfad in `tools/wordmark.svg` (neu erzeugen: `python3 tools/wordmark.py`).
 - Bewegung nur über `transform` und `opacity`, keine Layoutsprünge; bei „Bewegung reduzieren“ stehen alle Darstellungen sofort im Endzustand. Ohne JavaScript bleibt alles lesbar.
-- Kundenreise (`journey()` in `parts.py`, Skript `src/js/28-stage.js`): ab 1000 × 640 px eine angeheftete Bühne, Scrollen schaltet die vier Stationen um, die Darstellungen werden passend skaliert. Mobil, ohne Skript und bei reduzierter Bewegung stehen die Stationen untereinander.
+- Kundenreise (`journey()` in `parts.py`, Skript `src/js/28-stage.js`): ab 1000 × 640 px eine angeheftete Bühne, Scrollen schaltet die vier Stationen um, die Darstellungen werden passend skaliert. Müsste eine Darstellung stärker als auf 84 % verkleinert werden (z. B. 1366 × 657), stehen die Stationen untereinander – genauso wie mobil, ohne Skript und bei reduzierter Bewegung.
+- Partner-Logos laufen als Laufband (`marquee_rows()` in `parts.py`; Startseite eine Reihe, Referenzen zwei gegenläufig versetzte Reihen). Neue Logos in `LOGOS` ergänzen.
+- Antworten in den Häufigen Fragen lassen sich verlinken (`FAQ_IDS` in `parts.py`, Links mit `data-faq-link` klappen die Antwort auf).
 - Demos starten erst, wenn sie wirklich zu sehen sind (`ML.presence` in `src/js/00-core.js`, berücksichtigt die aktive Station).
 
 ## Bauen

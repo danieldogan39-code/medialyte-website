@@ -10,9 +10,11 @@
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;transition-delay:0s!important}
-  .marquee__track{animation:none!important;flex-wrap:wrap;width:auto;justify-content:center}
+  /* Kein Laufband: eine ruhige Reihe, die sich von Hand verschieben lässt – nicht alle Logos auf einmal */
+  .marquee{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .marquee::-webkit-scrollbar{display:none}
+  .marquee__track{animation:none!important}
   .marquee__set[aria-hidden="true"]{display:none}
-  .marquee__set{flex-wrap:wrap;justify-content:center;gap:36px 56px;padding-right:0}
   .orb__spin{display:none}
   .hero__glow{animation:none!important}
 }

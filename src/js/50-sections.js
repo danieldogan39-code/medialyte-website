@@ -7,6 +7,33 @@ ML.module("before-after", function (ML) {
     r.addEventListener("input", function () { set(r.value); touched = true; });
     set(r.value);
     var touched = false;
+    /* Ziehen mit Maus, Finger oder Stift. Am Handy zählt eine Bewegung erst als Ziehen, wenn sie
+       seitwärts geht – wer senkrecht wischt, scrollt nur die Seite, der Regler bleibt stehen.
+       Ein kurzes Antippen setzt den Regler an diese Stelle. (Tastatur: über das Regler-Feld.) */
+    var g = null;
+    function at(x) { var b = ba.getBoundingClientRect(); return ML.clamp((x - b.left) / Math.max(1, b.width) * 100, 0, 100); }
+    function apply(v) { touched = true; r.value = v; set(v.toFixed(1)); }
+    ba.addEventListener("pointerdown", function (e) {
+      if (e.button > 0) return;
+      g = { id: e.pointerId, x: e.clientX, y: e.clientY, drag: e.pointerType === "mouse" };
+      if (g.drag) { try { ba.setPointerCapture(e.pointerId); } catch (err) { /* egal */ } apply(at(e.clientX)); e.preventDefault(); }
+    });
+    ba.addEventListener("pointermove", function (e) {
+      if (!g || e.pointerId !== g.id) return;
+      if (!g.drag) {
+        var dx = Math.abs(e.clientX - g.x), dy = Math.abs(e.clientY - g.y);
+        if (dy > 10 && dy > dx) { g = null; return; }
+        if (dx < 8) return;
+        g.drag = true; try { ba.setPointerCapture(e.pointerId); } catch (err) { /* egal */ }
+      }
+      apply(at(e.clientX));
+    });
+    ba.addEventListener("pointerup", function (e) {
+      if (!g || e.pointerId !== g.id) return;
+      if (!g.drag && Math.abs(e.clientX - g.x) < 8 && Math.abs(e.clientY - g.y) < 8) apply(at(e.clientX));
+      g = null;
+    });
+    ba.addEventListener("pointercancel", function () { g = null; });
     if (ML.reduce) return;
     /* Kleiner Hinweis, dass man ziehen kann – einmal, wenn der Regler ins Bild kommt */
     ML.onVisible(ba, function () {
@@ -116,6 +143,11 @@ ML.module("process", function (ML) {
 ML.module("marquee", function (ML) {
   ML.$$("[data-marquee]").forEach(function (m) {
     ML.watch(m, function (v) { m.classList.toggle("is-paused", !v); });
+    /* Zum Ansehen anhalten: Zeiger darüber oder Finger darauf */
+    m.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") m.classList.add("is-hold"); });
+    m.addEventListener("pointerleave", function () { m.classList.remove("is-hold"); });
+    m.addEventListener("touchstart", function () { m.classList.add("is-hold"); }, { passive: true });
+    m.addEventListener("touchend", function () { setTimeout(function () { m.classList.remove("is-hold"); }, 1200); }, { passive: true });
   });
 });
 
@@ -128,5 +160,61 @@ ML.module("faq", function (ML) {
         items.forEach(function (o) { if (o !== d) o.open = false; });
       });
     });
+  });
+  /* Links auf eine Antwort (#faq-…) klappen sie auf – die anderen sofort zu, damit sich beim
+     Scrollen nichts mehr verschiebt – und führen dann genau dorthin */
+  function openTarget(id) {
+    var d = id && document.getElementById(id);
+    if (!d || d.tagName !== "DETAILS") return null;
+    var list = d.closest("[data-faq]");
+    if (list) ML.$$("details", list).forEach(function (o) { if (o !== d) o.open = false; });
+    d.open = true;
+    return d;
+  }
+  ML.$$("[data-faq-link]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var id = (a.getAttribute("href") || "").replace(/^#/, ""), d = openTarget(id);
+      if (!d) return;
+      e.preventDefault();
+      /* Ziel aus dem Layout berechnen (ohne die Einblend-Verschiebung), Abstand wie bei Ankern */
+      var y = 0, el = d;
+      while (el) { y += el.offsetTop; el = el.offsetParent; }
+      var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      window.scrollTo({ top: Math.max(0, y - pad), behavior: ML.reduce ? "auto" : "smooth" });
+      try { history.pushState(null, "", "#" + id); } catch (err) { /* egal */ }
+      var s = d.querySelector("summary"); if (s) s.focus({ preventScroll: true });
+    });
+  });
+  if (location.hash && /^#faq-/.test(location.hash)) {
+    var t = openTarget(location.hash.slice(1));
+    if (t) setTimeout(function () { t.scrollIntoView({ block: "start" }); }, 60);
+  }
+  window.addEventListener("hashchange", function () { if (/^#faq-/.test(location.hash)) openTarget(location.hash.slice(1)); });
+});
+
+/* Film-Platzhalter: Kapitel laufen als Titelkarten durch; ein Klick in der Liste springt dorthin */
+ML.module("film", function (ML) {
+  ML.$$("[data-film]").forEach(function (root) {
+    var scenes = ML.$$(".film__scene", root), chs = ML.$$(".film__ch", root), bars = ML.$$(".film__bars i", root);
+    var cur = 0, timer = null, auto = !ML.reduce, DUR = 4800, inView = false;
+    root.style.setProperty("--dur", DUR + "ms");
+    function show(i) {
+      cur = i;
+      scenes.forEach(function (s, j) { s.classList.toggle("is-on", j === i); });
+      chs.forEach(function (c, j) { c.classList.toggle("is-on", j === i); c.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+      bars.forEach(function (b, j) { b.classList.remove("is-on"); b.classList.toggle("is-done", j < i); if (j === i) { void b.offsetWidth; b.classList.add("is-on"); } });
+      schedule();
+    }
+    function schedule() {
+      clearTimeout(timer);
+      root.classList.toggle("is-playing", auto && inView);
+      if (!auto || !inView) return;
+      timer = setTimeout(function () { show((cur + 1) % scenes.length); }, DUR);
+    }
+    chs.forEach(function (c, i) { c.addEventListener("click", function () { auto = false; show(i); }); });
+    /* Ein Klick ins Bild blättert zum nächsten Kapitel */
+    var frame = root.querySelector(".film__frame");
+    if (frame) frame.addEventListener("click", function () { auto = false; show((cur + 1) % scenes.length); });
+    ML.watch(root, function (v) { inView = v; if (v) show(cur); else { clearTimeout(timer); root.classList.remove("is-playing"); } }, { threshold: 0.4 });
   });
 });

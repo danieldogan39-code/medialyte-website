@@ -75,23 +75,55 @@ ML.module("journey", function (ML) {
       activate(Math.min(n - 1, Math.floor(p * n)));
     });
 
-    /* Darstellungen in die verfügbare Fläche einpassen */
+    /* Darstellungen in die verfügbare Fläche einpassen; liefert die stärkste Verkleinerung */
     function fit() {
+      var least = 1;
       sts.forEach(function (s) {
         var vis = $(".st__vis", s), f = vis && $(".st__fit", vis);
         if (!f) return;
         if (!pinned) { f.style.removeProperty("--fit"); return; }
         var k = Math.min(1, vis.clientWidth / Math.max(1, f.offsetWidth), vis.clientHeight / Math.max(1, f.offsetHeight));
+        least = Math.min(least, k);
         f.style.setProperty("--fit", (Math.floor(k * 1000) / 1000).toString());
       });
+      return least;
     }
     var stage = $(".jr__stage", jr);
     if ("ResizeObserver" in window && stage) new ResizeObserver(fit).observe(stage);
-    else window.addEventListener("resize", fit);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
-    function check() { setMode(mq.matches && !ML.reduce); fit(); }
-    if (mq.addEventListener) mq.addEventListener("change", check); else if (mq.addListener) mq.addListener(check);
-    check();
+    /* Bühne nur, wenn alles gut lesbar bleibt: Müsste eine Darstellung stärker als auf
+       84 % verkleinert werden (z. B. 1366 × 657), stehen die Stationen untereinander. */
+    var MIN_FIT = 0.84;
+    /* Nach einer Größenänderung (Fenster, Drehen) wieder bei derselben Station stehen */
+    function place(i) {
+      if (pinned) {
+        var t = Math.round(top() + span() * ((i + (i === 0 ? 0.8 : 0.3)) / n));
+        lock = { i: i, t: t, until: Date.now() + 800 };
+        activate(i);
+        window.scrollTo({ top: t, behavior: "instant" });
+      } else {
+        sts[i].scrollIntoView({ block: "start", behavior: "instant" });
+      }
+    }
+    function check(user) {
+      var r = jr.getBoundingClientRect(), vis = r.top < window.innerHeight && r.bottom > 0, keep = cur, was = pinned;
+      var want = mq.matches && !ML.reduce;
+      if (want !== pinned) setMode(want);
+      if (fit() < MIN_FIT && pinned) { setMode(false); fit(); }
+      if (user && vis && (was !== pinned || pinned)) place(keep);
+    }
+    if (mq.addEventListener) mq.addEventListener("change", function () { check(true); }); else if (mq.addListener) mq.addListener(function () { check(true); });
+    var rt = null, lastW = window.innerWidth, lastH = window.innerHeight;
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        /* Nur echte Größenänderungen – nicht die ein- und ausfahrende Adressleiste am Handy */
+        var w = window.innerWidth, h = window.innerHeight, real = w !== lastW || Math.abs(h - lastH) > 120;
+        lastW = w; lastH = h;
+        check(real);
+      }, 180);
+    });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { check(false); });
+    check(false);
   });
 });

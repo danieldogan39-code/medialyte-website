@@ -49,9 +49,6 @@
 .prose a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
 .prose .todo{padding:16px 18px;border-radius:14px;border:1px dashed var(--line-3);color:var(--text-2)}
 
-.logo-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
-.logo-wall div{display:grid;place-items:center;height:132px;padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
-.logo-wall img{max-height:44px;width:auto;opacity:.75}
 
 .more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(24px,3vw,48px)}
 .more article{display:grid;gap:12px;align-content:start;padding:28px 0;border-top:1px solid var(--line-2)}

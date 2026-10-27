@@ -13,7 +13,7 @@ _LOGO_DIMS = {d["file"].replace(".webp", ""): (d["w"], d["h"]) for d in json.loa
 # ======================================================================= Daten
 LOGOS = [
     ("rubin", "Juwelier Rubin"), ("fassadentrio", "FassadenTrio"), ("ritz", "RITZ Instrument Transformers"),
-    ("rechnungsradar", "RechnungsRadar"), ("cv", "CV"), ("hubo-dmoran", "Hubo d'Moran"),
+    ("rechnungsradar", "RechnungsRadar"), ("cv", "CV"), ("hubo-dmoran", "Hubo d’Moran"),
     ("deluxe-design", "DELUXE Design"), ("amore-eventdeko", "Amore Eventdeko"),
     ("ionos-agency-partner", "IONOS Agency Partner Official"), ("garee-beauty", "garée beauty"),
     ("glory-angels", "Glory Angels"), ("sabaai-thai", "Sabaai Thai Massage & Wellness"), ("gado-energie", "GADO Energie"),
@@ -122,17 +122,32 @@ def _logo_h(f):
     return max(20, min(50, round(40 * (3.0 / (w / h)) ** 0.5)))
 
 
-def logo_marquee(ctx, label="Kunden und Partner von Medialyte"):
-    def one_set(hidden=False):
+def marquee_rows(ctx, rows=1):
+    """Logo-Laufband. Mehrere Reihen laufen gegeneinander und beginnen an verschiedenen Stellen,
+    so wirkt die Auswahl größer, als wenn alle Logos auf einmal nebeneinander stehen."""
+    def one_set(order, hidden=False):
         imgs = "".join(
             f'<img src="{ctx.a("img/logos/" + f + ".webp")}" width="{_LOGO_DIMS[f][0]}" height="{_LOGO_DIMS[f][1]}" style="--h:{_logo_h(f)}px" alt="{"" if hidden else e(a)}" loading="lazy" decoding="async">'
-            for f, a in LOGOS)
+            for f, a in order)
         aria = ' aria-hidden="true"' if hidden else ""
         return f'<div class="marquee__set"{aria}>{imgs}</div>'
+    out = ""
+    for r in range(rows):
+        # jede weitere Reihe beginnt etwa in der Mitte der Liste: oben und unten stehen nie dieselben Logos
+        k = ((len(LOGOS) + 1) // 2 * r) % len(LOGOS)
+        order = LOGOS[k:] + LOGOS[:k]
+        cls = "marquee" + (" marquee--rev" if r % 2 else "")
+        # Nur die erste Reihe wird vorgelesen, weitere Reihen sind Wiederholungen
+        hide = r > 0
+        out += f'<div class="{cls}" data-marquee{" aria-hidden=\"true\"" if hide else ""}><div class="marquee__track">{one_set(order, hide)}{one_set(order, True)}</div></div>'
+    return f'<div class="marquees{" marquees--multi" if rows > 1 else ""}">{out}</div>'
+
+
+def logo_marquee(ctx, label="Kunden und Partner von Medialyte"):
     return f"""
 <section class="logos" aria-label="{e(label)}">
   <p class="logos__label">{e(label)}</p>
-  <div class="marquee" data-marquee><div class="marquee__track">{one_set()}{one_set(True)}</div></div>
+  {marquee_rows(ctx, 1)}
 </section>"""
 
 
@@ -182,7 +197,7 @@ def idea(ctx):
   <p>{text}</p>
   <div class="idea__uses"><small>Dafür bauen wir</small><ul class="tags">{tags}</ul></div>
 </div>"""
-        dots += f'<i class="{"is-on" if i == 0 else ""}"></i>'
+        dots += f'<button type="button" class="idea__dot{" is-on" if i == 0 else ""}" tabindex="-1" aria-label="{name} zeigen"><i></i></button>'
     return f"""
 <div class="idea" data-idea>
   <div class="orb" data-reveal="scale">
@@ -193,7 +208,7 @@ def idea(ctx):
   </div>
   <div data-reveal>
     <div class="idea__panels">{panels}</div>
-    <div class="idea__dots" aria-hidden="true">{dots}</div>
+    <div class="idea__dots">{dots}</div>
   </div>
 </div>"""
 
@@ -207,7 +222,7 @@ STATIONS = [
     ("Kundensystem", "Ein System, in dem jede Anfrage landet",
      "Hinter der Website bauen wir Ihr eigenes Kunden- oder Produktmanagement. Anfragen, Termine, Angebote und Aufträge laufen an einem Ort zusammen – für Sie und Ihr Team, auch unterwegs.",
      ["Eigenes Dashboard statt Excel und Zettelwirtschaft", "Direkt mit Ihrer Website verbunden", "Erinnerungen und Abläufe automatisiert", "Wächst mit Ihrem Betrieb"],
-     "/leistungen/kundenmanagement-system/", "Mehr zum Kundenmanagement-System", "pipeline", "Beispiel: Anfragen wandern von „Neu“ bis „Auftrag“ – nichts geht verloren."),
+     "/leistungen/kundenmanagement-system/", "Mehr zum Kundenmanagement-System", "pipeline", "Beispiel: Anfragen wandern von „Neu“ bis „Auftrag“. Tippen Sie eine Karte an, um sie weiterzuschieben."),
     ("KI-Agent", "Ändern Sie Ihre Website per WhatsApp",
      "Neue Öffnungszeiten, ein anderes Gericht, frische Fotos: Sie schreiben es unserem KI-Agenten, er pflegt es ein. Bei umfangreichen Systemen erledigen Sie dasselbe direkt im Dashboard. Für Größeres ist unser Team persönlich da.",
      ["Änderungen in eigenen Worten, ohne Technik", "Bei einfachen Websites per WhatsApp", "Bei großen Systemen direkt im Dashboard", "Laufende Pflege inklusive"],
@@ -363,9 +378,9 @@ def compare():
     rows = [
         ("Website für Ihre Zielgruppe gemacht", Y + "Ja</span>", Y + "Ja</span>", P + "Vorlage</span>"),
         ("Kundenmanagement-System aus einer Hand", Y + "Ja</span>", P + "Selten</span>", N + "Nein</span>"),
-        ("Änderungen per WhatsApp oder Dashboard", Y + "Mit KI-Agent</span>", P + "Per Auftrag</span>", N + "Selbst machen</span>"),
+        ("Änderungen per WhatsApp oder Dashboard", Y + "Mit KI-Agent</span>", P + "Per Auftrag</span>", N + "Nur selbst</span>"),
         ("Website, SEO und Werbung abgestimmt", Y + "Ja</span>", P + "Oft getrennt</span>", N + "Nein</span>"),
-        ("Laufende Pflege", Y + "Im Abo enthalten</span>", P + "Meist extra</span>", N + "Selbst machen</span>"),
+        ("Laufende Pflege", Y + "Im Abo enthalten</span>", P + "Meist extra</span>", N + "Nur selbst</span>"),
         ("Ansprechpartner", Y + "Fest und persönlich</span>", P + "Wechselnd</span>", N + "Hotline</span>"),
         ("Angebot", Y + "Innerhalb von 48 h</span>", P + "Unterschiedlich</span>", Y + "Festpreis-Tarif</span>"),
     ]
@@ -448,7 +463,7 @@ def plans(ctx):
   {ticks(items)}
   <div></div>
   <div class="plan__foot">
-    <div class="plan__price"><b>Pauschale + monatliches Abo</b><small>Ihr Preis steht im Angebot, innerhalb von 48 h</small></div>
+    <div class="plan__price"><b>Pauschale + monatliches Abo</b><small>Ihr Preis steht in Ihrem persönlichen Angebot</small></div>
     {btn_book(ctx, name + ' anfragen', ask, 'btn--ghost btn--block')}
   </div>
 </article>"""
@@ -461,7 +476,7 @@ def plans(ctx):
   </div>
 </form>
 <div class="plans" data-plans>{cards}</div>
-<div class="plans-note" data-reveal><span>{icon('check')} Kostenfreies Erstgespräch</span><span>{icon('check')} Angebot innerhalb von 48 Stunden</span><span>{icon('check')} Pakete frei kombinierbar</span><span>{icon('check')} Zufriedenheitsgarantie</span></div>"""
+<div class="plans-note" data-reveal><span>{icon('check')} Kostenfreies Erstgespräch</span><span>{icon('check')} Angebot innerhalb von 48 Stunden</span><span>{icon('check')} Pakete frei kombinierbar</span><a href="#faq-garantie" data-faq-link>{icon('check')} Zufriedenheitsgarantie</a></div>"""
 
 
 # ======================================================================= Ablauf
@@ -470,7 +485,7 @@ PROCESS = [
     ("Konzept und Design", "Sie sehen früh, wie alles aussehen wird, und entscheiden mit. Wir verfeinern, bis es passt.", ["Struktur", "Entwurf", "Texte"]),
     ("Entwicklung", "Wir setzen Website und System um: schnell, sicher und so, dass beides mit Ihrem Betrieb wachsen kann.", ["Website", "System", "Anbindungen"]),
     ("Test und Feinschliff", "Jede Seite, jedes Formular, jedes Gerät: Wir prüfen alles, bevor Ihre Kunden es sehen.", ["Funktion", "Tempo", "Alle Geräte"]),
-    ("Livegang und Betreuung", "Ihre Lösung geht online. Danach bleiben wir an Ihrer Seite – mit unserem Team und dem KI-Agenten.", ["Livegang", "Pflege", "Ansprechpartner"]),
+    ("Livegang und Betreuung", "Ihre Lösung geht online. Danach bleiben wir an Ihrer Seite – mit unserem Team und dem KI-Agenten.", ["Livegang", "Pflege", "Service"]),
 ]
 
 
@@ -497,28 +512,42 @@ def team():
 
 # ======================================================================= Film (Platzhalter)
 def film():
+    """Platzhalter für den Film: Die vier Kapitel laufen als Titelkarten durch, die Liste daneben
+    springt zu einem Kapitel. Ehrlich beschriftet – der Film selbst folgt."""
     chapters = [
         ("Die Ausgangslage", "Warum viele Websites Kunden verlieren statt gewinnen"),
         ("Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
         ("Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
         ("Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
     ]
-    lis = "".join(f'<li><span class="num">{i + 1}</span><b>{t}</b><span>{d}</span></li>' for i, (t, d) in enumerate(chapters))
+    scenes = "".join(
+        f'<div class="film__scene{" is-on" if i == 0 else ""}" data-scene="{i}"><small>Kapitel {i + 1}</small><b>{t}</b><span>{d}</span></div>'
+        for i, (t, d) in enumerate(chapters))
+    bars = "".join(f"<i{' class="is-on"' if i == 0 else ''}></i>" for i in range(len(chapters)))
+    lis = "".join(
+        f'<li><button type="button" class="film__ch{" is-on" if i == 0 else ""}" data-go="{i}" aria-pressed="{"true" if i == 0 else "false"}"><span class="num">{i + 1}</span><b>{t}</b><span>{d}</span></button></li>'
+        for i, (t, d) in enumerate(chapters))
     return f"""
-<div class="film">
-  <div class="film__frame" data-reveal="scale">
+<div class="film" data-film>
+  <div class="film__frame" data-reveal="scale" aria-hidden="true">
     {LOGO.replace('class="mono"', 'class="film__mono"')}
-    <div class="film__soon"><b>Der Film entsteht gerade</b><span>Etwa 90 Sekunden, in vier Kapiteln</span></div>
+    <div class="film__scenes">{scenes}</div>
+    <div class="film__foot"><span class="film__bars">{bars}</span><span>Der Film entsteht gerade · etwa 90 Sekunden</span></div>
   </div>
-  <ol class="film__chapters" data-reveal>{lis}</ol>
+  <ol class="film__chapters" data-reveal aria-label="Kapitel des Films">{lis}</ol>
 </div>"""
 
 
 # ======================================================================= Häufige Fragen
+# Antworten, auf die an anderer Stelle verlinkt wird (z. B. „Zufriedenheitsgarantie“ im Startbereich)
+FAQ_IDS = {"Was kostet eine Website bei Medialyte?": "faq-kosten", "Was bedeutet die Zufriedenheitsgarantie?": "faq-garantie"}
+
+
 def faq_block(ctx, qas, title="Häufige Fragen", lead="Ihre Frage ist nicht dabei? Schreiben Sie uns per WhatsApp – wir antworten persönlich."):
-    items = "".join(
-        f'<details class="qa"{" open" if i == 0 else ""}><summary>{e(q)}<span class="qa__ic" aria-hidden="true"></span></summary><div class="qa__a">{a}</div></details>'
-        for i, (q, a) in enumerate(qas))
+    def item(i, q, a):
+        attrs = (f' id="{FAQ_IDS[q]}"' if q in FAQ_IDS else "") + (" open" if i == 0 else "")
+        return f'<details class="qa"{attrs}><summary>{e(q)}<span class="qa__ic" aria-hidden="true"></span></summary><div class="qa__a">{a}</div></details>'
+    items = "".join(item(i, q, a) for i, (q, a) in enumerate(qas))
     return f"""
 <div class="faq">
   <div class="faq__intro" data-reveal>
@@ -570,7 +599,7 @@ def booking_widget(ctx):
       <li>{icon('video')} Video-Call, Telefon oder vor Ort in Hamburg</li>
       <li>{icon('shield')} Unverbindlich und kostenfrei</li>
     </ul>
-    <div class="bk__get"><b>Das erwartet Sie</b>{ticks(['Wir schauen uns Ihre Situation an', 'Sie bekommen konkrete Empfehlungen', 'Ihr Angebot folgt innerhalb von 48 Stunden'])}</div>
+    <div class="bk__get"><b>Das erwartet Sie</b>{ticks(['Wir schauen uns Ihre Situation an', 'Sie bekommen konkrete Empfehlungen', 'Danach ein Angebot, das genau passt'])}</div>
     <div class="bk__alt"><span>Lieber direkt sprechen?</span><a class="link" href="{SITE['wa']}" target="_blank" rel="noopener">{icon('wa')} WhatsApp schreiben</a><a class="link" href="tel:{SITE['phone_intl']}">{icon('phone')} {e(SITE['phone'])}</a></div>
   </aside>
   <form class="bk__main" novalidate>
@@ -626,7 +655,7 @@ def booking_widget(ctx):
         <div class="done">
           <span class="done__ic">{icon('check')}</span>
           <h3 id="bk-h5">Vielen Dank<span class="done__name"></span>!</h3>
-          <p>Ihre Anfrage für <b class="done__when"></b> ist bei uns eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.</p>
+          <p class="done__line">Ihre Anfrage für <b class="done__when"></b> ist bei uns eingegangen. Sie erhalten in Kürze eine Bestätigung per E-Mail.</p>
           <dl class="summary" style="width:100%;text-align:left"></dl>
           <div class="done__actions">
             <button class="btn btn--ghost" type="button" data-ics hidden>{icon('calendar')} In Kalender eintragen</button>

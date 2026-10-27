@@ -20,9 +20,9 @@ body{{width:1200px;height:630px;background:#0E192A;font-family:Outfit,sans-serif
 .g{{position:absolute;left:50%;top:-520px;width:1700px;height:1060px;margin-left:-850px;border-radius:50%;background:radial-gradient(closest-side,rgba(64,98,158,.5),rgba(40,64,108,.2) 45%,transparent 72%)}}
 .d{{position:absolute;inset:0;background-image:linear-gradient(rgba(170,190,220,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(170,190,220,.06) 1px,transparent 1px);background-size:72px 72px;-webkit-mask-image:radial-gradient(70% 60% at 50% 25%,#000,transparent 80%)}}
 .w{{position:absolute;left:88px;top:80px;right:88px;bottom:76px;display:flex;flex-direction:column;justify-content:space-between}}
-.logo{{display:flex;align-items:center;gap:20px}}
+.logo{{display:flex;align-items:center;gap:16px}}
 .logo .mono{{height:62px;width:auto;color:#FF5757}}
-.logo .wordmark{{height:24px;width:auto;color:#F3F5F9;margin-top:4px}}
+.logo .wordmark{{height:44px;width:auto;color:#F3F5F9;margin-top:9px}}
 h1{{font-size:80px;line-height:.98;font-weight:600;letter-spacing:-.048em;max-width:1000px;text-wrap:balance}}
 h1 span{{display:block;color:#8A9BB4}}
 .f{{display:flex;gap:12px;font-size:23px;color:#C3CDDC}}

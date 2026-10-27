@@ -1,331 +1,6 @@
-/* Medialyte – Interaktionen
-   Ohne Bibliotheken. Jede Funktion prüft, ob ihr Element auf der Seite existiert. */
-(function () {
-  "use strict";
-
-  var CFG = window.ML_CONFIG || {};
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var $ = function (s, r) { return (r || document).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var store = {
-    get: function (k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch (e) { return null; } },
-    set: function (k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ohne Speicher weiter */ } },
-    del: function (k) { try { sessionStorage.removeItem(k); } catch (e) { /* egal */ } }
-  };
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function onVisible(el, cb, opts) {
-    if (!("IntersectionObserver" in window)) { cb(); return; }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { io.disconnect(); cb(); } });
-    }, opts || { threshold: 0.35 });
-    io.observe(el);
-  }
-
-  /* ---------- Header ---------- */
-  var header = $(".header");
-  var raf = null;
-  function onScroll() {
-    if (raf) return;
-    raf = requestAnimationFrame(function () {
-      raf = null;
-      var y = window.scrollY || document.documentElement.scrollTop;
-      if (header) header.classList.toggle("is-scrolled", y > 8);
-      timelineFill();
-    });
-  }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-
-  /* Dropdown per Klick/Tastatur (Hover macht CSS) */
-  $$(".nav__item").forEach(function (item) {
-    var btn = $(".nav__link", item);
-    if (!btn || btn.tagName !== "BUTTON") return;
-    btn.addEventListener("click", function () {
-      var open = !item.classList.contains("is-open");
-      $$(".nav__item.is-open").forEach(function (o) { o.classList.remove("is-open"); });
-      item.classList.toggle("is-open", open);
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    item.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { item.classList.remove("is-open"); btn.setAttribute("aria-expanded", "false"); btn.focus(); }
-    });
-  });
-  document.addEventListener("click", function (e) {
-    if (!e.target.closest(".nav__item")) {
-      $$(".nav__item.is-open").forEach(function (o) {
-        o.classList.remove("is-open");
-        var b = $(".nav__link", o); if (b) b.setAttribute("aria-expanded", "false");
-      });
-    }
-  });
-
-  /* Mobiles Menü */
-  var burger = $(".burger"), mnav = $("#mnav");
-  function setMenu(open) {
-    if (!burger || !mnav) return;
-    mnav.hidden = !open;
-    burger.setAttribute("aria-expanded", open ? "true" : "false");
-    burger.setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen");
-    burger.innerHTML = open ? ICON.close : ICON.menu;
-    document.body.classList.toggle("menu-open", open);
-    if (header) header.classList.toggle("is-solid", open);
-  }
-  var ICON = {
-    menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>',
-    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
-  };
-  if (burger && mnav) {
-    burger.addEventListener("click", function () { setMenu(mnav.hidden); });
-    $$("a", mnav).forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !mnav.hidden) { setMenu(false); burger.focus(); } });
-    var mq = window.matchMedia("(min-width: 1101px)");
-    var mqh = function (m) { if (m.matches) setMenu(false); };
-    if (mq.addEventListener) mq.addEventListener("change", mqh); else if (mq.addListener) mq.addListener(mqh);
-  }
-
-  /* WhatsApp-Button ausblenden, solange Buchung oder Footer im Bild sind */
-  var fwa = $(".float-wa");
-  if (fwa && "IntersectionObserver" in window) {
-    var seen = new Set();
-    var io2 = new IntersectionObserver(function (es) {
-      es.forEach(function (en) { if (en.isIntersecting) seen.add(en.target); else seen.delete(en.target); });
-      fwa.classList.toggle("is-away", seen.size > 0);
-    }, { threshold: 0.12 });
-    $$("#booking, .footer").forEach(function (el) { io2.observe(el); });
-  }
-
-  /* ---------- Zähler (Endwert steht schon im HTML) ---------- */
-  $$("[data-count]").forEach(function (el) {
-    if (reduce) return;
-    var to = parseFloat(el.getAttribute("data-count"));
-    if (!isFinite(to) || to === 0) return;
-    onVisible(el, function () {
-      var t0 = null, dur = 1400;
-      function step(t) {
-        if (!t0) t0 = t;
-        var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(to * e);
-        if (p < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }, { threshold: 0.6 });
-  });
-
-  /* ---------- Tabs (allgemein) ---------- */
-  function setupTabs(list, onChange) {
-    var tabs = $$("[role=tab]", list);
-    function select(i, focus) {
-      tabs.forEach(function (t, j) {
-        var on = i === j;
-        t.setAttribute("aria-selected", on ? "true" : "false");
-        t.tabIndex = on ? 0 : -1;
-        var p = document.getElementById(t.getAttribute("aria-controls"));
-        if (p) p.hidden = !on;
-      });
-      if (focus) tabs[i].focus();
-      if (onChange) onChange(i);
-    }
-    tabs.forEach(function (t, i) {
-      t.addEventListener("click", function () { select(i, false); if (list.__user) list.__user(i); });
-    });
-    list.addEventListener("keydown", function (e) {
-      var keys = ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End"];
-      if (keys.indexOf(e.key) < 0) return;
-      e.preventDefault();
-      var cur = tabs.findIndex(function (t) { return t.getAttribute("aria-selected") === "true"; });
-      var n = cur;
-      if (e.key === "ArrowRight" || e.key === "ArrowDown") n = (cur + 1) % tabs.length;
-      if (e.key === "ArrowLeft" || e.key === "ArrowUp") n = (cur - 1 + tabs.length) % tabs.length;
-      if (e.key === "Home") n = 0;
-      if (e.key === "End") n = tabs.length - 1;
-      select(n, true);
-      if (list.__user) list.__user(n);
-    });
-    return { select: select, count: tabs.length };
-  }
-  $$("[data-tabs]").forEach(function (list) { setupTabs(list); });
-
-  /* ---------- Kundenreise mit Auto-Weiterschalten ---------- */
-  var journey = $(".journey");
-  if (journey) {
-    var jlist = $(".jsteps", journey);
-    var panels = $$(".jpanel", journey);
-    var cur = 0, timer = null, auto = !reduce, inView = false;
-    var DUR = 7000;
-    journey.style.setProperty("--jdur", DUR + "ms");
-    var api = setupTabs(jlist, function (i) {
-      cur = i;
-      panels.forEach(function (p, j) {
-        if (i === j) { p.classList.remove("is-enter"); void p.offsetWidth; p.classList.add("is-enter"); }
-      });
-      $$(".jstep__bar i", journey).forEach(function (b) { b.style.animation = "none"; void b.offsetWidth; b.style.animation = ""; });
-      var chat = $(".chat", panels[i]);
-      if (chat) playChat(chat);
-      schedule();
-    });
-    jlist.__user = function () { auto = false; journey.classList.remove("is-auto"); clearTimeout(timer); };
-    function schedule() {
-      clearTimeout(timer);
-      if (!auto || !inView) return;
-      timer = setTimeout(function () {
-        if (document.hidden) { schedule(); return; }
-        api.select((cur + 1) % api.count, false);
-      }, DUR);
-    }
-    if (auto) journey.classList.add("is-auto");
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (en) {
-        inView = en[0].isIntersecting;
-        if (inView) schedule(); else clearTimeout(timer);
-      }, { threshold: 0.3 }).observe(journey);
-    }
-  }
-
-  /* Chat-Animation: Nachrichten nacheinander, vor Agent-Antworten „schreibt …“ */
-  function playChat(chat) {
-    if (reduce || chat.__playing) return;
-    var msgs = $$(".msg", chat), typing = $(".typing", chat);
-    chat.__playing = true;
-    msgs.forEach(function (m) { m.hidden = true; });
-    var t = 300;
-    msgs.forEach(function (m) {
-      var isAgent = m.classList.contains("msg--agent");
-      if (isAgent && typing) {
-        (function (at) {
-          setTimeout(function () { m.parentNode.insertBefore(typing, m); typing.style.display = "flex"; }, at);
-        })(t);
-        t += 1400;
-      }
-      (function (at) {
-        setTimeout(function () {
-          if (typing) typing.style.display = "none";
-          m.hidden = false;
-          m.style.animation = "msgIn .45s var(--ease) both";
-        }, at);
-      })(t);
-      t += isAgent ? 900 : 1100;
-    });
-    setTimeout(function () { chat.__playing = false; }, t);
-  }
-
-  /* ---------- Vorher/Nachher ---------- */
-  $$(".ba").forEach(function (ba) {
-    var r = $("input[type=range]", ba);
-    if (!r) return;
-    var set = function () { ba.style.setProperty("--pos", r.value + "%"); };
-    r.addEventListener("input", set); set();
-  });
-
-  /* ---------- Ablauf-Linie ---------- */
-  var tl = $(".tl"), tlItems = tl ? $$(".tl__item", tl) : [];
-  function timelineFill() {
-    if (!tl) return;
-    var r = tl.getBoundingClientRect(), vh = window.innerHeight;
-    var p = (vh * 0.62 - r.top) / r.height;
-    p = Math.max(0, Math.min(1, p));
-    tl.style.setProperty("--fill", p.toFixed(3));
-    tlItems.forEach(function (li) {
-      var dot = $(".tl__dot", li);
-      var dr = dot.getBoundingClientRect();
-      li.classList.toggle("is-on", dr.top < vh * 0.62);
-    });
-  }
-
-  /* ---------- FAQ: immer nur eine Antwort offen ---------- */
-  $$(".faq__list").forEach(function (list) {
-    $$("details", list).forEach(function (d) {
-      d.addEventListener("toggle", function () {
-        if (!d.open) return;
-        $$("details", list).forEach(function (o) { if (o !== d) o.open = false; });
-      });
-    });
-  });
-
-  /* ---------- Video-Platzhalter ---------- */
-  $$("[data-video-soon]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var box = b.closest(".video__frame") || document;
-      var note = $(".video__soon b", box);
-      if (note) { note.textContent = "Das Video ist in Arbeit und erscheint in Kürze."; }
-    });
-  });
-
-  /* ---------- Referenz-Popup ---------- */
-  var refData = (function () {
-    var el = document.getElementById("refs-data");
-    if (!el) return null;
-    try { return JSON.parse(el.textContent); } catch (e) { return null; }
-  })();
-  var dlg = $("#ref-dialog");
-  if (dlg && refData) {
-    var stopScroll = null;
-    var view = "desktop", current = null;
-    function render() {
-      var r = refData[current];
-      if (!r) return;
-      var isM = view === "mobile";
-      $(".rd__title", dlg).textContent = r.title;
-      $(".rd__cat", dlg).textContent = r.category;
-      $(".rd__text", dlg).textContent = r.summary;
-      $(".rd__facts", dlg).innerHTML = r.facts.map(function (f) { return "<div><dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd></div>"; }).join("");
-      var nums = $(".rd__nums", dlg);
-      nums.innerHTML = (r.nums || []).map(function (n) { return "<div><b>" + esc(n[0]) + "</b><small>" + esc(n[1]) + "</small></div>"; }).join("");
-      nums.hidden = !(r.nums && r.nums.length);
-      var link = $(".rd__link", dlg);
-      link.href = r.url; $(".rd__link span", dlg).textContent = r.urlLabel;
-      var frame = $(".rd__frame", dlg);
-      frame.classList.toggle("rd__frame--mobile", isM);
-      $(".rd__frame .chrome span", dlg).textContent = r.host;
-      var img = $(".rd__scroll img", dlg);
-      img.src = isM ? r.mobile : r.desktop;
-      img.width = isM ? 390 : 1000;
-      img.height = isM ? r.mobileH : r.desktopH;
-      img.alt = "Vorschau der Website " + r.title + (isM ? " auf dem Smartphone" : " am Desktop");
-      $$(".seg button", dlg).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-view") === view ? "true" : "false"); });
-      var sc = $(".rd__scroll", dlg);
-      sc.scrollTop = 0;
-      autoScroll(sc);
-    }
-    function autoScroll(sc) {
-      if (stopScroll) stopScroll();
-      if (reduce) return;
-      var alive = true, last = null, startAt = performance.now() + 1100;
-      var speed = 70; // px pro Sekunde
-      function tick(t) {
-        if (!alive) return;
-        if (t < startAt) { requestAnimationFrame(tick); return; }
-        if (last == null) last = t;
-        var dt = (t - last) / 1000; last = t;
-        var max = sc.scrollHeight - sc.clientHeight;
-        if (max > 0 && sc.scrollTop < max - 1) { sc.scrollTop = Math.min(max, sc.scrollTop + speed * dt); requestAnimationFrame(tick); }
-      }
-      requestAnimationFrame(tick);
-      var stop = function () { alive = false; };
-      ["wheel", "touchstart", "pointerdown", "keydown"].forEach(function (ev) { sc.addEventListener(ev, stop, { once: true, passive: true }); });
-      stopScroll = stop;
-    }
-    function open(key) {
-      current = key; view = window.innerWidth < 700 ? "mobile" : "desktop";
-      render();
-      if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
-      document.documentElement.style.overflow = "hidden";
-      $(".rd__close", dlg).focus();
-    }
-    function close() {
-      if (stopScroll) stopScroll();
-      if (typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open");
-    }
-    dlg.addEventListener("close", function () { document.documentElement.style.overflow = ""; });
-    $$("[data-ref]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); open(b.getAttribute("data-ref")); }); });
-    $(".rd__close", dlg).addEventListener("click", close);
-    $$("[data-close-dialog]", dlg).forEach(function (a) { a.addEventListener("click", function () { close(); }); });
-    dlg.addEventListener("click", function (e) { if (e.target === dlg) close(); });
-    $$(".seg button", dlg).forEach(function (b) { b.addEventListener("click", function () { view = b.getAttribute("data-view"); render(); }); });
-  }
-
-  /* ======================================================================
-     Terminbuchung: mehrstufig, mit Kalender, Rückruf-Option und WhatsApp
-     ====================================================================== */
+/* Terminbuchung: mehrstufig, mit Kalender (Feiertage, deutsche Zeit), Rückruf-Option und WhatsApp */
+ML.module("booking", function (ML) {
+  var $ = ML.$, $$ = ML.$$, store = ML.store, esc = ML.esc, CFG = ML.cfg, reduce = ML.reduce;
   var bk = $("#booking");
   if (bk) booking(bk);
 
@@ -351,8 +26,11 @@
     var qs = new URLSearchParams(location.search);
     $$("[data-ask]").forEach(function (b) {
       b.addEventListener("click", function () {
-        preselect(b.getAttribute("data-ask").split(","));
-        if (step !== 1) go(1);
+        var ask = b.getAttribute("data-ask");
+        if (ask) preselect(ask.split(","));
+        var br = b.getAttribute("data-branche");
+        if (br && form.elements.branche) { form.elements.branche.value = br; persist(); }
+        if (step !== 1) go(1, true);
       });
     });
     function preselect(list) {
@@ -548,7 +226,7 @@
       prog.forEach(function (li) { var p = +li.getAttribute("data-p"); li.classList.toggle("is-on", p === n); li.classList.toggle("is-done", p < n); });
       btnBack.hidden = n === 1 || n === 5;
       navBar.hidden = n === 5;
-      btnNext.innerHTML = n === 4 ? 'Termin anfragen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>' : 'Weiter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+      btnNext.textContent = n === 4 ? "Termin anfragen" : "Weiter";
       if (n === 4) renderPick();
       if (!quiet) {
         var h = $(".bk__step:not([hidden]) h3", root);
@@ -562,7 +240,7 @@
       var box = $(".bk__pick", root); if (!box) return;
       var fmt = $('input[name="format"]:checked', form);
       var when = (cbOnly && cbOnly.checked) ? "Rückruf, " + (val("zeitfenster") || "flexibel") : (sel.date ? fmtDate(sel.date, true) + ", " + sel.time + " Uhr" : "");
-      box.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span><b>' + esc(when) + "</b>" + (fmt ? " · " + esc(labelOf(fmt)) : "") + '</span><button type="button" data-goto="3">Ändern</button>';
+      box.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span><b>' + esc(when) + "</b>" + (fmt ? " · " + esc(labelOf(fmt)) : "") + '</span><button type="button" data-goto="3">Ändern</button>';
       $("[data-goto]", box).addEventListener("click", function () { go(3); });
     }
     btnBack.addEventListener("click", function () { if (step > 1) go(step - 1); });
@@ -673,9 +351,10 @@
     }
     if (saved) restore(saved);
     if (qs.get("anliegen")) preselect(qs.get("anliegen").split(","));
+    if (qs.get("branche") && form.elements.branche) { form.elements.branche.value = qs.get("branche"); }
     if (qs.get("quelle") === "brief") preselect(["brief"]);
     if (sel.date) month = sel.date.slice(0, 7);
     renderCal();
     go(saved && saved.step > 1 && saved.step < 5 ? saved.step : 1, true);
   }
-})();
+});

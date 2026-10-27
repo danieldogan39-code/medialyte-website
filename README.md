@@ -6,14 +6,25 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 
 | Pfad | Inhalt |
 |---|---|
-| `pages.py` | **Alle Texte und Inhalte** der Seiten (Startseite, Leistungen, Referenzen, Team, FAQ …) |
-| `build.py` | Layout (Header, Footer, Meta-Daten, SEO), Kontaktdaten, Verfügbarkeit fürs Buchungsformular |
-| `src/assets/css/site.css` | Gestaltung (Farben, Schrift Outfit, alle Bausteine) |
-| `src/assets/js/site.js` | Interaktionen (Menü, Kundenreise, Referenz-Popup, Vorher/Nachher, Buchungsformular) |
-| `src/assets/img/` | Logos, Referenz-Screenshots, Favicons, Vorschaubild `og.jpg` |
+| `pages.py` | Seiten (Startseite, Leistungen, Referenzen, Über uns, Termin, Rechtliches) mit Titeln, Beschreibungen und Texten |
+| `parts.py` | Gemeinsame Bausteine und Inhalte: Referenzen, Team, FAQ, Pakete und Paket-Finder, Ablauf, Kundenreise, Buchungsformular |
+| `mocks.py` | Gezeichnete Oberflächen: Cockpit mit vier Beispiel-Betrieben, Relaunch alt → neu, Pipeline, KI-Agent zum Ausprobieren, Kampagne |
+| `build.py` | Kopfzeile, mobiles Menü, Fußzeile, Meta-Daten und SEO, Kontaktdaten, Verfügbarkeit fürs Buchungsformular |
+| `src/css/*.css` | Gestaltung in Teilen (Grundlage, Raster, Bausteine, Kopfzeile, Startbereich, Abschnitte, Oberflächen, Buchung, Unterseiten, Bewegung) |
+| `src/js/*.js` | Verhalten in Modulen; jedes Modul läuft gekapselt, ein Fehler legt nie die ganze Seite lahm |
+| `src/assets/` | Schrift Outfit, Logos, Referenz-Screenshots, Favicons, Vorschaubild `og.jpg` |
 | `api/` | PHP-Endpunkte für die Terminbuchung (`termin.php`, `slots.php`) |
 | `deploy/.htaccess` | HTTPS, Weiterleitungen alter WordPress-Adressen, Caching, Sicherheits-Header |
-| `tools/` | Hilfsskripte (Bilder aufbereiten, Icons/OG-Bild erzeugen, Sichtprüfung) |
+| `tools/` | Hilfsskripte (Screenshots, Funktionstest, Referenzbilder, Wortmarke, Vorschaubild) |
+
+CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site.js` zusammengefügt (mit Prüfsumme gegen alte Browser-Caches).
+
+## Gestaltung in Kürze
+
+- Nachtblau `#0E192A` als Grund, Stahlblau und Weiß für alles Informative.
+- Korallrot `#FF5757` nur für das Logo und die wichtigste Aktion je Ansicht („Erstgespräch buchen“).
+- Schrift Outfit; Wortmarke „MEDIALYTE“ als Pfad in `tools/wordmark.svg` (neu erzeugen: `python3 tools/wordmark.py`).
+- Bewegung nur über `transform` und `opacity`, keine Layoutsprünge; bei „Bewegung reduzieren“ stehen alle Darstellungen sofort im Endzustand. Ohne JavaScript bleibt alles lesbar.
 
 ## Bauen
 
@@ -24,6 +35,13 @@ python3 build.py --mode staging --cname neu.entwurf.medialyte.de  # Testversion 
 ```
 
 `dist/` enthält alles, was auf den Server gehört, inklusive `sitemap.xml`, `robots.txt`, `.htaccess` und `api/`.
+
+## Prüfen
+
+```bash
+python3 tools/flow_test.py /tmp/flow        # alle Interaktionen, Skriptfehler, Layoutsprünge (CLS), seitliches Scrollen
+python3 tools/shots.py /tmp/shots 1440x900 390x844   # Bildschirmfotos aller Bereiche der Startseite
+```
 
 ## Veröffentlichen bei IONOS
 
@@ -55,9 +73,9 @@ Das Dashboard prüft die Signatur und legt daraus einen Lead an. `slots.php` lie
 ## Vor dem Livegang offen
 
 - [ ] Datenschutzerklärung und AGB einfügen (`render_legal_placeholder` in `pages.py` ersetzen)
-- [ ] Teamfotos ergänzen (`TEAM` in `pages.py`, Bilder nach `src/assets/img/team/`)
-- [ ] Video einbauen (Platzhalter `video_block()` in `pages.py`)
+- [ ] Teamfotos ergänzen (`TEAM` in `parts.py`, Bilder nach `src/assets/img/team/`, in `team()` als `<img>` in `.member__pic`)
+- [ ] Film einbauen (Platzhalter `film()` in `parts.py`)
 - [ ] `api/config.php` auf dem Server anlegen, Webhook zum Dashboard setzen
-
-Bestätigt am 27.10.2026: Termin-Zeiten (Mo–Do 9–18 Uhr, Fr 9–16 Uhr, 30 Minuten), WhatsApp-Nummer, Kennzahlen im Vorher/Nachher-Bereich, Freigabe des RITZ-Entwurfs als Referenz.
 - [ ] Nach dem Livegang: Sitemap in der Google Search Console einreichen
+
+Bestätigt am 27.10.2026: Termin-Zeiten (Mo–Do 9–18 Uhr, Fr 9–16 Uhr, 30 Minuten), WhatsApp-Nummer, Kennzahlen im Vorher/Nachher-Bereich, Freigabe des RITZ-Entwurfs als Referenz. Die Beispiel-Betriebe im Cockpit (Trattoria Lume, Tischlerei Brandt, Zahnarztpraxis am Park, Kanzlei Lindqvist) sind erfunden und als Beispiel gekennzeichnet.

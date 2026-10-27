@@ -1,0 +1,26 @@
+/* ---------- Einblenden beim Scrollen (Klasse .rv setzt das Skript erst, wenn alles bereit ist – ohne Skript bleibt alles sichtbar) ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .rv [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform 1.1s var(--ease-out);transition-delay:calc(var(--rd,0) * 90ms)}
+  .rv [data-reveal="fade"]{transform:none}
+  .rv [data-reveal="scale"]{transform:translateY(24px) scale(.97)}
+  .rv [data-reveal].is-in{opacity:1;transform:none}
+}
+
+/* ---------- Weniger Bewegung ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;transition-delay:0s!important}
+  .marquee__track{animation:none!important;flex-wrap:wrap;width:auto;justify-content:center}
+  .marquee__set[aria-hidden="true"]{display:none}
+  .marquee__set{flex-wrap:wrap;justify-content:center;gap:36px 56px;padding-right:0}
+  .orb__spin{display:none}
+  .hero__glow{animation:none!important}
+  .st{height:auto}
+  .st__pin{position:relative;height:auto}
+}
+
+/* Druck: nur Inhalte */
+@media print{
+  .header,.fab,.mnav,.hero__bg,.cp-ctl{display:none!important}
+  body{background:#fff;color:#000}
+}

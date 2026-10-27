@@ -1,0 +1,74 @@
+/* ---------- Schaltflächen ---------- */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 26px;border-radius:999px;border:1px solid transparent;font-weight:600;font-size:1rem;line-height:1.1;letter-spacing:-.005em;text-align:center;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:transform .16s var(--ease-out),background-color .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn--primary{background:var(--coral);color:var(--coral-ink)}
+.btn--light{background:var(--text);color:var(--navy)}
+.btn--ghost{border-color:var(--line-3);color:var(--text);background:rgba(255,255,255,.015)}
+.btn--wa{background:var(--wa);color:#04210E}
+.btn--sm{min-height:44px;padding:0 18px;font-size:.94rem}
+.btn--lg{min-height:60px;padding:0 30px;font-size:1.05rem}
+.btn--block{width:100%}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;transform:none}
+@media (hover:hover) and (pointer:fine){
+  .btn--primary:hover{background:var(--coral-hi)}
+  .btn--light:hover{background:#fff}
+  .btn--ghost:hover{border-color:var(--text);background:rgba(255,255,255,.04)}
+  .btn--wa:hover{background:#2EE072}
+}
+
+/* Textlink mit wachsender Unterstreichung */
+.link{display:inline-flex;align-items:center;gap:8px;color:var(--text);font-weight:500;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;padding-bottom:2px;transition:background-size .35s var(--ease-out)}
+.link svg{width:16px;height:16px;flex:none;transition:transform .25s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  .link:hover{background-size:100% 1px}
+  .link:hover svg{transform:translateX(3px)}
+}
+.link--quiet{color:var(--steel)}
+
+/* ---------- Auswahl-Chips (Segment-Steuerung) ---------- */
+.chips{display:inline-flex;flex-wrap:wrap;gap:4px;padding:5px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.chip{appearance:none;border:0;background:none;padding:9px 16px;border-radius:999px;color:var(--steel);font-weight:500;font-size:.94rem;line-height:1.2;white-space:nowrap;transition:color .2s ease,background-color .2s ease,transform .16s var(--ease-out)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed="true"],.chip[aria-selected="true"],.chip.is-on{background:var(--text);color:var(--navy)}
+@media (hover:hover) and (pointer:fine){.chip:not([aria-pressed="true"]):not([aria-selected="true"]):not(.is-on):hover{color:var(--text)}}
+.chips--block{display:flex}
+
+/* ---------- Kleine Bausteine ---------- */
+.ic{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);color:var(--text)}
+.ic svg{width:21px;height:21px}
+.ic--sm{width:36px;height:36px;border-radius:10px}
+.ic--sm svg{width:18px;height:18px}
+
+.ticks{list-style:none;display:grid;gap:11px}
+.ticks li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:12px;align-items:start;line-height:1.5;color:var(--text-2)}
+.ticks svg{width:18px;height:18px;margin-top:2px;color:var(--steel)}
+.ticks--tight{gap:8px}
+
+.tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none}
+.tags li,.tag{display:inline-flex;align-items:center;gap:7px;font-size:.84rem;line-height:1.2;padding:7px 12px;border-radius:999px;border:1px solid var(--line-2);color:var(--text-2);white-space:nowrap}
+.tag svg{width:14px;height:14px}
+
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;font-size:.74rem;font-weight:500;line-height:1.2;background:rgba(255,255,255,.07);color:var(--text-2);white-space:nowrap}
+.badge--ok{background:var(--ok-soft);color:var(--ok)}
+
+.live{position:relative;width:8px;height:8px;flex:none;border-radius:50%;background:var(--ok)}
+.live::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--ok);opacity:0;animation:livePing 2.4s var(--ease-out) infinite}
+@keyframes livePing{0%{transform:scale(.6);opacity:.8}80%,100%{transform:scale(1.7);opacity:0}}
+
+.kicker{display:inline-flex;align-items:center;gap:10px;font-size:.95rem;font-weight:500;color:var(--steel);letter-spacing:0}
+
+/* Nummer einer Abfolge (nur für echte Reihenfolgen) */
+.num{display:inline-grid;place-items:center;width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--line-3);font-size:.86rem;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+
+/* Fenster-Rahmen für Oberflächen und Screenshots */
+.frame{position:relative;border-radius:var(--r);background:var(--surface);border:1px solid var(--line-2);box-shadow:var(--shadow-window);overflow:hidden}
+.frame__bar{display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-bottom:1px solid var(--line);background:rgba(10,18,32,.55)}
+.frame__bar i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.14);flex:none}
+.frame__url{margin-left:10px;flex:1;min-width:0;max-width:340px;height:22px;display:flex;align-items:center;gap:6px;border-radius:7px;background:rgba(255,255,255,.05);color:var(--steel);font-size:.72rem;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frame__url svg{width:11px;height:11px;flex:none;opacity:.8}
+
+.phone{position:relative;border-radius:34px;padding:7px;background:#05080E;border:1px solid var(--line-2);box-shadow:var(--shadow-window)}
+.phone__screen{position:relative;border-radius:27px;overflow:hidden;background:#000}
+.phone__screen img{width:100%;height:auto}

@@ -1,14 +1,17 @@
 {
  "rechnungsradar": {
-  "desktop_full_h": 5896,
-  "mobile_full_h": 9000
+  "long_h": 2400,
+  "full_h": 7075,
+  "mobile_full_h": 13831
  },
  "rubin": {
-  "desktop_full_h": 2322,
-  "mobile_full_h": 5400
+  "long_h": 2400,
+  "full_h": 2786,
+  "mobile_full_h": 7200
  },
  "ritz": {
-  "desktop_full_h": 6811,
-  "mobile_full_h": 9000
+  "long_h": 2400,
+  "full_h": 8173,
+  "mobile_full_h": 12413
  }
 }

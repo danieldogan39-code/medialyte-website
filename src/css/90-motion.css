@@ -15,12 +15,10 @@
   .marquee__set{flex-wrap:wrap;justify-content:center;gap:36px 56px;padding-right:0}
   .orb__spin{display:none}
   .hero__glow{animation:none!important}
-  .st{height:auto}
-  .st__pin{position:relative;height:auto}
 }
 
 /* Druck: nur Inhalte */
 @media print{
-  .header,.fab,.mnav,.hero__bg,.cp-ctl{display:none!important}
+  .header,.fab,.mnav,.hero__bg{display:none!important}
   body{background:#fff;color:#000}
 }

@@ -95,7 +95,7 @@
 .field input,.field select,.field textarea{width:100%;min-height:52px;padding:13px 15px;border-radius:12px;border:1px solid var(--line-2);background:var(--navy-deep);color:var(--text);font-size:1rem;transition:border-color .2s ease,box-shadow .2s ease}
 .field textarea{min-height:116px;resize:vertical;line-height:1.55}
 .field select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--steel) 50%),linear-gradient(135deg,var(--steel) 50%,transparent 50%);background-position:calc(100% - 21px) 52%,calc(100% - 16px) 52%;background-size:5px 5px;background-repeat:no-repeat;padding-right:42px}
-.field input::placeholder,.field textarea::placeholder{color:var(--steel-2)}
+.field input::placeholder,.field textarea::placeholder{color:var(--steel)}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--text);box-shadow:0 0 0 4px rgba(243,245,249,.1)}
 .field.is-invalid input,.field.is-invalid select,.field.is-invalid textarea{border-color:#FF8A8A;box-shadow:0 0 0 4px rgba(255,138,138,.12)}
 .checkline{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start;font-size:.92rem;color:var(--text-2);line-height:1.5;cursor:pointer}
@@ -142,4 +142,16 @@
 .bk__cb{display:grid;gap:14px}
 .bk__sub{margin-bottom:-8px;color:var(--text)}
 @media (max-width:1000px){.bk{grid-template-columns:minmax(0,1fr)}.bk__aside{border-right:0;border-bottom:1px solid var(--line)}.bk__get,.bk__alt{display:none}}
+/* Handy: Seitenleiste als kompakte Kopfzeile, damit das Formular sofort beginnt */
+@media (max-width:700px){
+  .bk__aside{gap:12px;padding:16px 18px}
+  .bk__aside h3{display:none}
+  .bk__host .ava{width:40px;height:40px;font-size:1rem}
+  .bk__host b{font-size:.98rem}
+  .bk__meta{display:flex;flex-wrap:wrap;gap:6px 16px}
+  .bk__meta li{font-size:.86rem;gap:7px}
+  .bk__meta svg{width:16px;height:16px}
+  /* Auf der Startseite steht dasselbe schon in der Einleitung darüber */
+  .sh ~ * .bk__meta{display:none}
+}
 @media (max-width:700px){.opts,.opts--3,.fields{grid-template-columns:minmax(0,1fr)}.opts--4{grid-template-columns:repeat(2,minmax(0,1fr))}.cal{grid-template-columns:minmax(0,1fr)}.slots{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.slots__h,.slots__empty{grid-column:1/-1}.bk__progress span{display:none}.summary div{grid-template-columns:minmax(0,1fr);gap:2px}.bk__nav .btn{flex:1}}

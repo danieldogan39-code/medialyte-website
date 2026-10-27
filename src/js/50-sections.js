@@ -45,8 +45,9 @@ ML.module("finder", function (ML) {
   var f = $("[data-finder]");
   if (!f) return;
   var plans = $$("[data-plan]"), wrap = $("[data-plans]");
-  var bmap = {};
+  var bmap = {}, fit = {};
   try { bmap = JSON.parse(f.getAttribute("data-branchen") || "{}"); } catch (e) { bmap = {}; }
+  try { fit = JSON.parse(f.getAttribute("data-fit") || "{}"); } catch (e) { fit = {}; }
   var NAMES = { praesenz: "Präsenz", wachstum: "Wachstum", system: "System" };
   var WHY = {
     praesenz: { ohne: "Eine Website, die bei Google gefunden wird und die Sie per WhatsApp aktuell halten – der beste Start.",
@@ -72,6 +73,8 @@ ML.module("finder", function (ML) {
     var why = WHY[plan]; if (typeof why === "object") why = why[web];
     $("[data-fr=name]", f).textContent = NAMES[plan];
     $("[data-fr=why]", f).textContent = why;
+    var fitEl = $("[data-fr=fit]", f);
+    if (fitEl) fitEl.textContent = (fit[br] && fit[br][plan]) || "";
     var cta = $("[data-fr=cta]", f);
     var asks = asksFor(plan, web).join(",");
     cta.setAttribute("data-ask", asks);
@@ -124,15 +127,6 @@ ML.module("faq", function (ML) {
         if (!d.open) return;
         items.forEach(function (o) { if (o !== d) o.open = false; });
       });
-    });
-  });
-});
-
-ML.module("film", function (ML) {
-  ML.$$("[data-film]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var note = ML.$("[data-film-note]", b.closest(".film__frame"));
-      if (note) note.textContent = "Der Film ist in Arbeit und erscheint in Kürze.";
     });
   });
 });

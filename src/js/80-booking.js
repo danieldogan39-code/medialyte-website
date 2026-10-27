@@ -231,8 +231,10 @@ ML.module("booking", function (ML) {
       if (!quiet) {
         var h = $(".bk__step:not([hidden]) h3", root);
         if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
-        var top = root.getBoundingClientRect().top;
-        if (top < 0 || top > window.innerHeight * 0.6) root.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+        /* Zum Formular scrollen (nicht zur Seitenleiste darüber), unter der festen Kopfzeile */
+        var hd = document.querySelector(".header"), off = (hd ? hd.offsetHeight : 72) + 12;
+        var top = form.getBoundingClientRect().top;
+        if (top < off - 4 || top > window.innerHeight * 0.5) window.scrollTo({ top: Math.max(0, Math.round(top + (window.scrollY || 0) - off)), behavior: reduce ? "auto" : "smooth" });
       }
       persist();
     }

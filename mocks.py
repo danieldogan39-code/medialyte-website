@@ -25,7 +25,7 @@ BRANCHES = {
                  ["search", "Anfrage über Google Ads", "Treppengeländer aus Eiche", "08:31"]],
         "new": ["inbox", "Neue Anfrage mit 3 Fotos", "Einbauschrank im Dachgeschoss", "09:41"],
         "me": "Wir sind vom 23.12. bis 2.1. im Betriebsurlaub. Bitte einen Hinweis auf die Seite.",
-        "agent": "Ist drin. Der Hinweis steht oben auf jeder Seite und verschwindet am 3.1. von selbst.",
+        "agent": "Ist drin. Der Hinweis steht oben auf jeder Seite und verschwindet am 4.1. von selbst.",
     },
     "praxis": {
         "chip": "Praxis", "name": "Zahnarztpraxis am Park", "host": "praxis-am-park.de", "channel": "wa",
@@ -52,78 +52,114 @@ _CHECK = icon("check")
 _LOCK = icon("lock")
 
 
-# ---------------------------------------------------------------- Zeichnungen für die Beispiel-Websites
-ART = {
-    "gastro": """<svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <circle cx="104" cy="78" r="50" class="fb"/><circle cx="104" cy="78" r="50" class="sa" stroke-opacity=".55"/>
-  <circle cx="104" cy="78" r="35" class="sa" stroke-opacity=".25"/>
-  <path class="sg" d="M90 79c0-8 7-14 15-13s13 8 12 15-8 12-15 11-11-6-10-12 5-8 10-7 7 4 6 8-4 5-7 4"/>
-  <path class="sg" d="M95 70c3-4 9-6 14-4M112 88c-3 3-8 4-12 3" stroke-opacity=".7"/>
-  <path class="fa" d="M112 62c7-6 15-6 19-2-4 7-13 9-19 2z"/><path class="fa" d="M108 60c2-8 8-12 15-11-1 7-8 12-15 11z" opacity=".75"/>
-  <path class="si" d="M38 30v18m-6-18v12a6 6 0 0 0 12 0V30M38 48v74"/>
-  <path class="si" d="M168 30c-5 7-7 17-7 29 0 4 3 6 7 6v57"/>
-</svg>""",
-    "handwerk": """<svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <g class="sa" stroke-opacity=".5">
-    <path d="M-10 22c40-8 70 10 110 2s70-12 110-2"/><path d="M-10 40c38-6 72 12 112 4s70-14 108-4"/>
-    <path d="M-10 58c36-4 70 6 98 2 10-2 18-14 30-14s20 12 32 14c18 2 36-4 50-2"/>
-    <path d="M-10 76c34-4 66 6 96 2 12-2 18-18 32-18s22 16 34 18c16 2 34-4 48-2"/>
-    <path d="M-10 94c38-6 70 8 104 4s76-12 116-2"/><path d="M-10 112c40-8 74 10 112 4s70-12 108-4"/>
-    <path d="M-10 130c40-6 76 8 110 2s74-10 110-2"/>
-  </g>
-  <ellipse cx="118" cy="62" rx="11" ry="6" class="sa" stroke-opacity=".8"/><ellipse cx="118" cy="62" rx="4" ry="2" class="fa" opacity=".7"/>
-</svg>""",
-    "praxis": """<svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <circle cx="100" cy="58" r="40" class="fb" opacity=".9"/>
-  <path class="sa" stroke-width="2" d="M84 38c-9 0-15 7-15 17 0 12 5 18 7 28 2 9 3 17 8 17 6 0 5-14 10-20 2-3 6-3 8 0 5 6 4 20 10 20 5 0 6-8 8-17 2-10 7-16 7-28 0-10-6-17-15-17-6 0-9 3-12 3s-6-3-16-3z"/>
-  <path class="sa" stroke-opacity=".5" d="M146 26l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
-</svg>""",
-    "kanzlei": """<svg viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <g class="sa" stroke-opacity=".22"><path d="M20 128h160M30 120h140M40 50h120M100 18L36 46h128z"/><path d="M52 56v60M76 56v60M124 56v60M148 56v60"/></g>
-  <text x="100" y="104" text-anchor="middle" class="fa" style="font:400 74px Georgia,'Times New Roman',serif">§</text>
-</svg>""",
+# ---------------------------------------------------------------- Beispiel-Websites
+# Jede Seite zeigt das, was sie für den Betrieb leisten soll: reservieren, anfragen, Termin buchen.
+# Rechts steht deshalb kein Bild, sondern die wichtigste Funktion der Seite als Karte.
+def _widget(key):
+    if key == "gastro":
+        return """<div class="ms__card">
+      <b class="mc__h">Tisch reservieren</b>
+      <div class="mc__row"><span class="mc__f"><small>Datum</small>Fr, 20. Nov.</span><span class="mc__f"><small>Personen</small>2</span></div>
+      <div class="mc__slots"><i>18:30</i><i>19:00</i><i class="is-on">19:30</i><i>20:00</i></div>
+      <span class="mc__btn">Jetzt reservieren</span>
+      <span class="mc__meta"><i class="mc__dot"></i>Heute noch 4 Tische frei</span>
+    </div>"""
+    if key == "handwerk":
+        return """<div class="ms__card">
+      <b class="mc__h">Projekt anfragen</b>
+      <div class="mc__chips"><i>Küche</i><i class="is-on">Einbauschrank</i><i>Treppe</i></div>
+      <span class="mc__area">Einbauschrank unter der Dachschräge, ca. 3 m breit, Eiche hell.</span>
+      <div class="mc__photos"><i class="p1"></i><i class="p2"></i><i class="p3"></i><span>3 Fotos angehängt</span></div>
+      <span class="mc__btn">Anfrage senden</span>
+    </div>"""
+    if key == "praxis":
+        return """<div class="ms__card">
+      <b class="mc__h">Online-Termin</b>
+      <span class="mc__f mc__f--sel"><small>Behandlung</small>Kontrolle und Beratung</span>
+      <div class="mc__days"><i><small>Di</small>17</i><i class="is-on"><small>Mi</small>18</i><i><small>Do</small>19</i><i><small>Fr</small>20</i></div>
+      <div class="mc__slots mc__slots--3"><i>08:30</i><i class="is-on">10:00</i><i class="mc__pm">15:30</i></div>
+      <span class="mc__btn">Termin buchen</span>
+    </div>"""
+    return """<div class="ms__card">
+      <b class="mc__h">Erstberatung anfragen</b>
+      <span class="mc__q">Worum geht es?</span>
+      <ul class="mc__opts"><li class="is-on"><i></i>Kündigung erhalten</li><li><i></i>Abfindung verhandeln</li><li><i></i>Arbeitsvertrag prüfen</li></ul>
+      <span class="mc__btn">Anfrage senden</span>
+      <span class="mc__meta">Antwort innerhalb von 24 Stunden</span>
+    </div>"""
+
+
+_MORE = {
+    "gastro": ("Aus der Karte", [("Primi", "Tagliatelle al ragù", "11,90 €"), ("Primi", "Risotto ai funghi", "13,50 €"), ("Dolci", "Tiramisù della casa", "6,50 €")]),
+    "handwerk": ("Aus der Werkstatt", [("w1", "Einbauküche", "Eiche, geölt"), ("w2", "Treppe mit Stahlwange", "Esche, lackiert"), ("w3", "Garderobe nach Maß", "Nussbaum, gewachst")]),
+    "praxis": ("Unsere Leistungen", [("spark", "Prophylaxe", "Professionelle Zahnreinigung"), ("shield", "Implantate", "Beratung und Planung"), ("heart", "Kinder", "Mit viel Zeit und Ruhe")]),
+    "kanzlei": ("Schwerpunkte", [("§", "Kündigungsschutz", "Fristen sicher wahren"), ("§", "Abfindung", "Verhandeln statt verlieren"), ("§", "Arbeitsverträge", "Prüfen vor dem Unterschreiben")]),
 }
+
+
+_STRIP = {
+    "gastro": [("Mittags", "Di–Fr 12–15 Uhr"), ("Abends", "Di–So 18–23 Uhr"), ("Adresse", "Hamburg-Ottensen")],
+    "handwerk": [("Werkstatt", "Mo–Fr 7–16 Uhr"), ("Aufmaß", "Kostenfrei vor Ort"), ("Region", "Lüneburg und Umgebung")],
+    "praxis": [("Sprechzeiten", "Mo–Fr ab 8 Uhr"), ("Online-Termine", "Rund um die Uhr"), ("Adresse", "Hamburg-Eimsbüttel")],
+    "kanzlei": [("Erstberatung", "Telefon oder Video"), ("Antwort", "Innerhalb von 24 Stunden"), ("Standort", "Hamburg")],
+}
+
+
+def _more(key):
+    h, items = _MORE[key]
+    tiles = ""
+    for a, t, s in items:
+        if key == "handwerk":
+            top = f'<i class="ms__sw ms__sw--{a}"></i>'
+        elif key == "praxis":
+            top = f'<span class="ms__ic">{icon(a)}</span>'
+        elif key == "kanzlei":
+            top = '<span class="ms__par">§</span>'
+        else:
+            top = f'<small class="ms__cat">{e(a)}</small>'
+        tiles += f"<div>{top}<b>{e(t)}</b><small>{e(s)}</small></div>"
+    strip = "".join(f"<span><small>{e(a)}</small>{e(b)}</span>" for a, b in _STRIP[key])
+    return f'<div class="ms__more"><b class="ms__more-h">{h}</b><div class="ms__tiles">{tiles}</div><div class="ms__strip">{strip}</div></div>'
 
 
 def mini_site(key, extra_cls=""):
     """Kleine Beispiel-Website eines Betriebs. Der Block .ms__info wird vom KI-Agenten „geändert“."""
     b = BRANCHES[key]
     flag = f'<span class="ms__flag">{_CHECK} Aktualisiert</span>'
+    notice = ""
     if key == "gastro":
         nav = "<i>Speisekarte</i><i>Mittagstisch</i><i>Kontakt</i>"
         copy = ("Italienische Küche in Ottensen", "Pasta wie in Bologna. Mitten in Hamburg.",
                 "Hausgemacht, jeden Tag frisch – und mittags ein Gericht, das wechselt.", "Tisch reservieren", "Reservieren")
         info = f'<span class="ms__k">Mittagstisch heute</span><span class="ms__v"><span class="v-old">Tagliatelle al ragù · 11,90 €</span><span class="v-new">Kürbisrisotto · 12,50 €</span></span>{flag}'
-        notice, art_extra = "", ""
     elif key == "handwerk":
         nav = "<i>Leistungen</i><i>Projekte</i><i>Werkstatt</i>"
         copy = ("Tischlerei in Lüneburg", "Möbel nach Maß. Aus der eigenen Werkstatt.",
                 "Küchen, Einbauschränke und Treppen – geplant mit Ihnen, gebaut für Jahrzehnte.", "Projekt anfragen", "Anfragen")
-        info = f'<span class="ms__k">Aktuell</span><span class="ms__v"><span class="v-old">Termine für Aufmaß ab 4. November</span><span class="v-new">Betriebsurlaub 23.12. bis 2.1.</span></span>{flag}'
-        notice = '<div class="ms__notice"><span>Betriebsurlaub vom 23.12. bis 2.1. – ab dem 5.1. sind wir wieder für Sie da.</span></div>'
-        art_extra = ""
+        info = f'<span class="ms__k">Aktuell</span><span class="ms__v"><span class="v-old">Termine für das Aufmaß ab 9. November</span><span class="v-new">Betriebsurlaub 23.12. bis 2.1.</span></span>{flag}'
+        notice = '<div class="ms__notice"><span>Betriebsurlaub vom 23.12. bis 2.1. – ab dem 4.1. sind wir wieder für Sie da.</span></div>'
     elif key == "praxis":
         nav = "<i>Leistungen</i><i>Team</i><i>Kontakt</i>"
         copy = ("Zahnarztpraxis in Eimsbüttel", "Gesunde Zähne. Termine in zwei Klicks.",
                 "Moderne Zahnmedizin mit Zeit für Sie – und Online-Terminen rund um die Uhr.", "Termin buchen", "Termin")
         info = f'<span class="ms__k">Sprechzeiten Mittwoch</span><span class="ms__v"><span class="v-old">8–13 und 14–18 Uhr</span><span class="v-new">8–13 Uhr</span></span>{flag}'
-        notice = ""
-        art_extra = '<div class="ms__slots"><span>Di 08:30</span><span class="is-on">Mi 10:00</span><span>Do 16:00</span></div>'
     else:
-        nav = "<i>Schwerpunkte</i><i>Team</i><i>Kontakt</i>"
+        nav = "<i>Schwerpunkte</i><i>Team</i><i>Ratgeber</i>"
         copy = ("Fachanwälte für Arbeitsrecht", "Arbeitsrecht, klar erklärt. Und konsequent vertreten.",
                 "Kündigung, Abfindung, Arbeitsvertrag: Wir prüfen Ihren Fall und sagen ehrlich, was möglich ist.", "Erstberatung anfragen", "Kontakt")
         info = (f'<span class="ms__k">Ihr Team</span><span class="ms__v"><span class="v-old">4 Anwältinnen und Anwälte</span><span class="v-new">5 Anwältinnen und Anwälte</span></span>'
                 f'<span class="ms__avatars"><i>KL</i><i>JM</i><i>AB</i><i>TS</i><i class="is-add">SY</i></span>')
-        notice, art_extra = "", ""
     eyebrow, title, sub, cta, btn = copy
     return f"""<div class="ms ms--{key}{extra_cls}" aria-hidden="true">
-  {notice}<div class="ms__nav"><span class="ms__logo">{e(b['name'])}</span><span class="ms__links">{nav}</span><span class="ms__btn">{btn}</span><span class="ms__burger"></span></div>
+  {notice}<div class="ms__page">
+  <div class="ms__nav"><span class="ms__logo">{e(b['name'])}</span><span class="ms__links">{nav}</span><span class="ms__btn">{btn}</span><span class="ms__burger"></span></div>
   <div class="ms__hero">
     <div class="ms__copy"><span class="ms__eyebrow">{eyebrow}</span><b class="ms__title">{title}</b><span class="ms__sub">{sub}</span><span class="ms__cta">{cta}</span></div>
-    <div class="ms__art">{ART[key]}{art_extra}</div>
+    {_widget(key)}
   </div>
   <div class="ms__info">{info}</div>
+  {_more(key)}
+  </div>
 </div>"""
 
 
@@ -136,26 +172,22 @@ def _feed_item(it, slot, new=False):
 def cockpit(ctx):
     """Startseite: Cockpit mit Branchen-Umschalter. Ohne JavaScript steht der Endzustand „Restaurant“ da."""
     g = BRANCHES["gastro"]
-    chips = "".join(
-        f'<button class="chip" type="button" role="tab" id="cpt-{k}" aria-controls="cockpit" aria-selected="{"true" if k == "gastro" else "false"}" data-branch="{k}" tabindex="{0 if k == "gastro" else -1}">{BRANCHES[k]["chip"]}</button>'
+    tabs = "".join(
+        f'<button class="cp-tab" type="button" role="tab" id="cpt-{k}" aria-controls="cp-panel" aria-selected="{"true" if k == "gastro" else "false"}" data-branch="{k}" tabindex="{0 if k == "gastro" else -1}">{BRANCHES[k]["chip"]}</button>'
         for k in ORDER)
     sites = "".join(mini_site(k) for k in ORDER)
     feed = _feed_item(g["new"], 0, True) + _feed_item(g["feed"][0], 1) + _feed_item(g["feed"][1], 2)
     data = {k: {kk: vv for kk, vv in v.items() if kk != "chip"} for k, v in BRANCHES.items()}
     icons = {n: icon(n) for n in ["calendar", "phone", "search", "inbox", "layout", "video", "brief"]}
     return f"""
-<div class="hero__stage" data-intro style="--i:6">
-  <div class="cp-ctl">
-    <span class="cp-ctl__label" id="cp-label">Ihre Branche:</span>
-    <div class="chips" role="tablist" aria-labelledby="cp-label">{chips}</div>
-  </div>
-  <div class="cockpit" id="cockpit" role="tabpanel" data-branch="gastro" data-cockpit aria-label="Beispiel: Cockpit eines Betriebs mit Website, Anfragen und KI-Agent">
+<figure class="hero__stage" data-intro style="--i:6">
+  <div class="cockpit" id="cockpit" data-branch="gastro" data-cockpit>
     <div class="cp-bar">
-      <span class="cp-bar__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="cp-bar__app">{LOGO}Cockpit <span class="cp-bar__crumb" data-cp="name">/ {e(g['name'])}</span></span>
+      <span class="cp-bar__lead"><span class="cp-bar__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="cp-bar__app">{LOGO}Cockpit</span></span>
+      <div class="cp-tabs" role="tablist" aria-label="Beispiel-Betrieb wählen">{tabs}<i class="cp-tabs__ind" aria-hidden="true"></i></div>
       <span class="cp-bar__right"><button class="cp-pause" type="button" aria-pressed="false" aria-label="Animation anhalten">{icon('pause', 'i-pause')}{icon('play', 'i-play')}</button><span class="badge badge--ok"><span class="live" aria-hidden="true"></span>Live</span><span class="cp-time tnum">09:41</span></span>
     </div>
-    <div class="cp-body">
+    <div class="cp-body" id="cp-panel" role="tabpanel" aria-labelledby="cpt-gastro" data-cp="panel">
       <div class="cp-site">
         <div class="cp-site__bar">{_LOCK}<span data-cp="host">{e(g['host'])}</span><span class="badge">Ihre Website</span></div>
         <div class="cp-site__view">{sites}</div>
@@ -179,22 +211,13 @@ def cockpit(ctx):
       </div>
     </div>
   </div>
-  <p class="cp-note">Beispiel: So arbeiten Website, Kundensystem und KI-Agent bei einem Betrieb zusammen.</p>
+  <figcaption class="cp-note">Beispiel mit erfundenen Betrieben: So arbeiten Website, Kundensystem und KI-Agent zusammen. Oben im Cockpit wechseln Sie die Branche.</figcaption>
   <script type="application/json" id="cockpit-data">{json.dumps({"b": data, "order": ORDER, "icons": icons, "check": _CHECK}, ensure_ascii=False)}</script>
-</div>"""
+</figure>"""
 
 
 # ---------------------------------------------------------------- Kundenreise: Relaunch alt → neu
 def relaunch():
-    chair = """<svg viewBox="0 0 200 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <g fill="none" stroke="#8A5A2B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".7">
-    <path d="M-10 26c40-8 70 10 110 2s70-12 110-2"/><path d="M-10 46c38-6 72 12 112 4s70-14 108-4" stroke-opacity=".45"/>
-    <path d="M-10 136c40-6 76 8 110 2s74-10 110-2" stroke-opacity=".45"/>
-  </g>
-  <g fill="none" stroke="#1F1A15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M78 44v44M122 44v44M78 50h44M78 64h44"/><path d="M70 88h60l-4 10H74z"/><path d="M76 98l-4 36M124 98l4 36M84 98l-2 26M116 98l2 26"/>
-  </g>
-</svg>"""
     return f"""
 <div class="st__frame">
   <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}tischlerei-brandt.de</span></div>
@@ -210,15 +233,7 @@ def relaunch():
       </div>
       <div class="o-marquee">+++ Besuchen Sie uns auch auf unserer Facebook-Seite +++ Optimiert für Internet Explorer +++</div>
     </div>
-    <div class="rl__new">
-      <div class="n-nav"><span class="n-logo">Tischlerei Brandt</span><span class="n-links"><span>Leistungen</span><span>Projekte</span><span>Werkstatt</span></span><span class="n-btn">Projekt anfragen</span></div>
-      <div class="n-hero">
-        <div class="n-copy"><span class="n-eyebrow">Tischlerei in Lüneburg</span><b class="n-title">Möbel nach Maß. Aus der eigenen Werkstatt.</b>
-          <span class="n-sub">Küchen, Einbauschränke und Treppen – geplant mit Ihnen, gebaut für Jahrzehnte.</span>
-          <span class="n-ctas"><span class="n-cta">Projekt anfragen</span><span class="n-cta n-cta--ghost">Rückruf</span></span></div>
-        <div class="n-art">{chair}<span class="n-trust"><i></i>Antwort innerhalb von 24 h</span></div>
-      </div>
-    </div>
+    <div class="rl__new">{mini_site("handwerk", " ms--on ms--rl")}</div>
     <span class="rl__scan"></span>
   </div>
   <div class="rl-ctl">
@@ -241,10 +256,11 @@ def pipeline():
     by = {k: [] for k, _ in cols}
     for c in cards:
         by[c[1]].append(c)
+    names = dict(cols)
     colhtml = ""
     for k, name in cols:
         inner = "".join(
-            f'<div class="pl__card" data-card="{cid}"><b>{e(n)}</b><small>{e(s)}</small><span class="pl__tag">{e(t)}</span></div>'
+            f'<div class="pl__card" data-card="{cid}" data-st="{k}"><b>{e(n)}</b><small>{e(s)}</small><span class="pl__tag">{e(t)}</span><span class="pl__st">{names[k]}</span></div>'
             for cid, _, n, s, t in by[k])
         colhtml += f'<div class="pl__col" data-col="{k}"><h5>{name}<span data-colcount>{len(by[k])}</span></h5>{inner}</div>'
     return f"""
@@ -254,7 +270,7 @@ def pipeline():
     <div class="pl__kpis">
       <div class="pl__kpi"><small>Offene Anfragen</small><b data-plk="open">6</b></div>
       <div class="pl__kpi"><small>Termine diese Woche</small><b>9</b></div>
-      <div class="pl__kpi"><small>Angebote unterwegs</small><b data-plk="offers">3</b></div>
+      <div class="pl__kpi"><small>Angebote offen</small><b data-plk="offers">3</b></div>
     </div>
     <div class="pl__board">{colhtml}</div>
     <div class="pl__agent">{icon('bot')}<span><b>KI-Agent:</b> <span data-plmsg>Das Angebot für Frau Lindner läuft am Freitag ab. Soll ich nachfassen?</span></span></div>
@@ -293,7 +309,7 @@ def agent_demo():
       <div class="ad__asks" role="group" aria-labelledby="ad-label">{asks}</div>
       <div class="ad__site" aria-hidden="true">
         <div class="cp-site__bar">{_LOCK}<span>trattoria-lume.de</span><span class="badge">Live</span></div>
-        <div class="cp-site__view">{mini_site("gastro", " ms--demo")}</div>
+        <div class="cp-site__view">{mini_site("gastro", " ms--on ms--demo")}</div>
       </div>
       <p class="sr-only" aria-live="polite" data-agent-live></p>
     </div>
@@ -333,3 +349,57 @@ def campaign():
   </div>
 </div>"""
 
+
+
+# ---------------------------------------------------------------- Online-Marketing: Monatsbericht in klarer Sprache
+def report():
+    rows = [("Google-Anzeige", 37), ("Google Maps", 21), ("Direkt über die Website", 18), ("Instagram", 12)]
+    top = max(v for _, v in rows)
+    bars = "".join(
+        f'<li><span class="rp__k">{e(k)}</span><span class="rp__bar"><i style="--w:{v / top:.3f}"></i></span><b data-count-to="{v}">{v}</b></li>'
+        for k, v in rows)
+    return f"""
+<div class="st__frame">
+  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}cockpit.trattoria-lume.de/bericht</span></div>
+  <div class="rp" data-report aria-hidden="true">
+    <div class="rp__head"><span><small>Monatsbericht Oktober</small><b>Trattoria Lume</b></span><span class="badge">Als PDF</span></div>
+    <div class="rp__sum"><small>Kurz gesagt</small><p>Die Anzeige für den Mittagstisch bringt die meisten Reservierungen. Freitags ist am meisten los – dort setzen wir im November mehr Budget ein.</p></div>
+    <div class="rp__kpis">
+      <div><small>Reservierungen</small><b data-count-to="88">88</b><span class="rp__d">+24 % zum Vormonat</span></div>
+      <div><small>Anrufe über Google</small><b data-count-to="64">64</b><span class="rp__d">+11 % zum Vormonat</span></div>
+      <div><small>Kosten je Reservierung</small><b>3,40 €</b><span class="rp__d">−18 % zum Vormonat</span></div>
+    </div>
+    <div class="rp__ch"><small>Woher die Reservierungen kommen</small><ul>{bars}</ul></div>
+  </div>
+</div>"""
+
+
+# ---------------------------------------------------------------- KI-Agent: Änderungen im Dashboard (umfangreiche Systeme)
+AGENT_DONE = [("Sprechzeiten zwischen den Jahren eingetragen", "gestern"),
+              ("Ratgeber „Kündigung erhalten – was jetzt?“ veröffentlicht", "Mo"),
+              ("Stellenanzeige Rechtsanwaltsfachangestellte online", "12.11.")]
+
+
+def agent_dashboard():
+    k = BRANCHES["kanzlei"]
+    rows = "".join(f'<div class="adb__row" style="--slot:{i}"><span class="adb__ok">{_CHECK}</span><b>{e(t)}</b><time>{e(w)}</time></div>'
+                   for i, (t, w) in enumerate(AGENT_DONE))
+    nav = "".join(f'<span class="adb__nav{" is-on" if n == "Website" else ""}">{icon(ic)}{n}</span>'
+                  for ic, n in [("layout", "Übersicht"), ("inbox", "Anfragen"), ("brief", "Mandate"), ("globe", "Website"), ("bot", "KI-Agent")])
+    return f"""
+<div class="st__frame">
+  <div class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{_LOCK}cockpit.kanzlei-lindqvist.de</span></div>
+  <div class="adb" data-agentdash aria-hidden="true">
+    <div class="adb__side"><span class="adb__brand">{LOGO}Cockpit</span>{nav}</div>
+    <div class="adb__main">
+      <div class="adb__h"><b>Website</b><span class="badge badge--ok"><span class="live"></span>KI-Agent aktiv</span></div>
+      <div class="adb__task">
+        <span class="adb__who">{icon('bot')} KI-Agent · vor 2 Minuten</span>
+        <b>{e(k['task'][0])}</b>
+        <p>{e(k['task'][1])}</p>
+        <div class="adb__btns"><span class="adb__btn adb__btn--ghost">Vorschau ansehen</span><span class="adb__btn" data-adb-go>{_CHECK}<span>Veröffentlichen</span></span></div>
+      </div>
+      <div class="adb__done"><small>Zuletzt erledigt</small><div class="adb__list" data-adb-list>{rows}</div></div>
+    </div>
+  </div>
+</div>"""

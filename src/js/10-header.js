@@ -70,15 +70,22 @@ ML.module("header", function (ML) {
     if (mq.addEventListener) mq.addEventListener("change", onMq); else if (mq.addListener) mq.addListener(onMq);
   }
 
-  /* WhatsApp-Knopf: erscheint nach dem Startbereich, verschwindet bei Buchung und Fußzeile */
+  /* WhatsApp-Knopf: erscheint nach dem Startbereich, verschwindet bei Buchung und Fußzeile.
+     Beim Weiterlesen nach unten tritt er zur Seite und kommt beim Zurückscrollen wieder – so verdeckt er keinen Text. */
   var fab = $(".fab");
   if (fab) {
-    var hero = $(".hero"), away = new Set(), pastHero = false;
-    var update = function () { fab.classList.toggle("is-on", pastHero && away.size === 0); };
+    var hero = $(".hero"), away = new Set(), pastHero = false, reading = false, lastY = window.scrollY || 0, acc = 0;
+    var update = function () { fab.classList.toggle("is-on", pastHero && away.size === 0 && !reading); };
     ML.onScroll(function (y, vh) {
       var limit = hero ? hero.offsetTop + hero.offsetHeight * 0.55 : vh * 0.6;
       var p = y > limit - vh * 0.3;
-      if (p !== pastHero) { pastHero = p; update(); }
+      var dy = y - lastY; lastY = y;
+      /* erst nach einem kleinen Stück in dieselbe Richtung umschalten, damit nichts flackert */
+      acc = (dy > 0) === (acc > 0) ? acc + dy : dy;
+      var r = reading;
+      if (acc > 60) r = true;
+      else if (acc < -40) r = false;
+      if (p !== pastHero || r !== reading) { pastHero = p; reading = r; update(); }
     });
     if (ML.hasIO) {
       var io = new IntersectionObserver(function (es) {

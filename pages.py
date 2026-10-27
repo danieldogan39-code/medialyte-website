@@ -18,7 +18,7 @@ def render_home(ctx):
   <div class="hero__bg" aria-hidden="true"><span class="hero__glow"></span><span class="hero__glow hero__glow--2"></span><span class="hero__grid"></span></div>
   <div class="wrap hero__in">
     <p class="kicker hero__kicker" data-intro style="--i:0">Digitalagentur aus Hamburg für Betriebe in ganz Deutschland</p>
-    <h1 class="display hero__title"><span class="line"><span style="--i:1">Ihre Website soll Kunden bringen.</span></span><span class="line"><span style="--i:2">Keine Arbeit.</span></span></h1>
+    <h1 class="display hero__title"><span class="line"><span style="--i:1">Ihre Website soll Kunden bringen.</span></span><span class="line"><span style="--i:2">Nicht Arbeit machen.</span></span></h1>
     <p class="lead hero__lead" data-intro style="--i:3">Wir bauen die Website, die Ihre Zielgruppe überzeugt, und das System dahinter, in dem jede Anfrage landet. Änderungen schicken Sie einfach per WhatsApp – unser KI-Agent setzt sie um.</p>
     <div class="hero__actions" data-intro style="--i:4">{btn_book(ctx, cls='btn--primary btn--lg')}{btn_wa(ctx, cls='btn--ghost btn--lg')}</div>
     <ul class="hero__proof" data-intro style="--i:5">
@@ -33,7 +33,7 @@ def render_home(ctx):
     idee = f"""
 <section class="section" id="idee">
   <div class="wrap">
-    {sh('Vermehrung.<br>Verbesserung.<br>Verwaltung.', 'Davon lebt jeder Betrieb: dass neue Kunden kommen, dass sie bleiben und dass dabei nichts verloren geht. Für alle drei bauen wir individuelle Lösungen – nicht von der Stange, sondern für Ihren Betrieb.', split=True)}
+    {sh('Vermehrung.<br>Verbesserung.<br>Verwaltung.', 'Davon lebt jeder Betrieb: dass neue Kunden kommen, dass sie bleiben und dass dabei nichts verloren geht. Für alle drei bauen wir Lösungen, die genau zu Ihrem Betrieb passen.', split=True)}
     {idea(ctx)}
   </div>
 </section>"""
@@ -99,7 +99,7 @@ def render_home(ctx):
     film_s = f"""
 <section class="section" id="film">
   <div class="wrap">
-    {sh('Medialyte in 90 Sekunden', 'Wie wir arbeiten, was uns von anderen Agenturen unterscheidet und wie der KI-Agent Ihre Website aktuell hält. Der Film erscheint in Kürze.', split=True)}
+    {sh('Medialyte in 90 Sekunden', 'Wie wir arbeiten, was uns von anderen Agenturen unterscheidet und wie der KI-Agent Ihre Website aktuell hält.', split=True)}
     {film()}
   </div>
 </section>"""
@@ -149,13 +149,13 @@ FAQ_MKT = [
 ]
 
 
-def _svc_page(ctx, crumb, h1, lead, visual, sections, faqs, ask):
+def _svc_page(ctx, crumb, h1, lead, visual, sections, faqs, ask, close=None):
     actions = btn_book(ctx, "Erstgespräch buchen", ask) + btn_wa(ctx)
     out = page_hero(ctx, [("Start", "/"), ("Leistungen", "/#leistungen"), (crumb, "")], h1, lead, actions, visual)
     out += sections
     title = {"Website-Erstellung": "Fragen zur Website-Erstellung", "KI-Agent": "Fragen zum KI-Agenten", "Kundenmanagement-System": "Fragen zum System"}.get(crumb, "Fragen zum " + e(crumb))
     out += f'<section class="section section--deep"><div class="wrap">{faq_block(ctx, faqs, title)}</div></section>'
-    out += closing(ctx)
+    out += closing(ctx, *close) if close else closing(ctx)
     return out
 
 
@@ -198,7 +198,7 @@ def render_web(ctx):
 </section>
 <section class="section section--deep">
   <div class="wrap">
-    {sh('Websites, die online sind.', 'Öffnen Sie ein Projekt und scrollen Sie durch die ganze Seite.', split=True)}
+    {sh('Projekte, die schon für ihre Kunden arbeiten.', 'Öffnen Sie ein Projekt und scrollen Sie durch die ganze Seite.', split=True)}
     {cases(ctx)}
   </div>
 </section>"""
@@ -248,9 +248,11 @@ def render_sys(ctx):
     {cases(ctx, ("rechnungsradar",))}
   </div>
 </section>"""
-    return _svc_page(ctx, "Kundenmanagement-System", 'Ihr eigenes Kundenmanagement-System. <span class="quiet">Direkt mit Ihrer Website verbunden.</span>',
+    return _svc_page(ctx, "Kundenmanagement-System", 'Ihr eigenes Kundensystem. <span class="quiet">Direkt mit Ihrer Website verbunden.</span>',
                      "Schluss mit Excel, Zetteln und verlorenen E-Mails. Wir entwickeln Kunden- und Produktmanagement-Systeme, die genau zu Ihren Abläufen passen: Anfragen, Termine, Angebote und Aufträge an einem Ort.",
-                     mocks.pipeline(), sections, FAQ_SYS, "system")
+                     mocks.pipeline(), sections, FAQ_SYS, "system",
+                     ("Schluss mit Zettelwirtschaft?", "Sprechen wir über Ihre Abläufe.",
+                      "Im kostenfreien Erstgespräch schauen wir uns an, wie Ihr Betrieb heute arbeitet, und zeigen, was ein eigenes System verändern würde. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
 
 
 def render_agent(ctx):
@@ -284,7 +286,7 @@ def render_agent(ctx):
       <p>Wie Sie mit dem Agenten arbeiten, hängt davon ab, wie umfangreich Ihr System ist. Ein Restaurant schreibt einfach per WhatsApp. Eine Kanzlei mit Mandantenverwaltung erledigt dasselbe im eigenen Cockpit. Beides funktioniert ohne Technikkenntnisse.</p>
       {ticks(['Einfache Websites: Nachricht per WhatsApp', 'Komplexe Systeme: Änderungen im Dashboard', 'Laufende Pflege und Betreuung inklusive'])}
     </div>
-    <div data-reveal="scale">{mocks.pipeline()}</div>
+    <div data-reveal="scale">{mocks.agent_dashboard()}</div>
   </div>
 </section>
 <section class="section section--deep">
@@ -301,8 +303,10 @@ def render_agent(ctx):
   </div>
 </section>"""
     return _svc_page(ctx, "KI-Agent", 'Der KI-Agent, <span class="quiet">der Ihre Website aktuell hält.</span>',
-                     "Wird meine Seite gepflegt? Und wie ändere ich etwas, ohne mich mit Technik zu beschäftigen? Der Medialyte KI-Agent beantwortet beides: Sie schreiben per WhatsApp oder im Dashboard, er setzt es um. Probieren Sie es gleich hier aus.",
-                     mocks.agent_demo(), sections, FAQ_AGENT, "agent")
+                     "Wird meine Seite gepflegt? Und wie ändere ich etwas, ohne mich mit Technik zu beschäftigen? Der Medialyte KI-Agent löst beides: Sie schreiben per WhatsApp oder im Dashboard, er setzt es um. Probieren Sie es gleich hier aus.",
+                     mocks.agent_demo(), sections, FAQ_AGENT, "agent",
+                     ("Nie wieder eine veraltete Website.", "Wir zeigen Ihnen, wie es geht.",
+                      "Im kostenfreien Erstgespräch zeigen wir, wie der KI-Agent bei Ihrem Betrieb arbeiten würde – per WhatsApp oder im Dashboard. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
 
 
 def render_mkt(ctx):
@@ -328,7 +332,7 @@ def render_mkt(ctx):
       {ticks(['Messung von Anfragen, Anrufen und Buchungen', 'Berichte, die man ohne Fachwissen versteht', 'Laufende Optimierung Ihrer Kampagnen'])}
       {btn_book(ctx, 'Kampagne anfragen', 'werbung')}
     </div>
-    <div data-reveal="scale">{mocks.campaign()}</div>
+    <div data-reveal="scale">{mocks.report()}</div>
   </div>
 </section>
 <section class="section">
@@ -342,8 +346,10 @@ def render_mkt(ctx):
   </div>
 </section>"""
     return _svc_page(ctx, "Online-Marketing", 'Online-Marketing, <span class="quiet">das neue Kunden bringt.</span>',
-                     "Google Ads, Social Media und SEO aus einer Hand – abgestimmt auf Ihre Website. Über 200 erfolgreiche Kampagnen zeigen, wie aus Reichweite echte Anfragen werden.",
-                     mocks.campaign(), sections, FAQ_MKT, "werbung")
+                     "Google Ads, Social Media und SEO aus einer Hand – abgestimmt auf Ihre Website. Aus über 200 Kampagnen wissen wir, wie aus Reichweite echte Anfragen werden.",
+                     mocks.campaign(), sections, FAQ_MKT, "werbung",
+                     ("Mehr Anfragen statt nur mehr Klicks?", "Sprechen wir über Ihre Ziele.",
+                      "Im kostenfreien Erstgespräch prüfen wir, ob Ihre Website bereit für Werbung ist, und sagen ehrlich, welche Kanäle sich für Sie lohnen. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
 
 
 # ======================================================================= Weitere Seiten
@@ -368,7 +374,7 @@ def render_refs(ctx):
 
 def render_about(ctx):
     stats = f"""
-<div class="deltas" data-reveal style="margin-top:0">
+<div class="deltas deltas--grid">
   <div class="delta"><b><span data-count="200">200</span>+</b><small>erfolgreiche Kampagnen</small></div>
   <div class="delta"><b><span data-count="48">48</span> h</b><small>bis zu Ihrem Angebot</small></div>
   <div class="delta"><b>2–4</b><small>Wochen bis zur neuen Website</small></div>
@@ -380,10 +386,11 @@ def render_about(ctx):
         ("shield", "Klare Angebote", "Pauschale plus Abo, transparent aufgeschlüsselt und ohne versteckte Kosten."),
         ("spark", "Technik mit Zukunft", "Eigene KI-Agenten und moderne Technik ohne Plugin-Ballast."),
     ]
-    return (page_hero(ctx, [("Start", "/"), ("Über uns", "")], 'Wir bauen Kundenbeziehungen, <span class="quiet">die wachsen.</span>',
+    ionos = (f'<p class="trustline" data-reveal>{img(ctx, "img/logos/ionos-agency-partner.webp", 185, 100, "IONOS Agency Partner Official")}'
+             '<span><b>Offizieller IONOS Agency Partner.</b> Ihre Website läuft auf der Infrastruktur von IONOS – betreut von uns, Sie müssen sich um nichts kümmern.</span></p>')
+    return (page_hero(ctx, [("Start", "/"), ("Über uns", "")], 'Damit aus Besuchern Kunden werden. <span class="quiet">Und Kunden bleiben.</span>',
                       "Medialyte ist eine Digitalagentur aus Hamburg. Wir bauen Websites, Kundenmanagement-Systeme und Kampagnen für Betriebe in ganz Deutschland – und stellen jedem Kunden einen KI-Agenten zur Seite, der alles aktuell hält.",
-                      btn_book(ctx) + btn_wa(ctx))
-            + f'<section class="section section--flush"><div class="wrap">{stats}</div></section>'
+                      btn_book(ctx) + btn_wa(ctx), stats)
             + f"""
 <section class="section section--deep">
   <div class="wrap">
@@ -392,16 +399,12 @@ def render_about(ctx):
   </div>
 </section>
 <section class="section"><div class="wrap">{sh('Ein festes Team. <span class="quiet">Ein Ansprechpartner.</span>', 'Ein Team, das Ihr Projekt vom ersten Gespräch bis lange nach dem Livegang begleitet.', split=True)}{team()}</div></section>
-<section class="section section--deep"><div class="wrap">{sh('Wofür wir stehen', split=True)}{feats(values, 2)}</div></section>
-<section class="section"><div class="wrap split">
-  <div class="split__text" data-reveal><h2 class="h2">Offizieller IONOS Agency Partner</h2><p>Ihre Website läuft auf der zuverlässigen Infrastruktur von IONOS, betreut von uns. Sie müssen sich um nichts kümmern.</p></div>
-  <div data-reveal>{img(ctx, 'img/logos/ionos-agency-partner.webp', 185, 100, 'IONOS Agency Partner Official', style='height:90px;width:auto')}</div>
-</div></section>
-""" + closing(ctx))
+<section class="section section--deep"><div class="wrap">{sh('Wofür wir stehen', split=True)}{feats(values, 2)}{ionos}</div></section>
+""" + closing(ctx, "Lernen wir uns kennen.", "Im kostenfreien Erstgespräch.", "30 Minuten per Video, Telefon oder vor Ort in Hamburg. Sie erzählen von Ihrem Betrieb, wir sagen ehrlich, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden."))
 
 
 def render_termin(ctx):
-    return (page_hero(ctx, [("Start", "/"), ("Erstgespräch", "")], 'Buchen Sie Ihr <span class="quiet">kostenfreies Erstgespräch.</span>',
+    return (page_hero(ctx, [("Start", "/"), ("Erstgespräch", "")], 'Buchen Sie Ihr <span class="quiet"><span class="nowrap">kostenfreies</span> Erstgespräch.</span>',
                       "Wählen Sie Ihr Anliegen und einen passenden Termin. Wir bereiten uns vor, bestätigen den Termin per E-Mail und schicken Ihnen danach innerhalb von 48 Stunden ein Angebot.")
             + f'<section class="section section--flush" id="termin"><div class="wrap">{booking_widget(ctx)}</div></section>')
 
@@ -449,7 +452,7 @@ def _after_dialog(ctx):
 PAGES = [
     {"path": "/", "title": "Medialyte | Website, Kundenmanagement & KI-Agent – Digitalagentur Hamburg",
      "desc": "Medialyte baut Websites, die Kunden bringen, das Kundenmanagement-System dahinter und einen KI-Agenten für Änderungen per WhatsApp. Plus Werbung mit 200+ erfolgreichen Kampagnen. Für Betriebe in ganz Deutschland.",
-     "og_title": "Medialyte | Ihre Website soll Kunden bringen. Keine Arbeit.",
+     "og_title": "Medialyte | Ihre Website soll Kunden bringen. Nicht Arbeit machen.",
      "render": render_home, "after": _after_dialog, "priority": "1.0",
      "schema": [org_schema(), {"@context": "https://schema.org", "@type": "WebSite", "name": "Medialyte", "url": SITE["url"] + "/", "inLanguage": "de-DE", "publisher": {"@id": SITE["url"] + "/#org"}}, faq_schema(FAQ_MAIN)]},
     {"path": "/leistungen/website-erstellung/", "active": "leistungen",

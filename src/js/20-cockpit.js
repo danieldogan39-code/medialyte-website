@@ -5,8 +5,9 @@ ML.module("cockpit", function (ML) {
   var root = $("[data-cockpit]");
   var D = ML.json("cockpit-data");
   if (!root || !D) return;
-  var chips = $$(".cp-ctl .chip");
-  var pauseBtn = $(".cp-pause");
+  var chips = $$(".cp-tab", root);
+  var tabsEl = $(".cp-tabs", root), ind = $(".cp-tabs__ind", root), panel = $("[data-cp=panel]", root);
+  var pauseBtn = $(".cp-pause", root);
   var feed = $("[data-cp=feed]", root), msgs = $("[data-cp=msgs]", root), kpi = $("[data-cp=kpi]", root);
   var tl = ML.timeline();
   var cur = root.getAttribute("data-branch") || D.order[0];
@@ -29,6 +30,16 @@ ML.module("cockpit", function (ML) {
     return d;
   }
   function site(key) { return $(".ms--" + key, root); }
+  /* Markierung des gewählten Betriebs gleitet unter den nächsten Reiter */
+  function placeInd(animate) {
+    var t = tabsEl && $(".cp-tab[aria-selected=true]", tabsEl);
+    if (!t || !ind || !t.offsetWidth) return;
+    if (!animate) ind.style.transition = "none";
+    ind.style.setProperty("--x", t.offsetLeft + "px");
+    ind.style.setProperty("--w", t.offsetWidth + "px");
+    if (!animate) { void ind.offsetWidth; ind.style.transition = ""; }
+    tabsEl.classList.add("has-ind");
+  }
   function setKpi(v, tick) {
     var a = kpi.children[0], b = kpi.children[1];
     if (!tick) { kpi.classList.remove("is-tick"); a.textContent = v; b.textContent = ""; return; }
@@ -41,8 +52,8 @@ ML.module("cockpit", function (ML) {
   /* Zustand eines Betriebs vorbereiten (vor der Animation) */
   function reset(key) {
     var b = D.b[key];
+    var changed = root.getAttribute("data-branch") !== key;
     root.setAttribute("data-branch", key);
-    text("name", "/ " + b.name);
     text("host", b.host);
     text("kpil", b.kpi[0]);
     text("kpid", b.kpi[2]);
@@ -55,6 +66,7 @@ ML.module("cockpit", function (ML) {
     var s = site(key);
     if (s) {
       var info = $(".ms__info", s), note = $(".ms__notice", s);
+      s.classList.remove("is-upd");
       if (info) info.classList.remove("is-upd", "is-flash");
       if (note) note.classList.remove("is-on");
     }
@@ -63,6 +75,8 @@ ML.module("cockpit", function (ML) {
       c.setAttribute("aria-selected", on ? "true" : "false");
       c.tabIndex = on ? 0 : -1;
     });
+    if (panel) panel.setAttribute("aria-labelledby", "cpt-" + key);
+    placeInd(changed && !ML.reduce);
   }
 
   /* Endzustand ohne Animation (für reduzierte Bewegung) */
@@ -76,7 +90,7 @@ ML.module("cockpit", function (ML) {
     else { msg("cp-msg--task", "<b>" + ML.esc(b.task[0]) + "</b>" + ML.esc(b.agent)); }
     $$(".cp-msg", msgs).forEach(function (m) { m.classList.remove("is-pop"); });
     var s = site(key);
-    if (s) { var info = $(".ms__info", s), note = $(".ms__notice", s); if (info) info.classList.add("is-upd"); if (note) note.classList.add("is-on"); }
+    if (s) { var info = $(".ms__info", s), note = $(".ms__notice", s); s.classList.add("is-upd"); if (info) info.classList.add("is-upd"); if (note) note.classList.add("is-on"); }
     setKpi(b.kpi[1] + 1, false);
   }
 
@@ -100,6 +114,7 @@ ML.module("cockpit", function (ML) {
     tl.at(3900, function () {
       var s = site(key); if (!s) return;
       var info = $(".ms__info", s), note = $(".ms__notice", s);
+      s.classList.add("is-upd");
       if (info) { info.classList.add("is-upd", "is-flash"); setTimeout(function () { info.classList.remove("is-flash"); }, 1500); }
       if (note) note.classList.add("is-on");
     });
@@ -148,6 +163,11 @@ ML.module("cockpit", function (ML) {
     });
   }
 
+  /* Markierung nachführen, wenn sich die Breite ändert */
+  if ("ResizeObserver" in window && tabsEl) new ResizeObserver(function () { placeInd(false); }).observe(tabsEl);
+  else window.addEventListener("resize", function () { placeInd(false); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placeInd(false); });
+
   if (ML.reduce) { finalState(cur); return; }
   reset(cur);
   ML.watch(root, function (vis) {
@@ -161,24 +181,14 @@ ML.module("cockpit", function (ML) {
     if (!document.hidden && inView && auto && !paused) { tl.clear(); tl.at(1200, function () { play(cur); }); }
   });
 
-  /* Räumliche Neigung: das Cockpit richtet sich beim Scrollen auf (nur große Bildschirme) */
+  /* Räumliche Neigung: das Cockpit richtet sich beim Scrollen auf (nur große Bildschirme).
+     Der Text darüber bleibt ruhig stehen. */
   var wide = window.matchMedia("(min-width: 900px)");
-  var copy = document.querySelector(".hero__in");
   ML.onScroll(function (y, vh) {
-    if (!wide.matches) {
-      if (root.style.transform) root.style.transform = "";
-      if (copy && copy.style.transform) { copy.style.transform = ""; copy.style.opacity = ""; }
-      return;
-    }
+    if (!wide.matches) { if (root.style.transform) root.style.transform = ""; return; }
     if (y > vh * 1.4) return;
     var p = ML.clamp(y / (vh * 0.62), 0, 1);
     var e = 1 - Math.pow(1 - p, 2);
     root.style.transform = "rotateX(" + (12 * (1 - e)).toFixed(2) + "deg) scale(" + (0.94 + 0.06 * e).toFixed(4) + ")";
-    /* Text bleibt etwas zurück und tritt in den Hintergrund – Tiefe beim Scrollen */
-    if (copy) {
-      var q = ML.clamp(y / (vh * 0.9), 0, 1);
-      copy.style.transform = "translate3d(0," + (y * 0.22).toFixed(1) + "px,0)";
-      copy.style.opacity = (1 - q * 0.75).toFixed(3);
-    }
   });
 });

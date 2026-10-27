@@ -54,10 +54,15 @@ for src, dst in [("avatar-gado.jpg", "gado"), ("avatar-2.jpg", "cv"), ("avatar-3
     save_webp(im.resize((112, 112), Image.LANCZOS), IMG / "logos" / f"avatar-{dst}.webp", q=85)
 
 # 4) Vorher/Nachher RechnungsRadar (echte Screenshots der alten Seite)
-for src, dst in [("rr-vorher.png", "rechnungsradar-vorher"), ("rr-nachher.png", "rechnungsradar-nachher")]:
+#    Beide auf denselben Ausschnitt (1280 × 560, oberer Bereich), damit der Regler gleiche Stellen vergleicht.
+#    Beim alten Bild werden Scrollleiste rechts und ein Rest am linken Rand abgeschnitten.
+for src, dst, box in [("rr-vorher.png", "rechnungsradar-vorher", (3, 0, 1273)), ("rr-nachher.png", "rechnungsradar-nachher", (0, 0, 1280))]:
     im = Image.open(OLD / src).convert("RGB")
     w = 1280; im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
-    save_webp(im, IMG / "refs" / f"{dst}.webp", q=82)
+    x0, y0, x1 = box
+    im = im.crop((x0, y0, x1, im.height))
+    im = im.resize((1280, round(im.height * 1280 / im.width)), Image.LANCZOS).crop((0, 0, 1280, 560))
+    save_webp(im, IMG / "refs" / f"{dst}.webp", q=86)
 
 # 5) Referenz-Screenshots
 meta = {}

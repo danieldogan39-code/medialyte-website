@@ -8,7 +8,7 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 |---|---|
 | `pages.py` | Seiten (Startseite, Leistungen, Referenzen, Über uns, Termin, Rechtliches) mit Titeln, Beschreibungen und Texten |
 | `parts.py` | Gemeinsame Bausteine und Inhalte: Referenzen, Team, FAQ, Pakete und Paket-Finder, Ablauf, Kundenreise, Buchungsformular |
-| `mocks.py` | Gezeichnete Oberflächen: Cockpit mit vier Beispiel-Betrieben, Relaunch alt → neu, Pipeline, KI-Agent zum Ausprobieren, Kampagne |
+| `mocks.py` | Gezeichnete Oberflächen: Cockpit mit vier Beispiel-Betrieben (jede Beispiel-Website zeigt ihre wichtigste Funktion: reservieren, anfragen, Termin buchen), Relaunch alt → neu, Pipeline, KI-Agent zum Ausprobieren, Kampagne, Monatsbericht, KI-Agent im Dashboard |
 | `build.py` | Kopfzeile, mobiles Menü, Fußzeile, Meta-Daten und SEO, Kontaktdaten, Verfügbarkeit fürs Buchungsformular |
 | `src/css/*.css` | Gestaltung in Teilen (Grundlage, Raster, Bausteine, Kopfzeile, Startbereich, Abschnitte, Oberflächen, Buchung, Unterseiten, Bewegung) |
 | `src/js/*.js` | Verhalten in Modulen; jedes Modul läuft gekapselt, ein Fehler legt nie die ganze Seite lahm |
@@ -25,6 +25,8 @@ CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site
 - Korallrot `#FF5757` nur für das Logo und die wichtigste Aktion je Ansicht („Erstgespräch buchen“).
 - Schrift Outfit; Wortmarke „MEDIALYTE“ als Pfad in `tools/wordmark.svg` (neu erzeugen: `python3 tools/wordmark.py`).
 - Bewegung nur über `transform` und `opacity`, keine Layoutsprünge; bei „Bewegung reduzieren“ stehen alle Darstellungen sofort im Endzustand. Ohne JavaScript bleibt alles lesbar.
+- Kundenreise (`journey()` in `parts.py`, Skript `src/js/28-stage.js`): ab 1000 × 640 px eine angeheftete Bühne, Scrollen schaltet die vier Stationen um, die Darstellungen werden passend skaliert. Mobil, ohne Skript und bei reduzierter Bewegung stehen die Stationen untereinander.
+- Demos starten erst, wenn sie wirklich zu sehen sind (`ML.presence` in `src/js/00-core.js`, berücksichtigt die aktive Station).
 
 ## Bauen
 
@@ -73,8 +75,9 @@ Das Dashboard prüft die Signatur und legt daraus einen Lead an. `slots.php` lie
 ## Vor dem Livegang offen
 
 - [ ] Datenschutzerklärung und AGB einfügen (`render_legal_placeholder` in `pages.py` ersetzen)
-- [ ] Teamfotos ergänzen (`TEAM` in `parts.py`, Bilder nach `src/assets/img/team/`, in `team()` als `<img>` in `.member__pic`)
-- [ ] Film einbauen (Platzhalter `film()` in `parts.py`)
+- [ ] Teamfotos ergänzen (`TEAM` in `parts.py`, Bilder nach `src/assets/img/team/`; `team()` zeigt bis dahin eine Liste mit Name, Aufgabe und einem Satz)
+- [ ] Film einbauen (Platzhalter `film()` in `parts.py`, derzeit ohne Abspiel-Knopf)
+- [ ] Optional: echte Fotos für die Beispiel-Websites im Cockpit (derzeit bewusst ohne Bilder, mit Funktionskarten)
 - [ ] `api/config.php` auf dem Server anlegen, Webhook zum Dashboard setzen
 - [ ] Nach dem Livegang: Sitemap in der Google Search Console einreichen
 

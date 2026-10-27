@@ -30,16 +30,21 @@ ML.module("counters", function (ML) {
   ML.$$("[data-count]").forEach(function (el) {
     var to = parseFloat(el.getAttribute("data-count"));
     if (!isFinite(to) || to === 0) return;
-    el.style.setProperty("--d", String(Math.round(to)).length);
+    /* Eine unsichtbare Kopie des Endwerts hält die Breite fest: nichts rückt, kein Abstand am Ende */
+    var final = el.textContent;
+    el.classList.add("cnt");
+    el.innerHTML = '<span class="cnt__g">' + ML.esc(final) + '</span><span class="cnt__v" aria-hidden="true">' + ML.esc(final) + "</span>";
+    var v = el.lastChild;
     ML.onVisible(el, function () {
       var t0 = null, dur = 1500;
       function step(t) {
         if (!t0) t0 = t;
         var p = Math.min(1, (t - t0) / dur), k = 1 - Math.pow(1 - p, 3);
-        el.textContent = String(Math.round(to * k));
-        if (p < 1) requestAnimationFrame(step); else el.textContent = String(to);
+        v.textContent = String(Math.round(to * k));
+        if (p < 1) requestAnimationFrame(step);
+        else { el.classList.remove("cnt"); el.textContent = final; }
       }
-      el.textContent = "0";
+      v.textContent = "0";
       requestAnimationFrame(step);
     }, { threshold: 0.6 });
   });

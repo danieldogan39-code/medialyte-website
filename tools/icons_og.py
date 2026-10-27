@@ -22,14 +22,14 @@ body{{width:1200px;height:630px;background:#0E192A;font-family:Outfit,sans-serif
 .w{{position:absolute;left:88px;top:80px;right:88px;bottom:76px;display:flex;flex-direction:column;justify-content:space-between}}
 .logo{{display:flex;align-items:center;gap:20px}}
 .logo .mono{{height:62px;width:auto;color:#FF5757}}
-.logo .wordmark{{height:21px;width:auto;color:#F3F5F9}}
-h1{{font-size:80px;line-height:.98;font-weight:600;letter-spacing:-.048em;max-width:1000px}}
+.logo .wordmark{{height:24px;width:auto;color:#F3F5F9;margin-top:4px}}
+h1{{font-size:80px;line-height:.98;font-weight:600;letter-spacing:-.048em;max-width:1000px;text-wrap:balance}}
 h1 span{{display:block;color:#8A9BB4}}
 .f{{display:flex;gap:12px;font-size:23px;color:#C3CDDC}}
 .f b{{display:inline-flex;align-items:center;padding:10px 20px;border-radius:999px;border:1px solid rgba(170,190,220,.25);font-weight:500}}
 </style></head><body><div class="g"></div><div class="d"></div><div class="w">
 <div class="logo">{LOGO.replace('<svg ', '<svg class="mono" ', 1)}{WORDMARK}</div>
-<h1>Ihre Website soll Kunden bringen. <span>Keine Arbeit.</span></h1>
+<h1>Ihre Website soll Kunden bringen. <span>Nicht Arbeit machen.</span></h1>
 <div class="f"><b>Website</b><b>Kundenmanagement</b><b>KI-Agent</b><b>Werbung</b></div>
 </div></body></html>"""
 

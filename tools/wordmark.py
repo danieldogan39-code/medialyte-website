@@ -13,8 +13,8 @@ from fontTools.varLib import instancer
 ROOT = Path(__file__).resolve().parent.parent
 FONT = ROOT / "src/assets/fonts/outfit-latin-wght-normal.woff2"
 TEXT = "MEDIALYTE"
-WEIGHT = 440
-TRACK = 0.30          # Sperrung in em
+WEIGHT = 540
+TRACK = 0.20          # Sperrung in em
 # Optischer Ausgleich einzelner Paare (in Font-Einheiten, negativ = enger)
 PAIRS = {("L", "Y"): -55, ("Y", "T"): -35, ("A", "L"): 0, ("I", "A"): -10, ("D", "I"): 0}
 

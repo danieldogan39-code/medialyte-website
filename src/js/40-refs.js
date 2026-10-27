@@ -32,7 +32,7 @@ ML.module("ref-dialog", function (ML) {
     var isM = view === "mobile";
     set("title", r.title); set("cat", r.cat); set("text", r.text); set("host", r.host);
     $("[data-rd=facts]", dlg).innerHTML = r.facts.map(function (f) { return "<div><dt>" + ML.esc(f[0]) + "</dt><dd>" + ML.esc(f[1]) + "</dd></div>"; }).join("");
-    $("[data-rd=nums]", dlg).innerHTML = (r.nums || []).map(function (n) { return "<div><b>" + ML.esc(n[0]) + "</b><small>" + ML.esc(n[1]) + "</small></div>"; }).join("");
+    $("[data-rd=nums]", dlg).innerHTML = (r.numsLabel ? '<small class="case__facts-l">' + ML.esc(r.numsLabel) + "</small>" : "") + (r.nums || []).map(function (n) { return "<div><b>" + ML.esc(n[0]) + "</b><small>" + ML.esc(n[1]) + "</small></div>"; }).join("");
     var link = $("[data-rd=link]", dlg); link.href = r.url; link.querySelector("span").textContent = r.visit;
     var frame = $(".rd__frame", dlg); frame.classList.toggle("rd__frame--mobile", isM);
     var img = $(".rd__scroll img", dlg);

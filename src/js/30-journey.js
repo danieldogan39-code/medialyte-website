@@ -5,12 +5,17 @@ ML.module("relaunch", function (ML) {
   ML.$$("[data-relaunch]").forEach(function (rl) {
     var frame = rl.closest(".st__frame") || rl.parentNode;
     var btns = ML.$$("[data-rl]", frame);
-    var station = rl.closest(".st");
-    var manual = false, done = false;
+    var jr = rl.closest("[data-journey]");
+    var manual = false;
     function setP(v, animate) {
       rl.classList.toggle("rl--scrub", !animate);
       rl.style.setProperty("--p", v + "%");
       btns.forEach(function (b) { b.setAttribute("aria-pressed", (+b.getAttribute("data-rl") === (v >= 50 ? 100 : 0)) ? "true" : "false"); });
+    }
+    function sweep() {
+      rl.classList.add("is-scanning");
+      setP(100, true);
+      setTimeout(function () { rl.classList.remove("is-scanning"); }, 1500);
     }
     btns.forEach(function (b) {
       b.addEventListener("click", function () {
@@ -22,27 +27,24 @@ ML.module("relaunch", function (ML) {
     });
     if (ML.reduce) { setP(100, false); return; }
     setP(0, false);
-    var pinned = function () { return station && getComputedStyle(station.querySelector(".st__pin")).position === "sticky"; };
-    /* Scroll-gesteuert in der angehefteten Station */
+    var pinned = function () { return jr && jr.classList.contains("journey--pin"); };
+    /* Auf der Bühne folgt der Relaunch dem Scrollen durch die erste Station */
     ML.onScroll(function (y, vh) {
-      if (manual || !station || !pinned()) return;
-      var r = station.getBoundingClientRect();
+      if (manual || !pinned()) return;
+      var r = jr.getBoundingClientRect();
       if (r.bottom < 0 || r.top > vh) return;
-      var prog = ML.clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
-      var p = ML.clamp((prog - 0.06) / 0.6, 0, 1) * 100;
+      var n = parseFloat(getComputedStyle(jr).getPropertyValue("--n")) || 4;
+      var seg = ML.clamp(-r.top / Math.max(1, r.height - vh), 0, 1) * n;
+      var p = ML.clamp((seg - 0.1) / 0.6, 0, 1) * 100;
       rl.classList.toggle("is-scanning", p > 0.5 && p < 99.5);
       setP(Math.round(p * 10) / 10, false);
-      done = p >= 99.5;
     });
+    /* Wechselt die Darstellung (z. B. Fenster schmaler), steht die neue Seite fertig da */
+    if (jr) jr.addEventListener("ml:station", function (ev) { if (!manual && ev.detail && !ev.detail.pinned && parseFloat(rl.style.getPropertyValue("--p")) < 100) setP(100, false); });
     /* Sonst: einmal automatisch, sobald sichtbar */
-    ML.onVisible(rl, function () {
-      if (manual || (station && pinned())) return;
-      setTimeout(function () {
-        if (manual) return;
-        rl.classList.add("is-scanning");
-        setP(100, true);
-        setTimeout(function () { rl.classList.remove("is-scanning"); done = true; }, 1500);
-      }, 700);
+    ML.presentOnce(rl, function () {
+      if (manual || pinned()) return;
+      setTimeout(function () { if (!manual && !pinned()) sweep(); }, 600);
     }, { threshold: 0.5 });
   });
 });
@@ -60,37 +62,50 @@ ML.module("pipeline", function (ML) {
       ["c4", "auftrag", "Frau Lindner hat angenommen – aus dem Angebot wird ein Auftrag.", 5, 3],
       ["new", "neu", "Neue Anfrage über die Website: Familie Ahrens, Garderobe nach Maß.", 6, 3]
     ];
+    function colName(col) { var h = col.querySelector("h5"); return h && h.firstChild ? String(h.firstChild.textContent).trim() : ""; }
     function counts() { $$(".pl__col", pl).forEach(function (c) { var n = c.querySelector("[data-colcount]"); if (n) n.textContent = c.querySelectorAll(".pl__card").length; }); }
+    /* FLIP für alle Karten: Auch Karten, die nur nachrücken, gleiten an ihren neuen Platz */
+    function flip(change) {
+      var cards = $$(".pl__card", pl), before = cards.map(function (c) { return c.getBoundingClientRect(); });
+      var fresh = change();
+      cards.forEach(function (c, i) {
+        var a = before[i], b = c.getBoundingClientRect();
+        var dx = a.left - b.left, dy = a.top - b.top;
+        if (!b.width || (Math.abs(dx) < 1 && Math.abs(dy) < 1)) return;
+        c.style.transition = "none";
+        c.style.transform = "translate(" + dx + "px," + dy + "px)";
+        void c.offsetWidth;
+        c.style.transition = "transform .75s cubic-bezier(.77,0,.175,1)";
+        c.style.transform = "none";
+      });
+      if (fresh) {
+        fresh.style.opacity = "0"; fresh.style.transform = "translateY(-12px)";
+        requestAnimationFrame(function () { requestAnimationFrame(function () {
+          fresh.style.transition = "opacity .5s ease, transform .6s cubic-bezier(.23,1,.32,1)"; fresh.style.opacity = "1"; fresh.style.transform = "none"; }); });
+      }
+      counts();
+    }
     function move(id, col) {
       var target = $('[data-col="' + col + '"]', pl);
       if (!target) return;
-      var card;
-      if (id === "new") {
-        card = document.createElement("div");
-        card.className = "pl__card is-moved";
-        card.innerHTML = "<b>Familie Ahrens</b><small>Garderobe · Website</small><span class=\"pl__tag\">gerade eben</span>";
-        card.style.opacity = "0"; card.style.transform = "translateY(-12px)";
-        target.insertBefore(card, target.children[1] || null);
-        requestAnimationFrame(function () { requestAnimationFrame(function () {
-          card.style.transition = "opacity .5s ease, transform .6s cubic-bezier(.23,1,.32,1)"; card.style.opacity = "1"; card.style.transform = "none"; }); });
-        counts();
-        return;
-      }
-      card = $('[data-card="' + id + '"]', pl);
-      if (!card) return;
-      var a = card.getBoundingClientRect();
-      target.appendChild(card);
-      var b = card.getBoundingClientRect();
-      var dx = a.left - b.left, dy = a.top - b.top;
-      card.classList.add("is-moved");
-      if (b.width && (dx || dy)) {
-        card.style.transition = "none";
-        card.style.transform = "translate(" + dx + "px," + dy + "px)";
-        void card.offsetWidth;
-        card.style.transition = "transform .75s cubic-bezier(.77,0,.175,1)";
-        card.style.transform = "none";
-      }
-      counts();
+      flip(function () {
+        if (id === "new") {
+          var card = document.createElement("div");
+          card.className = "pl__card is-moved";
+          card.setAttribute("data-st", col);
+          card.innerHTML = "<b>Familie Ahrens</b><small>Garderobe · Website</small><span class=\"pl__tag\">gerade eben</span><span class=\"pl__st\">" + colName(target) + "</span>";
+          target.insertBefore(card, target.children[1] || null);
+          return card;
+        }
+        var c = $('[data-card="' + id + '"]', pl);
+        if (!c) return null;
+        target.appendChild(c);
+        /* In der Listenansicht (schmale Bildschirme) wechselt außerdem der Status der Karte */
+        c.setAttribute("data-st", col);
+        c.classList.add("is-moved");
+        var st = c.querySelector(".pl__st"); if (st) st.textContent = colName(target);
+        return null;
+      });
     }
     function cycle() {
       tl.clear();
@@ -111,7 +126,7 @@ ML.module("pipeline", function (ML) {
       });
     }
     if (ML.reduce) return;
-    ML.watch(pl, function (v) {
+    ML.presence(pl, function (v) {
       if (v && !running) { running = true; cycle(); }
       else if (!v && running) {
         running = false; tl.clear();
@@ -131,14 +146,17 @@ ML.module("agent", function (ML) {
   var info = $(".ms__info", root), k = $(".ms__k", root), vOld = $(".v-old", root), vNew = $(".v-new", root);
   var busy = false, touched = false;
   var tick = '<svg viewBox="0 0 16 11" width="16" height="11" fill="none" stroke="#53BDEB" stroke-width="1.6" aria-hidden="true" style="display:inline-block;vertical-align:-1px;margin-left:3px"><path d="M1 6l3 3 6-7M6 9l1 .8L14 2"/></svg>';
-  function now() { var d = new Date(); return (d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes(); }
+  /* Feste, glaubwürdige Uhrzeiten statt der echten Uhr: jede Nachricht eine Minute später */
+  var minute = 9 * 60 + 38;
+  function stamp() { var h = Math.floor(minute / 60), m = minute % 60; minute++; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m; }
   function bubble(cls, txt, isMe) {
     var d = document.createElement("div");
     d.className = "cp-msg " + cls + " is-pop";
-    d.innerHTML = ML.esc(txt) + "<time>" + now() + (isMe ? tick : "") + "</time>";
+    d.innerHTML = ML.esc(txt) + "<time>" + stamp() + (isMe ? tick : "") + "</time>";
     body.appendChild(d);
+    /* Höchstens drei Blasen, damit die neueste Antwort immer ganz zu sehen ist */
     var all = $$(".cp-msg, .cp-typing", body);
-    while (all.length > 4) { all.shift().remove(); }
+    while (all.length > 3) { all.shift().remove(); }
     return d;
   }
   function updateSite(a) {
@@ -162,6 +180,7 @@ ML.module("agent", function (ML) {
     var fast = ML.reduce;
     setTimeout(function () {
       var t = document.createElement("div"); t.className = "cp-typing is-pop"; t.innerHTML = "<i></i><i></i><i></i>"; body.appendChild(t);
+      var all = $$(".cp-msg, .cp-typing", body); while (all.length > 3) { all.shift().remove(); }
     }, fast ? 0 : 700);
     setTimeout(function () {
       var t = $(".cp-typing", body); if (t) t.remove();
@@ -179,7 +198,7 @@ ML.module("agent", function (ML) {
       if (a) run(a, b);
     });
   });
-  ML.onVisible(root, function () {
+  ML.presentOnce(root, function () {
     setTimeout(function () { if (!touched) run(asks[0], btns[0]); }, 900);
   }, { threshold: 0.5 });
 });
@@ -188,7 +207,7 @@ ML.module("campaign", function (ML) {
   ML.$$("[data-campaign]").forEach(function (cg) {
     var nums = ML.$$("[data-count-to]", cg);
     var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "."); };
-    ML.onVisible(cg, function () {
+    ML.presentOnce(cg, function () {
       cg.classList.add("is-on");
       if (ML.reduce) return;
       nums.forEach(function (el) {

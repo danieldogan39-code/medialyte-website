@@ -6,10 +6,10 @@
 
 .brand{display:inline-flex;align-items:center;gap:14px;color:var(--text);flex:none;-webkit-tap-highlight-color:transparent}
 .brand .mono{height:31px;width:auto;color:var(--coral);flex:none}
-.brand .wordmark{height:11.5px;width:auto;flex:none}
+.brand .wordmark{height:13.5px;width:auto;flex:none;margin-top:2px}
 .brand--lg{gap:22px}
 .brand--lg .mono{height:58px}
-.brand--lg .wordmark{height:20px}
+.brand--lg .wordmark{height:21px;margin-top:3px}
 
 .nav{display:flex;align-items:center;gap:2px;margin-left:auto}
 .nav__link{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;border:0;background:none;color:var(--text-2);font-weight:500;font-size:.97rem;line-height:1.2;transition:color .2s ease,background-color .2s ease}
@@ -20,7 +20,7 @@
 .nav__item.is-open>.nav__link{color:var(--text);background:rgba(255,255,255,.06)}
 .nav__item.is-open>.nav__link svg{transform:rotate(180deg)}
 
-.drop{position:absolute;top:calc(100% + 14px);left:50%;width:620px;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;border-radius:22px;background:rgba(17,30,50,.97);border:1px solid var(--line-2);box-shadow:var(--shadow-window);
+.drop{position:absolute;top:calc(100% + 14px);left:50%;width:620px;padding:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;border-radius:22px;background:var(--navy-lift);border:1px solid var(--line-2);box-shadow:var(--shadow-window);
   opacity:0;visibility:hidden;transform:translate(-50%,6px) scale(.98);transform-origin:50% 0;transition:opacity .18s ease,transform .22s var(--ease-out),visibility 0s linear .22s}
 .drop::before{content:"";position:absolute;inset:-16px 0 auto;height:16px}
 .nav__item.is-open .drop{opacity:1;visibility:visible;transform:translate(-50%,0) scale(1);transition:opacity .18s ease,transform .22s var(--ease-out),visibility 0s}
@@ -57,7 +57,7 @@
   .header__cta{display:none}
   .brand{gap:11px}
   .brand .mono{height:27px}
-  .brand .wordmark{height:10px}
+  .brand .wordmark{height:11.5px}
 }
 
 /* ---------- Mobiles Menü ---------- */

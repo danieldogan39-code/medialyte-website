@@ -25,7 +25,7 @@ REFS = {
         "h": "Rechnungen, die sich von selbst ablegen",
         "text": "RechnungsRadar holt Rechnungen automatisch aus dem E-Mail-Postfach und legt sie in der Buchhaltung ab – in Lexware Office, BuchhaltungsButler oder DATEV. Wir haben die App entwickelt und den Auftritt gebaut, der Unternehmen und Steuerberater überzeugt.",
         "facts": [["Kunde", "RechnungsRadar"], ["Branche", "Software für Buchhaltung"], ["Leistungen", "App-Entwicklung, Rechnungsmanagement-System, Website, Conversion-Optimierung"], ["Ergebnis", "Deutlich mehr Anfragen von Steuerberatern"]],
-        "nums": [["+230 %", "Kundenanfragen"], ["+73 %", "Conversionrate"]],
+        "nums": [["+230 %", "Kundenanfragen"], ["+73 %", "Conversionrate"]], "nums_label": "Ergebnis nach dem Relaunch",
         "url": "https://rechnungs-radar.de/", "host": "rechnungs-radar.de", "visit": "rechnungs-radar.de besuchen",
     },
     "rubin": {
@@ -33,7 +33,7 @@ REFS = {
         "h": "Schmuck, der online so wirkt wie im Laden",
         "text": "Trauringe, Verlobungsringe, Brillantschmuck und Uhren – präsentiert so hochwertig wie in der Vitrine. Kundinnen und Kunden finden mit einem Klick ihre Filiale in Hamburg, Norderstedt oder Lüneburg und alle Services vom Goldankauf bis zur Reparatur.",
         "facts": [["Kunde", "Juwelier Rubin"], ["Branche", "Schmuck und Uhren"], ["Leistungen", "Webdesign, Entwicklung, Produktwelten, Filialfinder"], ["Standorte", "Hamburg, Norderstedt, Lüneburg"]],
-        "nums": [["4", "Filialen"], ["3", "Städte"]],
+        "nums": [["4", "Filialen"], ["3", "Städte"]], "nums_label": "Der Kunde",
         "url": "https://rubin-gold.de/", "host": "rubin-gold.de", "visit": "rubin-gold.de besuchen",
     },
     "ritz": {
@@ -41,13 +41,13 @@ REFS = {
         "h": "Ein Industriekonzern auf einer Plattform",
         "text": "RITZ entwickelt und fertigt seit 1945 Strom- und Spannungswandler für Netze, Industrie und Bahn. Unser Entwurf führt Unternehmensseite und Produktfinder zusammen – für Kunden in 60 Ländern.",
         "facts": [["Kunde", "RITZ Instrument Transformers"], ["Branche", "Industrie und Energietechnik"], ["Leistungen", "Konzept, Design, Entwicklung, Produktfinder"], ["Status", "Entwurf"]],
-        "nums": [["1.500+", "Mitarbeitende"], ["60", "Länder mit Vertretung"]],
+        "nums": [["1.500+", "Mitarbeitende"], ["60", "Länder mit Vertretung"]], "nums_label": "Der Kunde",
         "url": "https://ritz.entwurf.medialyte.de/", "host": "ritz.entwurf.medialyte.de", "visit": "Entwurf ansehen",
     },
 }
 
 TEAM = [
-    ("Daniel", "D", "Inhaber · Kunden und Projekte", "Ihr Ansprechpartner vom ersten Gespräch bis zum Livegang. Daniel hört zu, plant Ihr Projekt und sorgt dafür, dass am Ende alles zusammenpasst."),
+    ("Daniel", "D", "Inhaber · Kunden und Projekte", "Ihr Ansprechpartner vom ersten Gespräch bis lange nach dem Livegang. Daniel hört zu, plant Ihr Projekt und sorgt dafür, dass am Ende alles zusammenpasst."),
     ("Hannes", "H", "Entwicklung", "Hannes baut Websites, Apps und Systeme, die schnell laden, sicher laufen und mit Ihrem Betrieb mitwachsen."),
     ("Maximilian", "M", "Design", "Maximilian gestaltet Oberflächen, die Ihre Marke tragen und Ihre Kunden ohne Umwege ans Ziel bringen."),
     ("Aurelia", "A", "Marketing", "Aurelia plant Kampagnen und Inhalte, damit genau die richtigen Menschen auf Sie aufmerksam werden."),
@@ -74,7 +74,7 @@ FAQ_MAIN = [
     ("Kann ich Inhalte auch selbst bearbeiten?",
      "<p>Ja. Texte, Bilder oder Speisekarten können Sie jederzeit selbst ändern, ganz ohne Technikkenntnisse. Wenn Sie lieber nichts anfassen möchten, übernimmt das der KI-Agent.</p>"),
     ("Was bedeutet die Zufriedenheitsgarantie?",
-     "<p>Wir arbeiten so lange an Ihrem Projekt, bis Sie zufrieden sind.</p>"),
+     "<p>Sie sehen jeden Entwurf, bevor wir ihn umsetzen, und geben jede Seite frei, bevor sie online geht. Passt etwas nicht, überarbeiten wir es – so lange, bis Sie zufrieden sind.</p><p>Was genau dazugehört, steht schriftlich in Ihrem Angebot.</p>"),
 ]
 
 
@@ -213,33 +213,41 @@ STATIONS = [
      ["Änderungen in eigenen Worten, ohne Technik", "Bei einfachen Websites per WhatsApp", "Bei großen Systemen direkt im Dashboard", "Laufende Pflege inklusive"],
      "/leistungen/ki-agent/", "Mehr zum KI-Agenten", "agent", "Wählen Sie eine Nachricht – der Agent setzt sie auf der Beispiel-Website um."),
     ("Werbung", "Werbung, die Anfragen bringt – nicht nur Klicks",
-     "Wenn das Fundament steht, bringen wir gezielt neue Kunden auf Ihre Seite: mit Google Ads, Social Media und Landingpages. Über 200 erfolgreiche Kampagnen zeigen, worauf es ankommt.",
+     "Wenn das Fundament steht, bringen wir gezielt neue Kunden auf Ihre Seite: mit Google Ads, Social Media und Landingpages. Aus über 200 Kampagnen wissen wir, worauf es ankommt.",
      ["Google Ads und Social-Media-Kampagnen", "Landingpages für Ihre wichtigsten Angebote", "SEO und lokale Sichtbarkeit", "Messbar: Anfragen, Anrufe, Buchungen"],
      "/leistungen/online-marketing/", "Mehr zum Online-Marketing", "campaign", "Beispiel: Anzeige bei Google und die Kampagne dahinter."),
 ]
 
 
 def journey(ctx):
+    """Kundenreise in vier Stationen. Auf großen Bildschirmen macht das Skript daraus eine angeheftete Bühne
+    mit Leiste und Überblendung; sonst (mobil, ohne Skript, reduzierte Bewegung) stehen die Stationen untereinander."""
     vis = {"relaunch": mocks.relaunch, "pipeline": mocks.pipeline, "agent": mocks.agent_demo, "campaign": mocks.campaign}
-    out = ""
     n = len(STATIONS)
+    rail = "".join(
+        f'<button class="jr__step{" is-on" if i == 0 else ""}" type="button" id="jr-t{i}" aria-controls="st-{i}" aria-selected="{"true" if i == 0 else "false"}" tabindex="{0 if i == 0 else -1}" data-go="{i}">'
+        f'<span class="jr__n" aria-hidden="true">{i + 1}</span>{name}</button>'
+        for i, (name, *_rest) in enumerate(STATIONS))
+    out = ""
     for i, (name, h, text, items, link, link_t, v, cap) in enumerate(STATIONS):
-        steps = "".join(f'<i class="{"is-on" if j == i else ("is-done" if j < i else "")}"></i>' for j in range(n))
         out += f"""
-<article class="st" data-station="{i}" aria-labelledby="st-h{i}">
-  <div class="st__pin">
-    <div class="st__text" data-reveal>
-      <div class="st__steps" aria-hidden="true">{steps}<span>{i + 1} von {n}</span></div>
-      <span class="st__name">{name}</span>
-      <h3 id="st-h{i}">{h}</h3>
-      <p>{text}</p>
-      {ticks(items)}
-      <a class="link" href="{ctx.u(link)}">{link_t} {icon('arrow')}</a>
-    </div>
-    <div class="st__vis" data-reveal="scale">{vis[v]()}<p class="st__cap">{cap}</p></div>
+<article class="st{" is-active" if i == 0 else ""}" id="st-{i}" data-station="{i}" aria-labelledby="st-h{i}">
+  <div class="st__text">
+    <span class="st__name"><span class="jr__n" aria-hidden="true">{i + 1}</span>{name}</span>
+    <h3 id="st-h{i}">{h}</h3>
+    <p>{text}</p>
+    {ticks(items)}
+    <a class="link" href="{ctx.u(link)}">{link_t} {icon('arrow')}</a>
   </div>
+  <div class="st__vis"><div class="st__fit">{vis[v]()}<p class="st__cap">{cap}</p></div></div>
 </article>"""
-    return f'<div class="journey" data-journey>{out}</div>'
+    return f"""<div class="journey" data-journey style="--n:{n}">
+  <div class="jr__stage">
+    <div class="jr__rail" hidden aria-label="Stationen der Kundenreise">{rail}<span class="jr__bar" aria-hidden="true"><i></i></span></div>
+    <div class="jr__stations">{out}
+    </div>
+  </div>
+</div>"""
 
 
 # ======================================================================= Referenzen
@@ -261,7 +269,7 @@ def cases(ctx, keys=("rechnungsradar", "rubin", "ritz")):
     <span class="case__cat">{e(r['cat'])}</span>
     <h3>{e(r['h'])}</h3>
     <p>{e(r['text'])}</p>
-    <div class="case__facts">{facts}</div>
+    <div class="case__facts"><small class="case__facts-l">{e(r['nums_label'])}</small>{facts}</div>
     <div class="case__actions"><button class="btn btn--light btn--sm" type="button" data-ref="{k}">Vorschau öffnen</button><a class="btn btn--ghost btn--sm" href="{r['url']}" target="_blank" rel="noopener">{e(r['visit'])} {icon('out')}</a></div>
   </div>
 </article>"""
@@ -272,7 +280,7 @@ def ref_dialog(ctx):
     data = {}
     for k, r in REFS.items():
         data[k] = {
-            "title": r["title"], "cat": r["cat"], "text": r["text"], "facts": r["facts"], "nums": r["nums"],
+            "title": r["title"], "cat": r["cat"], "text": r["text"], "facts": r["facts"], "nums": r["nums"], "numsLabel": r["nums_label"],
             "url": r["url"], "visit": r["visit"], "host": r["host"],
             "desktop": ctx.a(f"img/refs/{k}-full.webp"), "mobile": ctx.a(f"img/refs/{k}-mobile-full.webp"),
             "desktopH": _REFS_META[k]["full_h"], "mobileH": _REFS_META[k]["mobile_full_h"],
@@ -316,8 +324,8 @@ def ref_dialog(ctx):
 def ba_slider(ctx):
     return f"""
 <div class="ba" data-ba role="group" aria-label="Vorher-Nachher-Vergleich der Website RechnungsRadar">
-  {img(ctx, 'img/refs/rechnungsradar-nachher.webp', 1280, 724, 'Website RechnungsRadar nach dem Relaunch')}
-  {img(ctx, 'img/refs/rechnungsradar-vorher.webp', 1280, 629, 'Website RechnungsRadar vor dem Relaunch', cls='ba__before')}
+  {img(ctx, 'img/refs/rechnungsradar-nachher.webp', 1280, 560, 'Website RechnungsRadar nach dem Relaunch')}
+  {img(ctx, 'img/refs/rechnungsradar-vorher.webp', 1280, 560, 'Website RechnungsRadar vor dem Relaunch', cls='ba__before')}
   <input type="range" min="0" max="100" value="50" step="1" aria-label="Vergleich verschieben: links vorher, rechts nachher">
   <span class="ba__line" aria-hidden="true"><span class="ba__knob">{icon('drag')}</span></span>
   <span class="ba__tag ba__tag--before" aria-hidden="true">Vorher</span>
@@ -344,7 +352,7 @@ def results(ctx):
   <div class="delta"><b>+<span data-count="73">73</span> %</b><small>Conversionrate</small></div>
   <div class="delta"><b>−<span data-count="15">15</span> %</b><small>Marketingkosten</small></div>
 </div>
-<p class="deltas__note">Ergebnisse von RechnungsRadar nach dem Relaunch.</p>"""
+<p class="deltas__note">Veränderung bei RechnungsRadar nach dem Relaunch, im Vergleich zur vorherigen Website.</p>"""
 
 
 # ======================================================================= Vergleich
@@ -370,7 +378,7 @@ def compare():
     <thead><tr><th scope="col"><span class="sr-only">Merkmal</span></th><th scope="col" class="is-us">Medialyte</th><th scope="col">Klassische Agentur</th><th scope="col">Website-Baukasten</th></tr></thead>
     <tbody>{body}</tbody>
   </table>
-  <p class="cmp-note">Typische Merkmale. Im Einzelfall kann es je nach Anbieter abweichen.</p>
+  <p class="cmp-note">Typische Merkmale. Im Einzelfall kann das je nach Anbieter abweichen.</p>
 </div>"""
 
 
@@ -396,6 +404,35 @@ FINDER = {
 }
 
 
+# Ein Satz je Branche und Paket: Was die Empfehlung für genau diesen Betrieb bedeutet
+FINDER_FIT = {
+    "gastro": {"praesenz": "Für Ihr Restaurant heißt das: Speisekarte und Öffnungszeiten stimmen immer, reserviert wird mit einem Tipp.",
+               "wachstum": "Für Ihr Restaurant heißt das: Anzeigen für Gäste in der Nähe und Reservierungen direkt über die Website.",
+               "system": "Für Ihr Restaurant heißt das: Reservierungen, Gästewünsche und Veranstaltungen an einem Ort."},
+    "handwerk": {"praesenz": "Für Ihren Betrieb heißt das: Projekte zeigen und Anfragen gleich mit Fotos bekommen.",
+                 "wachstum": "Für Ihren Betrieb heißt das: Anfragen aus Ihrer Region – mit Fotos und allen Angaben.",
+                 "system": "Für Ihren Betrieb heißt das: Anfragen, Aufmaß-Termine, Angebote und Aufträge in einem Dashboard."},
+    "praxis": {"praesenz": "Für Ihre Praxis heißt das: Sprechzeiten, die immer stimmen, und Online-Termine rund um die Uhr.",
+               "wachstum": "Für Ihre Praxis heißt das: neue Patientinnen und Patienten aus der Umgebung, die direkt online buchen.",
+               "system": "Für Ihre Praxis heißt das: Termine, Erinnerungen und Unterlagen digital an einem Ort."},
+    "kanzlei": {"praesenz": "Für Ihre Kanzlei heißt das: Schwerpunkte klar erklärt und die Erstberatung in wenigen Klicks angefragt.",
+                "wachstum": "Für Ihre Kanzlei heißt das: Mandantinnen und Mandanten, die genau Ihre Schwerpunkte suchen.",
+                "system": "Für Ihre Kanzlei heißt das: Mandate, Fristen und Unterlagen in Ihrer eigenen Mandantenverwaltung."},
+    "handel": {"praesenz": "Für Ihr Geschäft heißt das: Sortiment, Öffnungszeiten und Aktionen sind immer aktuell.",
+               "wachstum": "Für Ihr Geschäft heißt das: mehr Besucher im Laden und im Online-Shop.",
+               "system": "Für Ihr Geschäft heißt das: Produkte, Bestände und Bestellungen zentral gepflegt."},
+    "dienst": {"praesenz": "Für Ihr Unternehmen heißt das: Leistungen klar erklärt und ein kurzer Weg zur Anfrage.",
+               "wachstum": "Für Ihr Unternehmen heißt das: Anfragen genau von den Kunden, die Sie suchen.",
+               "system": "Für Ihr Unternehmen heißt das: Anfragen, Termine und Aufträge an einem Ort."},
+    "industrie": {"praesenz": "Für Ihr Unternehmen heißt das: ein Auftritt, der Kunden und Bewerber gleichermaßen überzeugt.",
+                  "wachstum": "Für Ihr Unternehmen heißt das: Anfragen von Einkäufern und Planern, auch international.",
+                  "system": "Für Ihr Unternehmen heißt das: Produktdaten und Anfragen zentral – wie beim Produktfinder für RITZ."},
+    "verein": {"praesenz": "Für Ihren Verein heißt das: Termine, Neuigkeiten und Mitgliedsanträge an einem Ort.",
+               "wachstum": "Für Ihren Verein heißt das: neue Mitglieder, Unterstützer und Spenden.",
+               "system": "Für Ihren Verein heißt das: Mitglieder, Termine und Beiträge übersichtlich verwaltet."},
+}
+
+
 def plans(ctx):
     def sel(name, opts, default):
         o = "".join(f'<option value="{v}"{" selected" if v == default else ""}>{t}</option>' for v, t, *_ in opts)
@@ -416,10 +453,10 @@ def plans(ctx):
   </div>
 </article>"""
     return f"""
-<form class="finder" data-finder data-reveal onsubmit="return false" data-branchen='{json.dumps(bmap, ensure_ascii=False)}'>
+<form class="finder" data-finder data-reveal onsubmit="return false" data-branchen="{e(json.dumps(bmap, ensure_ascii=False))}" data-fit="{e(json.dumps(FINDER_FIT, ensure_ascii=False))}">
   <p class="finder__q">Wir sind {sel('branche', FINDER['branche'], 'gastro')} {sel('web', FINDER['web'], 'alt')} und wollen vor allem {sel('ziel', FINDER['ziel'], 'anfragen')}.</p>
   <div class="finder__out" aria-live="polite">
-    <div class="finder__res"><small>Unsere Empfehlung</small><b data-fr="name">Wachstum</b><p data-fr="why">Eine Website, die überzeugt, und Kampagnen, die gezielt neue Anfragen bringen.</p></div>
+    <div class="finder__res"><small>Unsere Empfehlung</small><b data-fr="name">Wachstum</b><p data-fr="why">Eine Website, die überzeugt, und Kampagnen, die gezielt neue Anfragen bringen – messbar bis zur Buchung.</p><p class="finder__fit" data-fr="fit">{FINDER_FIT["gastro"]["wachstum"]}</p></div>
     <a class="btn btn--primary" href="{book_link(ctx)}" data-fr="cta">Erstgespräch mit dieser Auswahl</a>
   </div>
 </form>
@@ -430,10 +467,10 @@ def plans(ctx):
 # ======================================================================= Ablauf
 PROCESS = [
     ("Strategische Analyse", "Wir lernen Ihren Betrieb kennen: Ihre Kunden, Ihre Mitbewerber, Ihre Ziele. Daraus entsteht der Plan.", ["Zielgruppe", "Wettbewerb", "Ziele"]),
-    ("Design und Konzept", "Sie sehen früh, wie alles aussehen wird, und entscheiden mit. Wir verfeinern, bis es passt.", ["Struktur", "Entwurf", "Texte"]),
+    ("Konzept und Design", "Sie sehen früh, wie alles aussehen wird, und entscheiden mit. Wir verfeinern, bis es passt.", ["Struktur", "Entwurf", "Texte"]),
     ("Entwicklung", "Wir setzen Website und System um: schnell, sicher und so, dass beides mit Ihrem Betrieb wachsen kann.", ["Website", "System", "Anbindungen"]),
-    ("Testing und QA", "Jede Seite, jedes Formular, jedes Gerät: Wir prüfen alles, bevor Ihre Kunden es sehen.", ["Funktion", "Tempo", "Alle Geräte"]),
-    ("Launch und Support", "Ihre Lösung geht online. Danach bleiben wir an Ihrer Seite – mit unserem Team und dem KI-Agenten.", ["Livegang", "Pflege", "Support"]),
+    ("Test und Feinschliff", "Jede Seite, jedes Formular, jedes Gerät: Wir prüfen alles, bevor Ihre Kunden es sehen.", ["Funktion", "Tempo", "Alle Geräte"]),
+    ("Livegang und Betreuung", "Ihre Lösung geht online. Danach bleiben wir an Ihrer Seite – mit unserem Team und dem KI-Agenten.", ["Livegang", "Pflege", "Ansprechpartner"]),
 ]
 
 
@@ -448,13 +485,14 @@ def process(items=None, cls=""):
 
 # ======================================================================= Team
 def team():
-    cards = "".join(f"""
-<article class="member" data-reveal style="--rd:{i}">
-  <div class="member__pic" aria-hidden="true"><span>{e(ini)}</span></div>
-  <div><h3>{e(n)}</h3><span class="member__role">{e(r)}</span></div>
+    """Team als ruhige Liste: Name, Aufgabe, ein Satz. Fotos folgen (dann als <img> in .member__pic)."""
+    rows = "".join(f"""
+<li class="member" data-reveal style="--rd:{i}">
+  <h3 class="member__name">{e(n)}</h3>
+  <span class="member__role">{e(r)}</span>
   <p>{e(t)}</p>
-</article>""" for i, (n, ini, r, t) in enumerate(TEAM))
-    return f'<div class="team">{cards}</div>'
+</li>""" for i, (n, ini, r, t) in enumerate(TEAM))
+    return f'<ul class="team" role="list">{rows}</ul>'
 
 
 # ======================================================================= Film (Platzhalter)
@@ -470,8 +508,7 @@ def film():
 <div class="film">
   <div class="film__frame" data-reveal="scale">
     {LOGO.replace('class="mono"', 'class="film__mono"')}
-    <button class="film__play" type="button" data-film aria-label="Film abspielen – erscheint in Kürze">{icon('play')}</button>
-    <div class="film__soon"><b data-film-note>Der Film erscheint in Kürze</b><span>Etwa 90 Sekunden</span></div>
+    <div class="film__soon"><b>Der Film entsteht gerade</b><span>Etwa 90 Sekunden, in vier Kapiteln</span></div>
   </div>
   <ol class="film__chapters" data-reveal>{lis}</ol>
 </div>"""
@@ -507,7 +544,7 @@ def booking_widget(ctx):
 
     anliegen = "".join([
         opt("anliegen", "web-neu", "globe", "Neue Website", "Noch keine oder eine veraltete Website"),
-        opt("anliegen", "web-besser", "trend", "Website verbessern", "Mehr Anfragen aus Ihrer Seite"),
+        opt("anliegen", "web-besser", "trend", "Website verbessern", "Mehr Anfragen über Ihre Website"),
         opt("anliegen", "system", "db", "Kunden- oder Produktmanagement", "Eigenes System mit Dashboard"),
         opt("anliegen", "werbung", "mega", "Werbung und Online-Marketing", "Google Ads, Social Media, SEO"),
         opt("anliegen", "agent", "bot", "KI-Agent und Pflege", "Website aktuell halten ohne Aufwand"),
@@ -522,7 +559,7 @@ def booking_widget(ctx):
                 "Praxis & Gesundheit", "Industrie & Technik", "Dienstleistung", "Immobilien", "Verein & Organisation", "Andere Branche"]
     bopts = '<option value="">Bitte wählen</option>' + "".join(f"<option>{e(b)}</option>" for b in branchen)
     groesse = "".join(simple("groesse", v, t) for v, t in [("1-5", "1–5"), ("6-20", "6–20"), ("21-100", "21–100"), ("100+", "über 100")])
-    zeit = "".join(simple("zeitfenster", v, t) for v, t in [("vormittags", "Vormittags"), ("nachmittags", "Nachmittags"), ("flexibel", "Egal")])
+    zeit = "".join(simple("zeitfenster", v, t) for v, t in [("vormittags", "Vormittags"), ("nachmittags", "Nachmittags"), ("flexibel", "Flexibel")])
     return f"""
 <div class="bk" id="booking" data-demo="{demo}" data-endpoint="/api/termin.php" data-slots="/api/slots.php">
   <aside class="bk__aside">
@@ -559,7 +596,7 @@ def booking_widget(ctx):
       </section>
       <section class="bk__step" data-step="3" aria-labelledby="bk-h3" hidden>
         <h3 id="bk-h3">Wann passt es Ihnen?</h3>
-        <p>Wählen Sie, wie wir sprechen, und einen freien Termin.</p>
+        <p>Wählen Sie Gesprächsart und Termin.</p>
         <div class="opts opts--3">{formate}</div>
         <div class="cal">
           <div class="cal__box">

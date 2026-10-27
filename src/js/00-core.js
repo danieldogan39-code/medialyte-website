@@ -44,6 +44,27 @@
     }, opts || { threshold: 0 }).observe(el);
   };
 
+  /* Ist ein Element gerade wirklich zu sehen? Wie ML.watch, berücksichtigt aber die angeheftete
+     Kundenreise: Dort zählt eine Station nur, solange sie die aktive ist (Ereignis „ml:station“). */
+  ML.presence = function (el, cb, opts) {
+    if (!el) return;
+    var st = el.closest ? el.closest("[data-station]") : null;
+    var jr = st ? st.closest("[data-journey]") : null;
+    var seen = false, last = null;
+    function emit() {
+      var active = !jr || !jr.classList.contains("journey--pin") || st.classList.contains("is-active");
+      var v = seen && active;
+      if (v !== last) { last = v; cb(v); }
+    }
+    ML.watch(el, function (v) { seen = v; emit(); }, opts);
+    if (jr) jr.addEventListener("ml:station", emit);
+  };
+  /* Einmal ausführen, sobald ein Element wirklich zu sehen ist */
+  ML.presentOnce = function (el, cb, opts) {
+    var done = false;
+    ML.presence(el, function (v) { if (v && !done) { done = true; cb(); } }, opts);
+  };
+
   /* Ein gemeinsamer Scroll-Takt für alle Module (ein requestAnimationFrame pro Bild) */
   var subs = [], ticking = false;
   function run() {

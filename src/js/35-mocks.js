@@ -45,10 +45,21 @@ ML.module("agentdash", function (ML) {
       if (animate) requestAnimationFrame(function () { requestAnimationFrame(function () { n.classList.remove("is-enter"); }); });
       setTimeout(function () { $$(".is-leave", list).forEach(function (r) { r.remove(); }); }, animate ? 800 : 0);
     }
+    var finished = false, timers = [];
+    function finish(animate) {
+      if (finished) return;
+      finished = true;
+      timers.forEach(clearTimeout);
+      btn.disabled = true;
+      done(animate);
+      var hint = root.querySelector(".adb__hint"); if (hint) hint.textContent = "Ist online – ohne dass jemand etwas programmieren musste.";
+    }
+    /* Selbst freigeben geht auch */
+    btn.addEventListener("click", function () { finish(!ML.reduce); });
     ML.presentOnce(root, function () {
-      if (ML.reduce) { done(false); return; }
-      setTimeout(function () { btn.classList.add("is-press"); }, 1300);
-      setTimeout(function () { done(true); }, 1550);
+      if (ML.reduce) { finish(false); return; }
+      timers.push(setTimeout(function () { if (!finished) btn.classList.add("is-press"); }, 2600));
+      timers.push(setTimeout(function () { finish(true); }, 2850));
     }, { threshold: 0.45 });
   });
 });

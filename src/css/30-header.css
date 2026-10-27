@@ -4,12 +4,13 @@
 .header.is-menu{background:var(--navy-deep);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom-color:transparent}
 .header__in{display:flex;align-items:center;gap:24px;height:var(--header-h)}
 
-.brand{display:inline-flex;align-items:center;gap:14px;color:var(--text);flex:none;-webkit-tap-highlight-color:transparent}
+.brand{display:inline-flex;align-items:center;gap:11px;color:var(--text);flex:none;-webkit-tap-highlight-color:transparent}
 .brand .mono{height:31px;width:auto;color:var(--coral);flex:none}
-.brand .wordmark{height:13.5px;width:auto;flex:none;margin-top:2px}
-.brand--lg{gap:22px}
+/* Wortmarke „medialyte“: Höhe = Ober- bis Unterlänge (0,938 em) – 22 px entspricht etwa 23 px Schriftgröße */
+.brand .wordmark{height:22px;width:auto;flex:none;margin-top:4px}
+.brand--lg{gap:16px}
 .brand--lg .mono{height:58px}
-.brand--lg .wordmark{height:21px;margin-top:3px}
+.brand--lg .wordmark{height:36px;margin-top:7px}
 
 .nav{display:flex;align-items:center;gap:2px;margin-left:auto}
 .nav__link{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;border:0;background:none;color:var(--text-2);font-weight:500;font-size:.97rem;line-height:1.2;transition:color .2s ease,background-color .2s ease}
@@ -55,9 +56,9 @@
 @media (max-width:640px){
   :root{--header-h:66px}
   .header__cta{display:none}
-  .brand{gap:11px}
+  .brand{gap:9px}
   .brand .mono{height:27px}
-  .brand .wordmark{height:11.5px}
+  .brand .wordmark{height:19px;margin-top:3px}
 }
 
 /* ---------- Mobiles Menü ---------- */

@@ -52,18 +52,32 @@ ML.module("relaunch", function (ML) {
 ML.module("pipeline", function (ML) {
   var $ = ML.$, $$ = ML.$$;
   $$("[data-pipeline]").forEach(function (pl) {
-    var initial = pl.querySelector(".pl__board").innerHTML;
+    var board = $(".pl__board", pl), initial = board.innerHTML;
     var msgEl = $("[data-plmsg]", pl), kOpen = $("[data-plk=open]", pl), kOff = $("[data-plk=offers]", pl);
     var initialMsg = msgEl ? msgEl.textContent : "";
-    var tl = ML.timeline(), running = false;
+    var tl = ML.timeline(), running = false, manual = false;
+    var COLS = ["neu", "gespraech", "angebot", "auftrag"];
     var STEPS = [
-      ["c1", "gespraech", "Termin mit Familie Petersen ist eingetragen. Die Erinnerung geht morgen raus.", 6, 3],
-      ["c3", "angebot", "Das Angebot für die Weber GmbH ist verschickt.", 5, 4],
-      ["c4", "auftrag", "Frau Lindner hat angenommen – aus dem Angebot wird ein Auftrag.", 5, 3],
-      ["new", "neu", "Neue Anfrage über die Website: Familie Ahrens, Garderobe nach Maß.", 6, 3]
+      ["c1", "gespraech", "Termin mit Familie Petersen ist eingetragen. Die Erinnerung geht morgen raus."],
+      ["c3", "angebot", "Das Angebot für die Weber GmbH ist verschickt."],
+      ["c4", "auftrag", "Frau Lindner hat angenommen – aus dem Angebot wird ein Auftrag."],
+      ["new", "neu", "Neue Anfrage über die Website: Familie Ahrens, Garderobe nach Maß."]
     ];
+    /* Was der Agent sagt, wenn jemand eine Karte von Hand weiterschiebt */
+    var SAY = {
+      gespraech: function (n) { return "Termin mit " + n + " ist eingetragen. Die Erinnerung geht automatisch raus."; },
+      angebot: function (n) { return "Ich bereite das Angebot für " + n + " vor – Sie geben es nur noch frei."; },
+      auftrag: function (n) { return n + " hat angenommen. Der Auftrag ist angelegt, die Rechnung folgt nach Abschluss."; },
+      fertig: function (n) { return "Für " + n + " ist alles erledigt. Ziehen Sie gern eine andere Karte weiter."; }
+    };
     function colName(col) { var h = col.querySelector("h5"); return h && h.firstChild ? String(h.firstChild.textContent).trim() : ""; }
-    function counts() { $$(".pl__col", pl).forEach(function (c) { var n = c.querySelector("[data-colcount]"); if (n) n.textContent = c.querySelectorAll(".pl__card").length; }); }
+    /* Spaltenzähler und Kennzahlen aus dem, was auf dem Board liegt (plus Karten außerhalb des Ausschnitts) */
+    function counts() {
+      $$(".pl__col", pl).forEach(function (c) { var n = c.querySelector("[data-colcount]"); if (n) n.textContent = c.querySelectorAll(".pl__card").length; });
+      var n = function (k) { return $$('[data-col="' + k + '"] .pl__card', pl).length; };
+      if (kOpen) kOpen.textContent = 2 + n("neu") + n("gespraech") + n("angebot");
+      if (kOff) kOff.textContent = 2 + n("angebot");
+    }
     /* FLIP für alle Karten: Auch Karten, die nur nachrücken, gleiten an ihren neuen Platz */
     function flip(change) {
       var cards = $$(".pl__card", pl), before = cards.map(function (c) { return c.getBoundingClientRect(); });
@@ -85,20 +99,10 @@ ML.module("pipeline", function (ML) {
       }
       counts();
     }
-    function move(id, col) {
+    function moveCard(c, col) {
       var target = $('[data-col="' + col + '"]', pl);
-      if (!target) return;
+      if (!c || !target) return;
       flip(function () {
-        if (id === "new") {
-          var card = document.createElement("div");
-          card.className = "pl__card is-moved";
-          card.setAttribute("data-st", col);
-          card.innerHTML = "<b>Familie Ahrens</b><small>Garderobe · Website</small><span class=\"pl__tag\">gerade eben</span><span class=\"pl__st\">" + colName(target) + "</span>";
-          target.insertBefore(card, target.children[1] || null);
-          return card;
-        }
-        var c = $('[data-card="' + id + '"]', pl);
-        if (!c) return null;
         target.appendChild(c);
         /* In der Listenansicht (schmale Bildschirme) wechselt außerdem der Status der Karte */
         c.setAttribute("data-st", col);
@@ -107,32 +111,52 @@ ML.module("pipeline", function (ML) {
         return null;
       });
     }
-    function cycle() {
-      tl.clear();
-      STEPS.forEach(function (s, i) {
-        tl.at(900 + i * 2300, function () {
-          move(s[0], s[1]);
-          if (msgEl) msgEl.textContent = s[2];
-          if (kOpen) kOpen.textContent = s[3];
-          if (kOff) kOff.textContent = s[4];
-        });
-      });
-      tl.at(900 + STEPS.length * 2300 + 2600, function () {
-        pl.querySelector(".pl__board").innerHTML = initial;
-        if (msgEl) msgEl.textContent = initialMsg;
-        if (kOpen) kOpen.textContent = "6";
-        if (kOff) kOff.textContent = "3";
-        if (running) cycle();
+    function addNew(col) {
+      var target = $('[data-col="' + col + '"]', pl);
+      if (!target) return;
+      flip(function () {
+        var card = document.createElement("button");
+        card.type = "button";
+        card.className = "pl__card is-moved";
+        card.setAttribute("data-card", "c6");
+        card.setAttribute("data-st", col);
+        card.setAttribute("aria-label", "Familie Ahrens: in den nächsten Schritt schieben");
+        card.innerHTML = "<b>Familie Ahrens</b><small>Garderobe · Website</small><span class=\"pl__tag\">gerade eben</span><span class=\"pl__st\">" + colName(target) + "</span>";
+        target.insertBefore(card, target.children[1] || null);
+        return card;
       });
     }
+    function say(t) { if (msgEl) msgEl.textContent = t; }
+    function restore() { board.innerHTML = initial; say(initialMsg); counts(); }
+    function cycle() {
+      tl.clear();
+      STEPS.forEach(function (st, i) {
+        tl.at(900 + i * 2300, function () {
+          if (st[0] === "new") addNew(st[1]); else moveCard($('[data-card="' + st[0] + '"]', pl), st[1]);
+          say(st[2]);
+        });
+      });
+      tl.at(900 + STEPS.length * 2300 + 2600, function () { restore(); if (running && !manual) cycle(); });
+    }
+    /* Von Hand: Karte antippen schiebt sie einen Schritt weiter (die Vorführung hält dann an) */
+    board.addEventListener("click", function (ev) {
+      var c = ev.target.closest(".pl__card");
+      if (!c || !board.contains(c)) return;
+      if (!manual) { manual = true; tl.clear(); }
+      var name = (c.querySelector("b") || {}).textContent || "";
+      var col = c.closest("[data-col]").getAttribute("data-col"), i = COLS.indexOf(col);
+      if (i >= COLS.length - 1) { say(SAY.fertig(name)); c.classList.remove("is-nudge"); void c.offsetWidth; c.classList.add("is-nudge"); return; }
+      var next = COLS[i + 1];
+      moveCard(c, next);
+      say(SAY[next](name));
+      c.focus({ preventScroll: true });
+    });
+    counts();
     if (ML.reduce) return;
     ML.presence(pl, function (v) {
+      if (manual) return;
       if (v && !running) { running = true; cycle(); }
-      else if (!v && running) {
-        running = false; tl.clear();
-        pl.querySelector(".pl__board").innerHTML = initial;
-        if (msgEl) msgEl.textContent = initialMsg;
-      }
+      else if (!v && running) { running = false; tl.clear(); restore(); }
     }, { threshold: 0.45 });
   });
 });

@@ -27,9 +27,20 @@ ML.module("cockpit", function (ML) {
     d.className = "cp-msg " + cls + " is-pop";
     d.innerHTML = html + (time ? "<time>" + time + "</time>" : "");
     msgs.appendChild(d);
+    /* Höchstens zwei Nachrichten, damit die neueste immer ganz zu sehen ist */
+    var all = $$(".cp-msg", msgs);
+    while (all.length > 2) { all.shift().remove(); }
     return d;
   }
   function site(key) { return $(".ms--" + key, root); }
+  function syncSite(s) { var c = s && $("[data-msform]", s); if (c && c._sync) c._sync(); }
+  /* Neuer Eintrag oben im Verlauf, die anderen rücken nach */
+  function pushFeed(it) {
+    $$(".cp-feed__item", feed).forEach(function (el) { var n = +el.style.getPropertyValue("--slot") + 1; el.style.setProperty("--slot", n); if (n > 2) el.classList.add("is-leave"); });
+    var n = feedItem(it, 0, true); n.classList.add("is-enter"); feed.insertBefore(n, feed.firstChild);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { n.classList.remove("is-enter"); }); });
+    setTimeout(function () { $$(".is-leave", feed).forEach(function (el) { el.remove(); }); }, 800);
+  }
   /* Markierung des gewählten Betriebs gleitet unter den nächsten Reiter */
   function placeInd(animate) {
     var t = tabsEl && $(".cp-tab[aria-selected=true]", tabsEl);
@@ -40,7 +51,9 @@ ML.module("cockpit", function (ML) {
     if (!animate) { void ind.offsetWidth; ind.style.transition = ""; }
     tabsEl.classList.add("has-ind");
   }
+  var kpiNow = 0, count = 0, minute = 9 * 60 + 42, tried = false, liveEl = $("[data-cp-live]", root.parentNode);
   function setKpi(v, tick) {
+    kpiNow = v;
     var a = kpi.children[0], b = kpi.children[1];
     if (!tick) { kpi.classList.remove("is-tick"); a.textContent = v; b.textContent = ""; return; }
     b.textContent = v;
@@ -58,17 +71,21 @@ ML.module("cockpit", function (ML) {
     text("kpil", b.kpi[0]);
     text("kpid", b.kpi[2]);
     text("ch", b.channel === "wa" ? "KI-Agent · per WhatsApp" : "KI-Agent · im Cockpit");
-    text("count", "Heute " + (b.feed.length + 1));
+    count = b.feed.length + 1;
+    tried = false;
+    text("count", "Heute " + count);
+    text("time", "09:41"); minute = 9 * 60 + 42;
     setKpi(b.kpi[1], false);
     feed.innerHTML = "";
     b.feed.forEach(function (it, i) { var el = feedItem(it, i, false); el.classList.add("is-enter"); feed.appendChild(el); });
     msgs.innerHTML = "";
     var s = site(key);
     if (s) {
-      var info = $(".ms__info", s), note = $(".ms__notice", s);
+      var info = $(".ms__info", s), note = $(".ms__notice", s), card = $("[data-msform]", s);
       s.classList.remove("is-upd");
       if (info) info.classList.remove("is-upd", "is-flash");
       if (note) note.classList.remove("is-on");
+      if (card) { card.classList.remove("is-done"); if (card._sync) card._sync(); }
     }
     chips.forEach(function (c) {
       var on = c.getAttribute("data-branch") === key;
@@ -90,7 +107,7 @@ ML.module("cockpit", function (ML) {
     else { msg("cp-msg--task", "<b>" + ML.esc(b.task[0]) + "</b>" + ML.esc(b.agent)); }
     $$(".cp-msg", msgs).forEach(function (m) { m.classList.remove("is-pop"); });
     var s = site(key);
-    if (s) { var info = $(".ms__info", s), note = $(".ms__notice", s); s.classList.add("is-upd"); if (info) info.classList.add("is-upd"); if (note) note.classList.add("is-on"); }
+    if (s) { var info = $(".ms__info", s), note = $(".ms__notice", s); s.classList.add("is-upd"); if (info) info.classList.add("is-upd"); if (note) note.classList.add("is-on"); syncSite(s); }
     setKpi(b.kpi[1] + 1, false);
   }
 
@@ -115,16 +132,14 @@ ML.module("cockpit", function (ML) {
       var s = site(key); if (!s) return;
       var info = $(".ms__info", s), note = $(".ms__notice", s);
       s.classList.add("is-upd");
+      syncSite(s);
       if (info) { info.classList.add("is-upd", "is-flash"); setTimeout(function () { info.classList.remove("is-flash"); }, 1500); }
       if (note) note.classList.add("is-on");
     });
     tl.at(5100, function () {
-      var items = $$(".cp-feed__item", feed);
-      items.forEach(function (el) { var s = +el.style.getPropertyValue("--slot") + 1; el.style.setProperty("--slot", s); if (s > 2) el.classList.add("is-leave"); });
-      var n = feedItem(b["new"], 0, true); n.classList.add("is-enter"); feed.insertBefore(n, feed.firstChild);
-      requestAnimationFrame(function () { requestAnimationFrame(function () { n.classList.remove("is-enter"); }); });
-      setTimeout(function () { $$(".is-leave", feed).forEach(function (el) { el.remove(); }); }, 800);
-      setKpi(b.kpi[1] + 1, true);
+      if (tried) return;   /* Wer selbst etwas abgeschickt hat, sieht seinen eigenen Eintrag oben */
+      pushFeed(b["new"]);
+      setKpi(kpiNow + 1, true);
     });
     tl.at(SCENE, function () {
       if (!auto || paused || !inView || document.hidden) return;
@@ -162,6 +177,97 @@ ML.module("cockpit", function (ML) {
       else { auto = true; play(cur); }
     });
   }
+
+  /* ---------- Beispiel-Websites zum Ausprobieren ----------
+     Auswahl treffen, abschicken – und die Anfrage steht sofort im Cockpit. */
+  function stamp() { var h = Math.floor(minute / 60), m = minute % 60; minute++; return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m; }
+  function fill(t, v) { return String(t || "").replace(/\{(\w+)\}/g, function (_, k) { return v[k] != null ? v[k] : ""; }); }
+  function interact() { auto = false; }
+  $$("[data-msform]", root).forEach(function (card) {
+    var key = card.getAttribute("data-msform"), s = card.closest(".ms"), F = (D.b[key] || {}).form || {};
+    var toast = $("[data-mstoast]", s), ctas = $$("[data-mscta]", s), sb = $("[data-mssubmit]", card), again = $("[data-msagain]", card);
+    function val(name) { var o = $('[data-msgroup="' + name + '"] .mc__o.is-on', card); return o ? o.getAttribute("data-v") : ""; }
+    function vals() {
+      var v = { time: val("time"), topic: val("topic"), day: val("day") };
+      if (v.day && F.days && F.days[v.day]) { v.dayShort = F.days[v.day][0]; v.dayLong = F.days[v.day][1]; }
+      return v;
+    }
+    function hidden() { return getComputedStyle(card).display === "none"; }
+    function changed(name, v) {
+      if (name === "topic" && F.area) { var a = $("[data-msarea]", card); if (a) a.textContent = F.area[v] || ""; }
+      if (key === "praxis") sync();
+    }
+    /* Praxis: Nach der Änderung durch den Agenten ist Mittwochnachmittag nicht mehr buchbar */
+    function sync() {
+      var pm = $(".mc__pm", card); if (!pm) return;
+      var closed = s.classList.contains("is-upd") && val("day") === "Mi 18";
+      pm.disabled = closed;
+      pm.setAttribute("aria-disabled", closed ? "true" : "false");
+      if (closed && pm.classList.contains("is-on")) { var first = $('[data-msgroup="time"] .mc__o', card); if (first) pick(first); }
+    }
+    function pick(o, focus) {
+      if (o.disabled) return;
+      var g = o.closest("[data-msgroup]");
+      $$(".mc__o", g).forEach(function (x) { var on = x === o; x.classList.toggle("is-on", on); x.setAttribute("aria-checked", on ? "true" : "false"); x.tabIndex = on ? 0 : -1; });
+      if (focus) o.focus();
+      changed(g.getAttribute("data-msgroup"), o.getAttribute("data-v"));
+    }
+    $$("[data-msgroup]", card).forEach(function (g) {
+      var opts = $$(".mc__o", g);
+      opts.forEach(function (o, i) {
+        o.addEventListener("click", function () { interact(); pick(o); });
+        o.addEventListener("keydown", function (e) {
+          var d = (e.key === "ArrowRight" || e.key === "ArrowDown") ? 1 : (e.key === "ArrowLeft" || e.key === "ArrowUp") ? -1 : 0;
+          if (!d) return;
+          e.preventDefault(); interact();
+          var j = i, guard = 0;
+          do { j = (j + d + opts.length) % opts.length; guard++; } while (opts[j].disabled && guard < opts.length);
+          pick(opts[j], true);
+        });
+      });
+    });
+    function submit() {
+      interact();
+      tried = true;
+      var v = vals(), t = stamp();
+      var title = fill(F.feed && F.feed[1], v), sub = fill(F.feed && F.feed[2], v);
+      $("[data-msdone]", card).textContent = fill(F.done, v);
+      var stacked = root.getBoundingClientRect().width < 860;
+      $("[data-mswhere]", card).textContent = stacked ? "Steht jetzt unten im Cockpit bei den neuen Anfragen." : "Steht jetzt rechts im Cockpit bei den neuen Anfragen.";
+      card.classList.add("is-done");
+      if (again && !hidden()) again.focus({ preventScroll: true });
+      pushFeed([F.feed ? F.feed[0] : "inbox", title, sub, t]);
+      setKpi(kpiNow + 1, !ML.reduce);
+      count++; text("count", "Heute " + count);
+      text("time", t);
+      if (liveEl) liveEl.textContent = "Neu im Cockpit: " + title + ", " + sub + ".";
+      /* Der KI-Agent meldet sich kurz darauf zu der neuen Anfrage */
+      var say = fill(F.agent, v), forKey = key;
+      if (say) setTimeout(function () {
+        if (cur !== forKey) return;
+        $$(".cp-typing", msgs).forEach(function (x) { x.remove(); });
+        var all = $$(".cp-msg", msgs);
+        var keep = (all.length && !all[all.length - 1].classList.contains("cp-msg--task")) ? 1 : 0;
+        while (all.length > keep) { all.shift().remove(); }
+        msg("cp-msg--agent", ML.esc(say), t);
+      }, ML.reduce ? 0 : 1100);
+      if (toast && hidden()) {
+        toast.textContent = fill(F.done, v) + (stacked ? " – steht jetzt unten im Cockpit." : " – steht jetzt im Cockpit.");
+        toast.classList.add("is-on"); clearTimeout(toast._t);
+        toast._t = setTimeout(function () { toast.classList.remove("is-on"); }, 4200);
+      }
+    }
+    if (sb) sb.addEventListener("click", submit);
+    if (again) again.addEventListener("click", function () { interact(); card.classList.remove("is-done"); var f = $(".mc__o.is-on", card) || sb; if (f) f.focus({ preventScroll: true }); });
+    ctas.forEach(function (cta) { cta.addEventListener("click", function () {
+      if (hidden()) { submit(); return; }
+      interact();
+      card.classList.remove("is-done");
+      card.classList.remove("is-hint"); void card.offsetWidth; card.classList.add("is-hint");
+      var f = $(".mc__o.is-on", card) || sb; if (f) f.focus({ preventScroll: true });
+    }); });
+    card._sync = sync;
+  });
 
   /* Markierung nachführen, wenn sich die Breite ändert */
   if ("ResizeObserver" in window && tabsEl) new ResizeObserver(function () { placeInd(false); }).observe(tabsEl);

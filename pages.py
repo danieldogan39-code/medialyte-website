@@ -7,7 +7,7 @@ Texte ändern, dann `python3 build.py` ausführen.
 from build import SITE, breadcrumb_schema, e, faq_schema, icon, org_schema
 import mocks
 from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, ba_slider, book_link, booking_widget, btn_book, btn_wa,
-                   cases, closing, compare, faq_block, feats, film, idea, img, journey, logo_marquee, page_hero, plans,
+                   cases, closing, compare, faq_block, feats, film, idea, img, journey, logo_marquee, marquee_rows, page_hero, plans,
                    process, ref_dialog, results, sh, team, ticks)
 
 
@@ -17,14 +17,14 @@ def render_home(ctx):
 <section class="hero" id="start">
   <div class="hero__bg" aria-hidden="true"><span class="hero__glow"></span><span class="hero__glow hero__glow--2"></span><span class="hero__grid"></span></div>
   <div class="wrap hero__in">
-    <p class="kicker hero__kicker" data-intro style="--i:0">Digitalagentur aus Hamburg für Betriebe in ganz Deutschland</p>
+    <p class="kicker hero__kicker" data-intro style="--i:0"><span class="kicker__dot" aria-hidden="true"></span>Digitalagentur aus Hamburg für Betriebe in ganz Deutschland</p>
     <h1 class="display hero__title"><span class="line"><span style="--i:1">Ihre Website soll Kunden bringen.</span></span><span class="line"><span style="--i:2">Nicht Arbeit machen.</span></span></h1>
     <p class="lead hero__lead" data-intro style="--i:3">Wir bauen die Website, die Ihre Zielgruppe überzeugt, und das System dahinter, in dem jede Anfrage landet. Änderungen schicken Sie einfach per WhatsApp – unser KI-Agent setzt sie um.</p>
     <div class="hero__actions" data-intro style="--i:4">{btn_book(ctx, cls='btn--primary btn--lg')}{btn_wa(ctx, cls='btn--ghost btn--lg')}</div>
     <ul class="hero__proof" data-intro style="--i:5">
       <li>{icon('trend')}<span><b>200+</b> erfolgreiche Kampagnen</span></li>
-      <li>{icon('clock')}<span>Angebot in <b>48 Stunden</b></span></li>
-      <li>{icon('shield')}<span><b>Zufriedenheitsgarantie</b></span></li>
+      <li><a href="#faq-kosten" data-faq-link>{icon('clock')}<span>Angebot in <b>48 Stunden</b></span></a></li>
+      <li><a href="#faq-garantie" data-faq-link>{icon('shield')}<span><b>Zufriedenheitsgarantie</b></span></a></li>
     </ul>
   </div>
   <div class="wrap">{mocks.cockpit(ctx)}</div>
@@ -248,7 +248,7 @@ def render_sys(ctx):
     {cases(ctx, ("rechnungsradar",))}
   </div>
 </section>"""
-    return _svc_page(ctx, "Kundenmanagement-System", 'Ihr eigenes Kundensystem. <span class="quiet">Direkt mit Ihrer Website verbunden.</span>',
+    return _svc_page(ctx, "Kundenmanagement-System", 'Ihr eigenes Kundensystem. <span class="quiet">Verbunden mit Ihrer Website.</span>',
                      "Schluss mit Excel, Zetteln und verlorenen E-Mails. Wir entwickeln Kunden- und Produktmanagement-Systeme, die genau zu Ihren Abläufen passen: Anfragen, Termine, Angebote und Aufträge an einem Ort.",
                      mocks.pipeline(), sections, FAQ_SYS, "system",
                      ("Schluss mit Zettelwirtschaft?", "Sprechen wir über Ihre Abläufe.",
@@ -354,7 +354,6 @@ def render_mkt(ctx):
 
 # ======================================================================= Weitere Seiten
 def render_refs(ctx):
-    wall = "".join(f'<div>{img(ctx, "img/logos/" + f + ".webp", _LOGO_DIMS[f][0], _LOGO_DIMS[f][1], a)}</div>' for f, a in LOGOS)
     more = [
         ("Hubo d'Moran", "Gemeinnütziger Verein", "Zweisprachige Website für einen gemeinnützigen Verein mit Spendenbereich und Buchprojekt.", "https://hubodmoran.com/"),
         ("FassadenTrio", "Dienstleister", "Google-Ads-Kampagne und Landingpage mit Vorher-Nachher-Regler, Ablauf und Fassaden-Check-Rechner.", ""),
@@ -368,7 +367,7 @@ def render_refs(ctx):
             + f'<section class="section section--flush"><div class="wrap">{cases(ctx)}</div></section>'
             + f'<section class="section section--deep"><div class="wrap">{sh("Mehr aus unserer Arbeit", split=True)}<div class="more">{mcards}</div></div></section>'
             + f'<section class="section"><div class="wrap">{sh("Vorher, nachher – <span class=quiet>und was es gebracht hat.</span>", "So hat sich der Auftritt von RechnungsRadar verändert.", split=True)}{results(ctx)}</div></section>'
-            + f'<section class="section section--deep"><div class="wrap">{sh("Kunden und Partner", "Unternehmen, die mit Medialyte arbeiten.", split=True)}<div class="logo-wall" data-reveal>{wall}</div></div></section>'
+            + f'<section class="section section--deep section--marquee"><div class="wrap">{sh("Kunden und Partner", "Unternehmen, die mit Medialyte arbeiten – vom Restaurant bis zum Industriekonzern.", split=True)}</div><div data-reveal>{marquee_rows(ctx, 2)}</div></section>'
             + closing(ctx, "Ihr Projekt als nächste Referenz?", "Erzählen Sie uns davon.", "Im kostenfreien Erstgespräch hören wir zu und sagen Ihnen, was sich lohnt. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
 
 

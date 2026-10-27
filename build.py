@@ -245,7 +245,7 @@ def header(ctx, active=""):
     </nav>
     <div class="header__actions">
       <a class="icon-btn header__wa" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}</a>
-      <a class="btn btn--light btn--sm header__cta" href="{cta}">Erstgespräch buchen</a>
+      <a class="btn btn--primary btn--sm header__cta" href="{cta}">Erstgespräch buchen</a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menü öffnen"><span></span><span></span></button>
     </div>
   </div>

@@ -75,23 +75,34 @@ ML.module("journey", function (ML) {
       activate(Math.min(n - 1, Math.floor(p * n)));
     });
 
-    /* Darstellungen in die verfügbare Fläche einpassen */
+    /* Darstellungen in die verfügbare Fläche einpassen; liefert die stärkste Verkleinerung */
     function fit() {
+      var least = 1;
       sts.forEach(function (s) {
         var vis = $(".st__vis", s), f = vis && $(".st__fit", vis);
         if (!f) return;
         if (!pinned) { f.style.removeProperty("--fit"); return; }
         var k = Math.min(1, vis.clientWidth / Math.max(1, f.offsetWidth), vis.clientHeight / Math.max(1, f.offsetHeight));
+        least = Math.min(least, k);
         f.style.setProperty("--fit", (Math.floor(k * 1000) / 1000).toString());
       });
+      return least;
     }
     var stage = $(".jr__stage", jr);
     if ("ResizeObserver" in window && stage) new ResizeObserver(fit).observe(stage);
-    else window.addEventListener("resize", fit);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
-    function check() { setMode(mq.matches && !ML.reduce); fit(); }
+    /* Bühne nur, wenn alles gut lesbar bleibt: Müsste eine Darstellung stärker als auf
+       84 % verkleinert werden (z. B. 1366 × 657), stehen die Stationen untereinander. */
+    var MIN_FIT = 0.84;
+    function check() {
+      var want = mq.matches && !ML.reduce;
+      if (want !== pinned) setMode(want);
+      if (fit() < MIN_FIT && pinned) { setMode(false); fit(); }
+    }
     if (mq.addEventListener) mq.addEventListener("change", check); else if (mq.addListener) mq.addListener(check);
+    var rt = null;
+    window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(check, 180); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(check);
     check();
   });
 });

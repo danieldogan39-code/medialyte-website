@@ -16,6 +16,7 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 | `api/` | PHP-Endpunkte für die Terminbuchung (`termin.php`, `slots.php`) |
 | `deploy/.htaccess` | HTTPS, Weiterleitungen alter WordPress-Adressen, Caching, Sicherheits-Header |
 | `tools/` | Hilfsskripte (Screenshots, Funktionstest, Referenzbilder, Wortmarke, Vorschaubild) |
+| `film/` | Erklärfilm „Medialyte in 100 Sekunden“: Szenen, Zeitplan, Sprecher, Musik und Skripte zum Neu-Bauen (siehe `film/README.md`) |
 
 CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site.js` zusammengefügt (mit Prüfsumme gegen alte Browser-Caches).
 
@@ -80,7 +81,6 @@ Das Dashboard prüft die Signatur und legt daraus einen Lead an. `slots.php` lie
 ## Vor dem Livegang offen
 
 - [ ] Datenschutzerklärung und AGB einfügen (`render_legal_placeholder` in `pages.py` ersetzen)
-- [ ] Film einbauen (Platzhalter `film()` in `parts.py`, derzeit ohne Abspiel-Knopf)
 - [ ] Optional: echte Fotos für die Beispiel-Websites im Cockpit (derzeit bewusst ohne Bilder, mit Funktionskarten)
 - [ ] `api/config.php` auf dem Server anlegen, Webhook zum Dashboard setzen
 - [ ] Nach dem Livegang: Sitemap in der Google Search Console einreichen

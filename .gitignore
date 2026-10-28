@@ -5,3 +5,11 @@ api/config.php
 api/data/
 __pycache__/
 .DS_Store
+
+# Film: Zwischenstände
+film/stage/
+film/out/
+film/stills/
+film/audio/vo_timed.wav
+film/audio/music_edit.wav
+film/audio/mix*.wav

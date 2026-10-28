@@ -368,33 +368,33 @@ html:not(.js) .po{justify-content:center}
 
 /* ---------- Film (Platzhalter) ---------- */
 .film{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(28px,4vw,64px);align-items:center}
-.film__frame{position:relative;cursor:pointer;-webkit-user-select:none;user-select:none;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;border:1px solid var(--line-2);background:radial-gradient(70% 90% at 25% 15%,rgba(64,98,158,.45),transparent 60%),radial-gradient(60% 70% at 100% 100%,rgba(255,87,87,.12),transparent 60%),linear-gradient(160deg,#16253F,#0A1220);box-shadow:var(--shadow-window);container-type:inline-size}
-.film__mono{position:absolute;right:-4%;bottom:-14%;width:58%;height:auto;color:var(--coral);opacity:.08}
-.film__scenes{position:absolute;inset:0;display:grid;align-items:center;padding:0 7cqi}
-.film__scene{grid-area:1/1;display:grid;gap:1.4cqi;max-width:34rem;opacity:0;transform:translate3d(0,16px,0);transition:opacity .6s ease,transform .8s var(--ease-out)}
-.film__scene.is-on{opacity:1;transform:none;transition-delay:.15s}
-.film__scene small{font-size:max(.8rem,1.7cqi);font-weight:500;color:#FF8C8C}
-.film__scene b{font-size:clamp(1.6rem,6.2cqi,3.4rem);font-weight:600;letter-spacing:-.04em;line-height:1.02}
-.film__scene span{font-size:max(.9rem,2.1cqi);color:var(--text-2);line-height:1.45}
-.film__foot{position:absolute;left:7cqi;right:7cqi;bottom:5cqi;display:flex;align-items:center;gap:16px;font-size:.84rem;color:var(--steel)}
-.film__bars{display:flex;gap:6px}
-.film__bars i{position:relative;width:34px;height:3px;border-radius:2px;background:rgba(255,255,255,.14);overflow:hidden}
-.film__bars i::after{content:"";position:absolute;inset:0;background:var(--coral);transform-origin:0 50%;transform:scaleX(0)}
-.film__bars i.is-done::after{transform:scaleX(1)}
-.film__bars i.is-on::after{transform:scaleX(1)}
-.film.is-playing .film__bars i.is-on::after{animation:dotfill var(--dur,4.8s) linear forwards}
+.film__frame{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;border:1px solid var(--line-2);background:#0A1220;box-shadow:var(--shadow-window)}
+.film__video{display:block;width:100%;height:100%;object-fit:cover;background:#0A1220}
+/* Großer Abspiel-Knopf über dem Vorschaubild; verschwindet, sobald der Film läuft */
+.film__play{position:absolute;inset:0;display:flex;align-items:flex-end;gap:18px;padding:clamp(18px,3vw,34px);border:0;background:linear-gradient(0deg,rgba(6,11,20,.78),rgba(6,11,20,.18) 46%,rgba(6,11,20,0) 70%);color:#fff;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .3s ease,visibility 0s linear 0s}
+.film__btn{flex:none;width:clamp(58px,6.4vw,84px);height:clamp(58px,6.4vw,84px);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#FB5353,var(--coral-btn-2));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 18px 40px -16px rgba(255,87,87,.8);transition:transform .16s var(--ease-out)}
+.film__btn svg{width:42%;height:42%;margin-left:7%}
+.film__lbl{display:grid;gap:3px}
+.film__lbl b{font-size:clamp(1.02rem,.9rem + .5vw,1.28rem);font-weight:600;letter-spacing:-.01em}
+.film__lbl small{font-size:.9rem;color:rgba(243,245,249,.78)}
+.film__play:active .film__btn{transform:scale(.95)}
+@media (hover:hover) and (pointer:fine){.film__play:hover .film__btn{transform:scale(1.06)}}
+.film.is-started .film__play{opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
+html:not(.js) .film__play{display:none}
+/* Kapitel: ein Klick springt an die Stelle */
 .film__chapters{list-style:none;display:grid;gap:0}
 .film__chapters li + li{border-top:1px solid var(--line)}
-.film__ch{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 16px;width:100%;padding:16px 0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.film__ch{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 16px;width:100%;padding:16px 0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .film__chapters li:first-child .film__ch{padding-top:0}
 .film__ch .num{grid-row:span 2;transition:background-color .3s ease,border-color .3s ease,color .3s ease}
 .film__ch b{font-weight:600;line-height:1.35;transition:color .3s ease}
-.film__ch span:not(.num){font-size:.94rem;color:var(--steel);line-height:1.5}
+.film__ch time{font-size:.86rem;color:var(--steel);font-variant-numeric:tabular-nums;padding-top:2px}
+.film__ch span:not(.num){grid-column:2 / span 2;font-size:.94rem;color:var(--steel);line-height:1.5}
 .film__ch:not(.is-on) b{color:var(--text-2)}
 .film__ch.is-on .num{background:var(--text);border-color:var(--text);color:var(--navy)}
 @media (hover:hover) and (pointer:fine){.film__ch:not(.is-on):hover b{color:var(--text)}.film__ch:not(.is-on):hover .num{border-color:var(--text)}}
 @media (max-width:900px){.film{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:560px){.film__frame{aspect-ratio:4/3.3}.film__foot{flex-direction:column;align-items:flex-start;gap:10px}}
+@media (max-width:560px){.film__lbl small{font-size:.82rem}}
 
 /* ---------- Häufige Fragen ---------- */
 .faq{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(36px,6vw,110px);align-items:start}

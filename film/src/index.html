@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Medialyte Erklärfilm</title>
+<link rel="stylesheet" href="film.css">
+</head>
+<body>
+<div id="stage">
+  <div class="bg"><i class="f1"></i><i class="f2"></i><i class="f3"></i></div>
+  <div class="chap" id="chap"><b></b><span></span></div>
+
+  <!-- 1 + 2: Suche, alte Website, Absprung, Mängel -->
+  <section class="sc" id="s1"><div class="cam">
+    <div class="phone" id="ph1" style="left:520px;top:120px">
+      <div class="ph__screen">
+        <div class="ph__status"><span>09:41</span><i></i></div>
+        <div class="scr scr--search" id="scrSearch">
+          <div class="srch">{{I:search}}<span id="q"></span><i class="caret" id="caret"></i></div>
+          <ul class="res">
+            <li class="r--hit" id="hit"><small><i>T</i>tischlerei-brandt.de</small><b>Tischlerei Brandt – Lüneburg</b><span>Möbel, Küchen und Treppen nach Maß. Willkommen auf unserer Homepage …</span></li>
+            <li><small><i>M</i>moebelwerkstatt-kuehn.de</small><b>Möbelwerkstatt Kühn</b><span>Einbauschränke und Küchen aus Meisterhand.</span></li>
+            <li><small><i>H</i>holzbau-sander.de</small><b>Holzbau Sander</b><span>Treppen, Türen und Innenausbau.</span></li>
+          </ul>
+          <i class="tap" id="tap" style="left:200px;top:224px"></i>
+        </div>
+        <div class="scr scr--load" id="scrLoad"><i class="loadbar" id="loadbar"></i><i class="spin" id="spin"></i><small>tischlerei-brandt.de</small></div>
+        <div class="scr scr--old" id="scrOld"><div class="scr__in">
+          <div class="old" id="old">
+            <div class="old__top"><div class="old__logo">Tischlerei Brandt</div><div class="old__tag">Ihr Partner rund ums Holz seit 1987</div></div>
+            <div class="old__nav"><a>Startseite</a>| <a>Über uns</a>| <a>Leistungen</a>| <a>Galerie</a>| <a>Anfahrt</a>| <a>Kontakt</a>| <a>Impressum</a></div>
+            <div class="old__body">
+              <div class="old__side">» Startseite<br>» Küchen<br>» Treppen<br>» Möbel<br>» Referenzen<br>» Gästebuch<br>» Links</div>
+              <div class="old__main">
+                <h1>Herzlich Willkommen auf unserer Homepage!</h1>
+                <p>Wir fertigen für Sie Möbel, Küchen und Treppen nach Ihren Wünschen. Gerne beraten wir Sie persönlich in unserer Werkstatt. Rufen Sie uns an oder schreiben Sie uns eine E-Mail.</p>
+                <div class="old__img">Bild wird geladen …</div>
+                <div class="old__hours" id="oldHours"><b>Öffnungszeiten Sommer 2025</b><br>Mo – Fr 7:00 – 16:00 Uhr<br>Sa nach Vereinbarung</div>
+                <div class="old__count">Besucher: <b>004211</b></div>
+                <h2 class="old__h2">Unsere Leistungen</h2>
+                <ul class="old__list"><li>Küchen nach Maß</li><li>Treppen aus Holz</li><li>Einbauschränke</li><li>Reparaturen aller Art</li></ul>
+                <div class="old__guest"><b>Neu: unser Gästebuch!</b><br>Tragen Sie sich ein und hinterlassen Sie uns einen Gruß.</div>
+              </div>
+            </div>
+            <div class="old__foot">Letzte Aktualisierung: 14.03.2019 &nbsp;·&nbsp; Optimiert für 1024 × 768 &nbsp;·&nbsp; © Tischlerei Brandt</div>
+          </div>
+        </div></div>
+        <i class="ring" id="ring1" style="left:10px;top:66px;width:362px;height:94px"></i>
+        <i class="ring" id="ring2" style="left:10px;top:168px;width:362px;height:46px"></i>
+        <i class="ring" id="ring3" style="left:108px;top:464px;width:262px;height:68px"></i>
+      </div>
+    </div>
+    <div class="visit" id="visit"><small>Besuch auf tischlerei-brandt.de</small><b class="tm" id="tm">0:00</b><span class="st" id="vst"><i></i><em id="vstx" style="font-style:normal">Seite lädt</em></span></div>
+    <ul class="flags" id="flags">
+      <li><i></i><div>Veraltet<small>Seit Jahren nicht mehr angefasst</small></div></li>
+      <li><i></i><div>Kaum zu bedienen<small>Nicht fürs Handy gemacht</small></div></li>
+      <li><i></i><div>Öffnungszeiten von 2025<small>Wer kommt, steht vor der Tür</small></div></li>
+    </ul>
+  </div></section>
+
+  <!-- 3: Anfragen verstreut -->
+  <section class="sc" id="s3"><div class="cam">
+    <div class="note" id="note" style="left:300px;top:250px;transform:rotate(-4deg)">Rückruf Frau Peters!<small>Mittwoch? Nummer auf dem Zettel</small></div>
+    <div class="card" id="cTel" style="left:740px;top:200px">{{ICO:tel:phone}}<div><b>Verpasster Anruf</b><small>Heute, 12:14 · keine Nachricht</small></div><span class="badge">2</span></div>
+    <div class="card" id="cMail" style="left:1080px;top:420px">{{ICO:mail:mail}}<div><b>Anfrage: Einbauschrank</b><small>Posteingang · seit 3 Tagen ungelesen</small></div><span class="badge">14</span></div>
+    <div class="card" id="cWa" style="left:520px;top:600px">{{ICO:wa:wa}}<div><b>„Haben Sie Samstag geöffnet?“</b><small>WhatsApp · privates Handy</small></div><span class="badge">3</span></div>
+  </div></section>
+
+  <!-- 4: Wende -->
+  <section class="sc" id="s4"><div class="cam">
+    <div class="turn"><div id="turnMk">{{LOGO:mk}}</div><div class="hl" id="turnHl"><span class="word">Genau</span> <span class="word">hier</span> <span class="word">setzen</span> <span class="word">wir</span> <span class="word">an.</span></div></div>
+  </div></section>
+
+  <!-- 5: Erstgespräch, Angebot in 48 Stunden -->
+  <section class="sc" id="s5"><div class="cam">
+    <div class="bk" id="bk">
+      <div class="bk__h"><span class="av">{{LOGO:}}</span><div><b>Kostenfreies Erstgespräch</b><small>Medialyte · Ihr fester Ansprechpartner</small></div></div>
+      <div class="bk__meta"><span>{{I:clock}}30 Minuten</span><span>{{I:video}}Video, Telefon oder vor Ort</span></div>
+      <div class="cal" id="cal">
+        <div class="cal__m">November 2026 <span>Termin wählen</span></div>
+        <i>Mo</i><i>Di</i><i>Mi</i><i>Do</i><i>Fr</i><i>Sa</i><i>So</i>
+        <u>2</u><u>3</u><u>4</u><u>5</u><u>6</u><u class="off">7</u><u class="off">8</u>
+        <u>9</u><u id="day">10</u><u>11</u><u>12</u><u>13</u><u class="off">14</u><u class="off">15</u>
+      </div>
+      <div class="slots" id="slots"><span>09:00</span><span id="slot">10:30</span><span>14:00</span><span>16:30</span></div>
+      <div class="bk__ok" id="bkok">{{I:check}}Termin steht: Di, 10. November · 10:30 Uhr</div>
+    </div>
+    <div class="offer" id="offer">
+      <div class="offer__h"><div><b>Ihr Angebot</b><small>Tischlerei Brandt · Website und Kundensystem</small></div>{{LOGO:offer__mk}}</div>
+      <ul><li>Website nach Ihrer Zielgruppe<i>✓</i></li><li>Kundensystem mit Dashboard<i>✓</i></li><li>KI-Agent und laufende Pflege<i>✓</i></li></ul>
+      <div class="lines"><span style="width:92%"></span><span style="width:78%"></span><span style="width:55%"></span></div>
+    </div>
+    <div class="h48" id="h48">{{I:clock}}in 48 Stunden</div>
+  </div></section>
+
+  <!-- 6 + 7: Ablauf, neue Website, Kundensystem -->
+  <section class="sc" id="s6"><div class="cam">
+    <div class="rail" id="rail"><div class="rail__line"><i id="railFill"></i></div>
+      <ol><li><i>1</i>Ihre Kunden</li><li><i>2</i>Gestaltung</li><li><i>3</i>Entwicklung</li><li><i>4</i>Test</li><li><i>5</i>Live</li></ol></div>
+    <div class="br" id="br">
+      <div class="br__bar"><i></i><i></i><i></i><div class="br__url">{{I:lock}}tischlerei-brandt.de</div><span class="br__live" id="live"><i></i>Live</span></div>
+      <div class="br__view">
+        <div class="ns" id="ns">
+          <div class="ns__nav"><span class="ns__logo">Tischlerei Brandt</span><span class="ns__links"><span>Leistungen</span><span>Projekte</span><span>Werkstatt</span></span><span class="ns__btn">Anfragen</span></div>
+          <div class="ns__hero">
+            <div><div class="ns__eyebrow">Tischlerei in Lüneburg</div><div class="ns__title">Möbel nach Maß. Aus der eigenen Werkstatt.</div><div class="ns__sub">Küchen, Einbauschränke und Treppen – geplant mit Ihnen, gebaut für Jahrzehnte.</div><span class="ns__cta">Projekt anfragen</span></div>
+            <div class="ns__form" id="nsForm"><b>Projekt anfragen</b><div class="ns__chips"><span>Küche</span><span class="on">Einbauschrank</span><span>Treppe</span></div><div class="ns__field">Einbauschrank unter der Dachschräge, ca. 3 m breit …</div><div class="ns__send">Anfrage senden</div></div>
+          </div>
+          <div class="ns__info"><div><span><small>Öffnungszeiten</small>&nbsp; Mo–Fr 7–16 Uhr</span></div><div><span><small>Aufmaß</small>&nbsp; Termine ab 9. November</span></div></div>
+        </div>
+        <div class="wf" id="wf">
+          <i style="left:56px;top:34px;width:220px;height:26px"></i><i style="left:760px;top:34px;width:300px;height:22px"></i><i style="left:1120px;top:26px;width:124px;height:42px;border-radius:21px"></i>
+          <i style="left:56px;top:150px;width:520px;height:58px"></i><i style="left:56px;top:222px;width:440px;height:58px"></i><i style="left:56px;top:310px;width:400px;height:20px"></i><i style="left:56px;top:342px;width:330px;height:20px"></i><i style="left:56px;top:400px;width:200px;height:56px;border-radius:28px"></i>
+          <i style="left:720px;top:120px;width:524px;height:380px;border-radius:22px"></i>
+          <i style="left:56px;top:560px;width:584px;height:64px"></i><i style="left:660px;top:560px;width:584px;height:64px"></i>
+        </div>
+        <div class="persona" id="persona"><div class="persona__in"><b>Wer sucht eine Tischlerei?</b>
+          <div class="persona__row"><span class="pch">{{I:users}}Familien mit Eigenheim</span><span class="pch">{{I:pin}}Lüneburg und Umgebung</span></div>
+          <div class="persona__row"><span class="pch">{{I:mobile}}Sucht meist am Handy</span><span class="pch">{{I:search}}Einbauschrank, Küche, Treppe</span></div></div></div>
+        <div class="checks" id="checks"><span>{{I:check}}Auf jedem Gerät</span><span>{{I:check}}Schnell geladen</span><span>{{I:check}}Bei Google auffindbar</span></div>
+      </div>
+    </div>
+    <div class="db" id="db">
+      <div class="db__h"><b>Ihr Dashboard</b><small>Tischlerei Brandt</small></div>
+      <div class="db__k"><div><small>Neue Anfragen</small><b id="kA">2</b></div><div><small>Termine diese Woche</small><b id="kT">3</b></div><div><small>Aufträge</small><b id="kO">5</b></div></div>
+      <div class="pl">
+        <div class="pl__c" id="colNeu"><h5>Neu <span id="nNeu">1</span></h5><div class="pc"><b>Herr Kaya</b><small>Küche nach Maß · Rückruf</small></div><div class="pc is-new" id="pcNew" style="opacity:0"><b>Familie Peters</b><small>Einbauschrank · Website</small><span class="tg">gerade eben</span></div></div>
+        <div class="pl__c" id="colGes"><h5>Gespräch <span id="nGes">1</span></h5><div class="pc" id="pcGes"><b>Weber GmbH</b><small>Büroausbau · Google Ads</small><span class="tg tg--cal tg-abs" id="tagT">{{I:calendar}}Aufmaß Do, 10:00</span></div></div>
+        <div class="pl__c" id="colAng"><h5>Angebot <span id="nAng">1</span></h5><div class="pc" id="pcAng"><b>Frau Lindner</b><small>Treppe aus Eiche</small><span class="tg tg--ok tg-abs" id="tagO">{{I:check}}Auftrag erteilt</span></div></div>
+        <div class="pl__c" id="colAuf"><h5>Auftrag <span id="nAuf">0</span></h5><div class="pc" id="slotAuf" style="visibility:hidden"><b>Frau Lindner</b><small>Treppe aus Eiche</small></div></div>
+      </div>
+    </div>
+    <div class="pc fly is-new" id="flyA" style="width:190px"><b>Familie Peters</b><small>Einbauschrank · Website</small><span class="tg">gerade eben</span></div>
+  </div></section>
+
+  <!-- 8: Aus einer Hand -->
+  <section class="sc" id="s8"><div class="cam">
+    <div class="hl hand__hl" id="handHl">Alles aus einer Hand.</div>
+    <i class="link" id="link"></i>
+    <div class="tiles">
+      <div class="tile" id="t1"><span class="ic ic--web">{{I:globe}}</span><b>Website</b><small>Gemacht für Ihre Kunden</small></div>
+      <div class="tile" id="t2"><span class="ic ic--crm">{{I:db}}</span><b>System</b><small>Jede Anfrage an einem Ort</small></div>
+      <div class="tile" id="t3"><span class="ic ic--ai">{{I:bot}}</span><b>Pflege</b><small>Per WhatsApp oder Dashboard</small></div>
+      <div class="tile" id="t4"><span class="ic ic--ads">{{I:mega}}</span><b>Werbung</b><small>Google Ads, Social Media, SEO</small></div>
+    </div>
+    <div class="contact" id="contact"><span class="av">{{LOGO:}}</span><div><b>Ihr fester Ansprechpartner</b><small>Einer für Website, System und Werbung</small></div><div class="ways"><span>{{I:wa}}</span><span>{{I:phone}}</span><span>{{I:mail}}</span></div></div>
+  </div></section>
+
+  <!-- 9: Erfahrung und Ergebnis -->
+  <section class="sc" id="s9"><div class="cam">
+    <div class="big" id="big"><b><span id="n200">0</span><sup>+</sup></b><small>erfolgreiche Kampagnen</small></div>
+    <div class="imp" id="imp">
+      <div class="imp__h"><img src="rechnungsradar.webp" alt=""><span>Nach dem Relaunch</span></div>
+      <div class="imp__rows">
+        <div class="ir main" id="ir1"><span>Kundenanfragen</span><b>+<span id="n230">0</span> %</b><div class="bars"><div class="bar"><span>vorher</span><u><i style="--w:30.3%"></i></u></div><div class="bar after"><span>nachher</span><u><i style="--w:100%"></i></u></div></div></div>
+        <div class="ir" id="ir2"><span>Absprungrate</span><b>−67 %</b></div>
+        <div class="ir" id="ir3"><span>Conversionrate</span><b>+73 %</b></div>
+        <div class="ir" id="ir4"><span>Marketingkosten</span><b>−15 %</b></div>
+      </div>
+      <div class="imp__src">Veränderung bei RechnungsRadar nach dem Relaunch, im Vergleich zur vorherigen Website.</div>
+    </div>
+  </div></section>
+
+  <!-- 10: KI-Agent per WhatsApp -->
+  <section class="sc" id="s10"><div class="cam">
+    <div class="phone" id="ph2" style="left:420px;top:120px">
+      <div class="ph__screen">
+        <div class="wa">
+          <div class="ph__status"><span>09:41</span><i style="filter:invert(1)"></i></div>
+          <div class="wa__h"><span class="av">{{LOGO:}}</span><div><b>Medialyte KI-Agent</b><small id="waSt">online</small></div></div>
+          <div class="wa__body" id="waBody">
+            <div class="bub bub--me" id="bMe">Ab Montag haben wir 8–18 Uhr geöffnet. Bitte auf der Website ändern.<time>09:41</time></div>
+            <div class="dots" id="dots"><i></i><i></i><i></i></div>
+            <div class="bub bub--in" id="bIn"><b>Erledigt.</b> Die neuen Öffnungszeiten sind online – auf der Startseite und bei Google.<time>09:41</time></div>
+          </div>
+          <div class="wa__chips"><span id="ch1">Neue Öffnungszeiten</span><span id="ch2">Neues Angebot</span><span id="ch3">Frische Fotos</span></div>
+          <div class="wa__in"><div id="waTx"></div><i>{{I:send}}</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="site" id="site">
+      <div class="site__bar"><i></i><i></i><i></i><span>tischlerei-brandt.de</span></div>
+      <div class="site__in"><span class="ns__logo">Tischlerei Brandt</span><div class="t">Möbel nach Maß. Aus der eigenen Werkstatt.</div>
+        <div class="site__row" id="row"><i class="flash" id="flash"></i><span class="v-old" id="rowOld"><small style="color:var(--b-soft)">Öffnungszeiten</small>&nbsp; Mo–Fr 7–16 Uhr</span><span class="v-new" id="rowNew"><small style="color:var(--b-soft)">Öffnungszeiten</small>&nbsp; <b>Mo–Fr 8–18 Uhr</b></span><em id="upd">Aktualisiert</em></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- 11: Dashboard mit Agent, Team -->
+  <section class="sc" id="s11"><div class="cam">
+    <div class="db2" id="db2">
+      <div class="db2__nav"><b>{{LOGO:}}Dashboard</b><span>{{I:layout}}Übersicht</span><span>{{I:inbox}}Anfragen</span><span>{{I:calendar}}Termine</span><span>{{I:globe}}Website</span><span class="on">{{I:bot}}KI-Agent</span></div>
+      <div class="db2__main"><h4>KI-Agent</h4>
+        <div class="cmd">{{I:spark}}<span id="cmd"></span><i class="caret" id="caret2"></i></div>
+        <div class="ans" id="ans">{{I:check}}<span><b>Erledigt.</b> Die Seite „Treppen nach Maß“ ist online und steht unter Leistungen. Das Anfrageformular kennt die neue Leistung schon.</span></div>
+        <div class="svc"><small>Leistungen auf der Website</small><div>Küchen nach Maß<i>online</i></div><div>Einbauschränke<i>online</i></div><div class="add" id="add">Treppen nach Maß<i>neu</i></div></div>
+      </div>
+    </div>
+    <div class="team" id="team"><b>Persönlich für Sie da</b><small>Für alles, was mehr braucht als eine Nachricht.</small>
+      <ul><li><span class="ic--ai">{{I:wa}}</span>Per WhatsApp</li><li><span class="ic--crm">{{I:phone}}</span>Am Telefon</li><li><span class="ic--web">{{I:pin}}</span>Vor Ort in Hamburg</li></ul></div>
+  </div></section>
+
+  <!-- 12: Abschluss -->
+  <section class="sc" id="s12"><div class="cam">
+    <div class="end">
+      <div class="lock" id="lock"><span id="endMk">{{LOGO:mk}}</span><span id="endWm">{{WM}}</span></div>
+      <div class="tag" id="endTag">Damit aus Besuchern Kunden werden.</div>
+      <div class="cta" id="endCta">{{I:calendar}}Kostenfreies Erstgespräch buchen</div>
+      <div class="url" id="endUrl">medialyte.de</div>
+    </div>
+  </div></section>
+</div>
+<script src="gsap.min.js"></script>
+<script>window.TM = {{TIMING}};</script>
+<script src="film.js"></script>
+</body>
+</html>

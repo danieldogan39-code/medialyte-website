@@ -504,28 +504,37 @@ def process(items=None, cls=""):
 
 
 # ======================================================================= Film (Platzhalter)
-def film():
-    """Platzhalter für den Film: Die vier Kapitel laufen als Titelkarten durch, die Liste daneben
-    springt zu einem Kapitel. Ehrlich beschriftet – der Film selbst folgt."""
-    chapters = [
-        ("Die Ausgangslage", "Warum viele Websites Kunden verlieren statt gewinnen"),
-        ("Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
-        ("Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
-        ("Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
-    ]
-    scenes = "".join(
-        f'<div class="film__scene{" is-on" if i == 0 else ""}" data-scene="{i}"><small>Kapitel {i + 1}</small><b>{t}</b><span>{d}</span></div>'
-        for i, (t, d) in enumerate(chapters))
-    bars = "".join(f"<i{' class="is-on"' if i == 0 else ''}></i>" for i in range(len(chapters)))
+# Kapitel des Films: Startzeit in Sekunden (aus dem Schnitt), Titel, kurze Beschreibung
+FILM_CHAPTERS = [
+    (0, "Die Ausgangslage", "Warum viele Websites Kunden verlieren statt gewinnen"),
+    (21.5, "Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
+    (46.3, "Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
+    (66.5, "Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
+]
+FILM_LENGTH = "1:37"
+
+
+def film(ctx):
+    """Der Erklärfilm: Vorschaubild mit großem Abspiel-Knopf, daneben die Kapitel – ein Klick springt an die Stelle.
+    Ohne Skript bleibt der normale Videoplayer mit Bedienelementen."""
+    def mmss(s):
+        return f"{int(s) // 60}:{int(s) % 60:02d}"
     lis = "".join(
-        f'<li><button type="button" class="film__ch{" is-on" if i == 0 else ""}" data-go="{i}" aria-pressed="{"true" if i == 0 else "false"}"><span class="num">{i + 1}</span><b>{t}</b><span>{d}</span></button></li>'
-        for i, (t, d) in enumerate(chapters))
+        f'<li><button type="button" class="film__ch{" is-on" if i == 0 else ""}" data-at="{at}" aria-pressed="{"true" if i == 0 else "false"}">'
+        f'<span class="num">{i + 1}</span><b>{t}</b><time>{mmss(at)}</time><span>{d}</span></button></li>'
+        for i, (at, t, d) in enumerate(FILM_CHAPTERS))
     return f"""
 <div class="film" data-film>
-  <div class="film__frame" data-reveal="scale" aria-hidden="true">
-    {LOGO.replace('class="mono"', 'class="film__mono"')}
-    <div class="film__scenes">{scenes}</div>
-    <div class="film__foot"><span class="film__bars">{bars}</span><span>Der Film entsteht gerade · etwa 90 Sekunden</span></div>
+  <div class="film__frame" data-reveal="scale">
+    <video class="film__video" controls preload="none" playsinline poster="{ctx.a('video/medialyte-film.jpg')}" width="1920" height="1080"
+      aria-label="Film: Medialyte in {FILM_LENGTH} Minuten, mit Untertiteln">
+      <source src="{ctx.a('video/medialyte-film.mp4')}" type="video/mp4">
+      <source src="{ctx.a('video/medialyte-film.webm')}" type="video/webm">
+      <track kind="captions" srclang="de" label="Deutsch" src="{ctx.a('video/medialyte-film.de.vtt')}">
+    </video>
+    <button class="film__play" type="button" aria-label="Film abspielen, {FILM_LENGTH} Minuten, mit Ton">
+      <span class="film__btn">{icon('play')}</span><span class="film__lbl"><b>Film abspielen</b><small>{FILM_LENGTH} Min. · mit Ton und Untertiteln</small></span>
+    </button>
   </div>
   <ol class="film__chapters" data-reveal aria-label="Kapitel des Films">{lis}</ol>
 </div>"""

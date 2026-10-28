@@ -19,15 +19,10 @@ OUT = Path(sys.argv[1]); OUT.mkdir(parents=True, exist_ok=True)
 (PREV / "_qa.html").write_text('<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>' + (PREV / "index.html").read_text() + '</body></html>')
 
 
-class Q(http.server.SimpleHTTPRequestHandler):
-    def log_message(self, *a):
-        pass
+sys.path.insert(0, str(ROOT / "tools"))
+from qa_server import serve  # noqa: E402  (Server mit Byte-Bereichen, damit der Film springen kann)
 
-
-srv = socketserver.TCPServer(("127.0.0.1", 0), functools.partial(Q, directory=str(PREV)))
-port = srv.server_address[1]
-threading.Thread(target=srv.serve_forever, daemon=True).start()
-BASE = f"http://127.0.0.1:{port}"
+srv, BASE = serve(PREV)
 fails = []
 
 
@@ -181,6 +176,15 @@ async def desktop(b):
     await pg.wait_for_timeout(300)
     opened = await pg.evaluate("Array.from(document.querySelectorAll('.qa')).map(function(d){return d.open})")
     check("FAQ: eine Antwort offen", opened.count(True) == 1 and opened[2], str(opened[:4]))
+
+    # Film: Kapitel springt an die Stelle und spielt
+    await pg.evaluate("document.getElementById('film').scrollIntoView()")
+    await pg.wait_for_timeout(700)
+    await pg.click(".film__ch >> nth=2")
+    await pg.wait_for_timeout(3000)
+    st = await pg.evaluate("(function(){var v=document.querySelector('.film__video');return [document.querySelector('[data-film]').classList.contains('is-started'), Math.round(v.currentTime), document.querySelector('.film__ch.is-on b').textContent, v.currentSrc.split('/').pop().split('?')[0], v.paused]})()")
+    check("Film: Kapitel springt an die Stelle", st[0] and st[1] >= 46 and st[2] == "Der Unterschied" and not st[4], str(st))
+    await pg.evaluate("document.querySelector('.film__video').pause()")
 
     # Referenz-Vorschau
     await pg.evaluate("document.getElementById('referenzen').scrollIntoView()")

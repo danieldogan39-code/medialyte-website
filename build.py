@@ -156,6 +156,10 @@ def bundle(out):
 
 def _asset_version(asset):
     v = VERSIONS.get(asset)
+    if v is None and asset.startswith("video/"):
+        # Film, Vorschaubild und Untertitel werden lange zwischengespeichert: Prüfsumme hängt neue Fassungen an
+        f = SRC / "assets" / asset
+        v = VERSIONS[asset] = hashlib.md5(f.read_bytes()).hexdigest()[:8] if f.exists() else ""
     return f"?v={v}" if v else ""
 
 

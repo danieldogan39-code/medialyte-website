@@ -136,29 +136,43 @@ ML.module("faq", function (ML) {
   window.addEventListener("hashchange", function () { if (/^#faq-/.test(location.hash)) openTarget(location.hash.slice(1)); });
 });
 
-/* Film-Platzhalter: Kapitel laufen als Titelkarten durch; ein Klick in der Liste springt dorthin */
+/* Erklärfilm: großer Abspiel-Knopf, Kapitel springen an die Stelle, das laufende Kapitel ist markiert.
+   Der Film lädt erst beim Abspielen und hält an, wenn er aus dem Bild gescrollt wird. */
 ML.module("film", function (ML) {
   ML.$$("[data-film]").forEach(function (root) {
-    var scenes = ML.$$(".film__scene", root), chs = ML.$$(".film__ch", root), bars = ML.$$(".film__bars i", root);
-    var cur = 0, timer = null, auto = !ML.reduce, DUR = 4800, inView = false;
-    root.style.setProperty("--dur", DUR + "ms");
-    function show(i) {
-      cur = i;
-      scenes.forEach(function (s, j) { s.classList.toggle("is-on", j === i); });
-      chs.forEach(function (c, j) { c.classList.toggle("is-on", j === i); c.setAttribute("aria-pressed", j === i ? "true" : "false"); });
-      bars.forEach(function (b, j) { b.classList.remove("is-on"); b.classList.toggle("is-done", j < i); if (j === i) { void b.offsetWidth; b.classList.add("is-on"); } });
-      schedule();
+    var v = ML.$(".film__video", root), btn = ML.$(".film__play", root), chs = ML.$$(".film__ch", root);
+    if (!v || !btn) return;
+    v.removeAttribute("controls");
+    var at = chs.map(function (c) { return parseFloat(c.getAttribute("data-at")) || 0; });
+    var lbl = ML.$(".film__lbl b", root);
+    function mark() {
+      var t = v.currentTime || 0, k = 0;
+      at.forEach(function (a, i) { if (t >= a - 0.1) k = i; });
+      chs.forEach(function (c, i) { c.classList.toggle("is-on", i === k); c.setAttribute("aria-pressed", i === k ? "true" : "false"); });
     }
-    function schedule() {
-      clearTimeout(timer);
-      root.classList.toggle("is-playing", auto && inView);
-      if (!auto || !inView) return;
-      timer = setTimeout(function () { show((cur + 1) % scenes.length); }, DUR);
+    function start(t) {
+      root.classList.add("is-started");
+      v.setAttribute("controls", "");
+      /* play() direkt im Klick, damit der Ton erlaubt ist; die Sprungstelle folgt, sobald die Länge bekannt ist */
+      var p = v.play(); if (p && p.catch) p.catch(function () { root.classList.remove("is-started"); });
+      if (t != null) {
+        if (v.readyState >= 1) v.currentTime = t;
+        else {
+          v.addEventListener("loadedmetadata", function once() { v.removeEventListener("loadedmetadata", once); v.currentTime = t; });
+          /* Sicherheitshalber noch einmal, sobald abgespielt werden kann */
+          v.addEventListener("canplay", function again() { v.removeEventListener("canplay", again); if (Math.abs(v.currentTime - t) > 1) v.currentTime = t; });
+        }
+      }
+      mark();
     }
-    chs.forEach(function (c, i) { c.addEventListener("click", function () { auto = false; show(i); }); });
-    /* Ein Klick ins Bild blättert zum nächsten Kapitel */
-    var frame = root.querySelector(".film__frame");
-    if (frame) frame.addEventListener("click", function () { auto = false; show((cur + 1) % scenes.length); });
-    ML.watch(root, function (v) { inView = v; if (v) show(cur); else { clearTimeout(timer); root.classList.remove("is-playing"); } }, { threshold: 0.4 });
+    btn.addEventListener("click", function () { start(v.ended ? 0 : null); try { v.focus({ preventScroll: true }); } catch (e) { /* egal */ } });
+    chs.forEach(function (c, i) { c.addEventListener("click", function () { start(at[i]); }); });
+    v.addEventListener("timeupdate", mark);
+    v.addEventListener("seeked", mark);
+    v.addEventListener("ended", function () {
+      root.classList.remove("is-started"); v.removeAttribute("controls");
+      if (lbl) lbl.textContent = "Noch einmal ansehen";
+    });
+    ML.watch(root, function (vis) { if (!vis && !v.paused) v.pause(); }, { threshold: 0.15 });
   });
 });

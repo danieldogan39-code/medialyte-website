@@ -2,7 +2,7 @@
 .wrap{width:100%;max-width:calc(var(--max) + 2 * var(--gutter));margin-inline:auto;padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
 .wrap--narrow{max-width:calc(920px + 2 * var(--gutter))}
 .section{position:relative;padding-block:var(--section)}
-.section--deep{background-color:var(--navy-deep)}
+.section--deep{background-color:rgba(7,13,25,.74)}
 .section--flush{padding-top:0}
 .section--tight{padding-block:calc(var(--section) * .62)}
 .section + .section--deep,.section--deep + .section{border-top:1px solid var(--line)}
@@ -13,6 +13,16 @@
    und die Mitte liegt so weit innen, dass jedes Feld vor der Kante des Abschnitts ausläuft (keine Nähte). */
 :root{--f-blue:74,118,210;--f-violet:120,102,238;--f-coral:255,87,87;--f-teal:44,196,172}
 .section{background-image:var(--amb,none);background-repeat:no-repeat}
+/* Zwei weiche Lichtfelder auf einer festen Ebene hinter allem – sie wandern sehr langsam
+   (nur transform, eine Ebene von Bildschirmgröße) und scheinen durch alle Abschnitte. */
+body{background:transparent}
+body::before,body::after{content:"";position:fixed;z-index:-1;pointer-events:none;width:min(980px,115vmax);aspect-ratio:1;border-radius:50%;will-change:transform}
+body::before{left:-22vmax;top:-30vmax;background:radial-gradient(closest-side,rgba(var(--f-blue),.18),rgba(var(--f-blue),.06) 52%,transparent);animation:amb-a 34s ease-in-out infinite alternate}
+body::after{right:-26vmax;bottom:-34vmax;background:radial-gradient(closest-side,rgba(var(--f-violet),.11),rgba(var(--f-coral),.035) 56%,transparent);animation:amb-b 43s ease-in-out infinite alternate}
+@keyframes amb-a{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(22vw,18vh,0) scale(1.08)}100%{transform:translate3d(8vw,46vh,0) scale(.96)}}
+@keyframes amb-b{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-26vw,-14vh,0) scale(.94)}100%{transform:translate3d(-10vw,-40vh,0) scale(1.06)}}
+@media (prefers-reduced-motion:reduce){body::before,body::after{animation:none}}
+@media print{body::before,body::after{display:none}}
 .section:nth-of-type(4n+1){--amb:radial-gradient(min(980px,135vw) 520px at 100% 440px,rgba(var(--f-blue),0.17),rgba(var(--f-blue),0.054) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 0% calc(100% - 290px),rgba(var(--f-coral),0.07),transparent 72%)}
 .section:nth-of-type(4n+2){--amb:radial-gradient(min(720px,110vw) 420px at 0% 360px,rgba(var(--f-violet),0.12),rgba(var(--f-violet),0.038) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 100% calc(100% - 290px),rgba(var(--f-teal),0.075),transparent 72%)}
 .section:nth-of-type(4n+3){--amb:radial-gradient(min(980px,135vw) 520px at 50% 440px,rgba(var(--f-blue),0.15),rgba(var(--f-blue),0.048) 46%,transparent 74%)}

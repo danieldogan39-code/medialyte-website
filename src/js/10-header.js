@@ -1,3 +1,29 @@
+/* Seitenwechsel beginnen oben: Wer im Menü (oder sonst) auf eine andere Seite geht, landet am
+   Seitenanfang – nicht auf der Höhe der vorigen Seite. Ausnahmen: Sprungziele (#…), Zurück/Vor
+   und Neuladen, dort bleibt die Position, die der Browser wiederherstellt. */
+ML.module("page-top", function (ML) {
+  var KEY = "ml-top";
+  document.addEventListener("click", function (e) {
+    if (e.defaultPrevented || e.button > 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+    var u; try { u = new URL(a.getAttribute("href"), location.href); } catch (err) { return; }
+    if (u.origin !== location.origin || u.hash) return;
+    if (u.pathname === location.pathname && u.search === location.search) return;
+    ML.store.set(KEY, 1);
+  }, true);
+  var flag = ML.store.get(KEY);
+  ML.store.del(KEY);
+  if (location.hash) return;
+  var nav = null;
+  try { nav = performance.getEntriesByType("navigation")[0] || null; } catch (err) { nav = null; }
+  var type = nav ? nav.type : "navigate";
+  if (!flag && type !== "navigate") return;
+  function top() { if ((window.scrollY || 0) > 0) window.scrollTo({ top: 0, left: 0, behavior: "instant" }); }
+  top();
+  window.addEventListener("load", function () { top(); requestAnimationFrame(top); });
+});
+
 /* Kopfzeile, Leistungen-Menü, mobiles Menü, WhatsApp-Knopf */
 ML.module("header", function (ML) {
   var $ = ML.$, $$ = ML.$$;

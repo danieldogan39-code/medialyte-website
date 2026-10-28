@@ -507,11 +507,11 @@ def process(items=None, cls=""):
 # Kapitel des Films: Startzeit in Sekunden (Szenengrenzen aus film/chapters.py), Titel, kurze Beschreibung
 FILM_CHAPTERS = [
     (0, "Die Ausgangslage", "Warum viele Websites Kunden verlieren statt gewinnen"),
-    (22.5, "Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
-    (47.1, "Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
-    (67.4, "Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
+    (23.4, "Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
+    (48.7, "Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
+    (69.8, "Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
 ]
-FILM_LENGTH = "1:38"
+FILM_LENGTH = "1:41"
 
 
 def film(ctx):

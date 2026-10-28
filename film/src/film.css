@@ -49,6 +49,7 @@ ul,ol{list-style:none}
 .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.16em .06em .18em;margin:-.16em -.06em -.18em}
 .w > i{display:inline-block;font-style:normal}
 .coral{color:var(--coral)}
+.nw{white-space:nowrap}
 
 /* ---------- Telefon ---------- */
 .phone{position:absolute;width:450px;height:930px;border-radius:72px;padding:13px;background:linear-gradient(160deg,#1C2434,#05080E 38%,#0A0F18);
@@ -285,7 +286,7 @@ ul,ol{list-style:none}
 .ns__gal div{height:150px;border-radius:16px;background-size:cover;background-position:center}
 /* Skizze */
 .wf{position:absolute;inset:0;background:#E8EBF0}
-.wipe{position:absolute;left:0;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--coral);box-shadow:0 0 18px rgba(255,87,87,.8),0 0 4px rgba(255,87,87,1);z-index:6;opacity:0}
+.wipe{position:absolute;left:0;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--coral);box-shadow:0 0 18px rgba(255,87,87,.8),0 0 4px rgba(255,87,87,1);z-index:6;visibility:hidden}
 .wf i{position:absolute;border-radius:12px;background:#CBD2DD}
 .wf__lbl{position:absolute;right:28px;bottom:22px;font-size:17px;font-weight:600;color:#8D97A8}
 /* Zielgruppe */
@@ -363,6 +364,16 @@ ul,ol{list-style:none}
 .toast b{display:block;font-size:18px;font-weight:600}
 .toast small{display:block;font-size:15px;color:var(--text-3)}
 
+/* Ereignisse unter dem Dashboard – nur in der Hochkant-Fassung sichtbar (film_v.css) */
+.evs{display:none}
+.ev{display:flex;align-items:center;gap:18px;padding:16px 22px 16px 16px;border-radius:22px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
+.ev .ic{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;flex:none}
+.ev .ic svg{width:27px;height:27px}
+.ev b{display:block;font-size:30px;font-weight:620;letter-spacing:-.02em;line-height:1.1}
+.ev small{display:block;margin-top:3px;font-size:20px;color:var(--text-3)}
+.ev em{margin-left:auto;font-style:normal;padding:8px 16px;border-radius:99px;font-size:18px;font-weight:600;white-space:nowrap}
+.ev--a em{background:var(--coral-soft);color:#FF9A9A}.ev--t em{background:rgba(110,155,255,.16);color:#B9CCFF}.ev--o em{background:var(--ok-soft);color:#7FE8B4}
+
 /* ---------- F: Aus einer Hand ---------- */
 .f__hl{position:absolute;left:0;right:0;top:160px;text-align:center;font-size:100px}
 .tile{position:absolute;top:320px;width:390px;height:330px;border-radius:28px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
@@ -409,6 +420,7 @@ ul,ol{list-style:none}
 .big b sup{font-size:160px;vertical-align:top;position:relative;top:14px;margin-left:10px;color:var(--coral)}
 .num3{display:inline-block;min-width:2.62ch;text-align:right}
 .num4{display:inline-block;min-width:3.5ch;text-align:right}
+.pct{margin-left:.12em}
 .big small{display:block;margin-top:44px;font-size:50px;font-weight:550;color:var(--text);letter-spacing:-.02em}
 .big em{display:block;margin-top:14px;font-style:normal;font-size:40px;font-weight:500;color:var(--coral-2);letter-spacing:-.015em}
 .matrix{position:absolute;left:952px;top:322px;display:grid;grid-template-columns:repeat(20,34px);gap:8px}

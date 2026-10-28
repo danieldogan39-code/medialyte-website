@@ -5,7 +5,8 @@
 python3 qa_motion.py <film> [fps]"""
 import json, subprocess, sys, numpy as np
 src = sys.argv[1]; fps = int(sys.argv[2]) if len(sys.argv) > 2 else 60
-W, H, T = 320, 180, 10                      # Kacheln zu 10x10 Bildpunkten (entspricht 60x60 im Original)
+_wh = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", src], capture_output=True, text=True).stdout.split(",")
+W, H, T = (320, 180, 10) if int(_wh[0]) >= int(_wh[1]) else (180, 320, 10)   # Kacheln zu 10x10 Bildpunkten (entspricht 60x60 im Original)
 p = subprocess.Popen(["ffmpeg", "-v", "error", "-i", src, "-vf", f"scale={W}:{H}:flags=area,format=gray", "-f", "rawvideo", "-"], stdout=subprocess.PIPE)
 frames = []
 while True:
@@ -36,4 +37,5 @@ for k in range(1, n - 1):
 for key, rows in out.items():
     print(f"{key}: {len(rows)}")
     for r in rows[:60]: print("  ", r)
-json.dump({"mean": mean.round(3).tolist(), "tmax": tmax.round(1).tolist()}, open("qa/motion.json", "w"))
+import os; os.makedirs("qa", exist_ok=True)
+json.dump({"mean": mean.round(3).tolist(), "tmax": tmax.round(1).tolist()}, open("qa/motion_v.json" if H > W else "qa/motion.json", "w"))

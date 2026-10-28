@@ -158,7 +158,11 @@ async def desktop(b):
     await pg.fill("#bk-firma", "Testfirma GmbH")
     await pg.click("[data-next]")
     await pg.click("label[for=bk-format-video]")
-    # zweiter freier Tag: Der erste hat spätabends wegen der Vorlaufzeit oft nur einen Termin
+    # zweiter freier Tag: Der erste hat spätabends wegen der Vorlaufzeit oft nur einen Termin.
+    # Am Monatsende bleibt im laufenden Monat manchmal nur ein freier Tag – dann einen Monat weiterblättern.
+    if await pg.locator(".cal__day.is-avail").count() < 2:
+        await pg.click("[data-cal-next]")
+        await pg.wait_for_timeout(300)
     await pg.click(".cal__day.is-avail >> nth=1")
     await pg.click(".slot >> nth=1")
     await pg.click("[data-next]")

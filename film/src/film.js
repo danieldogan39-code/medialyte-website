@@ -46,6 +46,15 @@
   /* ---------- Werkzeuge ---------- */
   gsap.defaults({ ease: "power3.out", duration: 0.7, lazy: false });
   var tl = gsap.timeline({ paused: true });
+  /* Format: Breitbild 1920 × 1080 oder Hochkant 1080 × 1920 (<body class="v">, Layout in film_v.css) */
+  var V = document.body.classList.contains("v"), SW = V ? 1080 : 1920, SH = V ? 1920 : 1080;
+  var FY = V ? 60 : -86;     /* Versatz des Dashboards nach dem Umdrehen (Breitbild nach oben, Hochkant zur Mitte) */
+  /* Hochkant: Browser, Dashboards und Geräte behalten ihr Breitbild-Layout und werden als Ganzes verkleinert */
+  var BS = {};
+  if (V) {
+    [["#brw", 0.66], ["#dash", 0.66], ["#mtab", 0.75], ["#mph", 0.85], ["#db2", 0.82], ["#r48", 0.6]].forEach(function (a) { BS[a[0]] = a[1]; gsap.set(a[0], { scale: a[1] }); });
+    $$("svg.leaders, svg.links, svg.flow").forEach(function (sv) { sv.setAttribute("width", SW); sv.setAttribute("height", SH); sv.setAttribute("viewBox", "0 0 " + SW + " " + SH); });
+  }
   var D = [];                 /* Zustände nach Bildzeit: function(ft) */
   var SFX = [];               /* Geräusche: {name, at, gain, v, align} */
   function sfx(name, at, gain, v, dir) { SFX.push({ name: name, at: Math.round(at * 1000) / 1000, gain: gain || 0, v: v || 0, dir: dir || "c" }); }
@@ -121,6 +130,7 @@
     path = el$(path); var L = path.getTotalLength();
     path.style.strokeDasharray = L + " " + (L + 10);
     tl.fromTo(path, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: dur || 0.6, ease: ease || "power2.inOut" }, at);
+    vis(path, at, null);                /* vorher unsichtbar: sonst zeigt die runde Linienkappe schon einen Punkt */
     return L;
   }
   /* Mauszeiger: Spitze auf (x, y) */
@@ -138,6 +148,12 @@
     sfx("whoosh", at + dur * 0.5, dx ? -15 : -16, PANS++ % 2, dx ? "rl" : "c");
   }
   var PH = 1.0, PV = 0.9;   /* Dauer waagerechter und senkrechter Fahrten */
+
+  /* Zähler: Mindestbreite = Breite des Endwerts – beim Zählen springt nichts, am Ende steht die Zahl bündig über ihrer Beschriftung */
+  [["#n200", "200"], ["#n230", "+230"]].forEach(function (c) {
+    var el = $(c[0]), old = el.textContent; el.style.minWidth = "0px"; el.textContent = c[1];
+    var w = el.getBoundingClientRect().width; el.textContent = old; el.style.minWidth = w + "px";
+  });
 
   /* ---------- Szenengrenzen (alle an Wörtern) ---------- */
   var B = {};
@@ -194,20 +210,24 @@
   /* =================================================================== A · Suche, Besuch, Absprung, Mängel */
   (function () {
     var ph = $("#ph1"), scr = rect("#ph1s"), ss = rect("#scrSearch"), hit = rect("#hit");
-    var tap = $("#tap");
-    tap.style.left = (hit.x - ss.x + hit.w * 0.46) + "px"; tap.style.top = (hit.y - ss.y + hit.h * 0.42) + "px";
+    var tap = $("#tap"), K1 = BS["#ph1"] || 1;     /* Maßstab des Telefons: Bühnenmaße in seine eigenen Einheiten umrechnen */
+    tap.style.left = ((hit.x - ss.x + hit.w * 0.46) / K1) + "px"; tap.style.top = ((hit.y - ss.y + hit.h * 0.42) / K1) + "px";
     /* Markierungen an den echten Stellen der alten Seite (Bildschirmkoordinaten) */
-    var W = scr.w;
+    var W = scr.w / K1;
     function box(sel, it, ib, ol, orr) {
-      var r = rect(sel), l = Math.max(10, r.x - scr.x - ol), rr = Math.min(W - 26, r.x - scr.x + r.w + orr);
-      return { l: l, t: r.y - scr.y + it, w: rr - l, h: r.h - it - ib };
+      var r = rect(sel), rx = (r.x - scr.x) / K1, ry = (r.y - scr.y) / K1;
+      var l = Math.max(10, rx - ol), rr = Math.min(W - 26, rx + r.w / K1 + orr);
+      return { l: l, t: ry + it, w: rr - l, h: r.h / K1 - it - ib };
     }
     var MB = [box("#oldTop", 8, 7, 0, 0), box("#oldNav", 3, 3, 0, 0), box("#oldHours", -7, -7, 7, 7)];
     MB.forEach(function (m, i) { Object.assign($("#mk" + (i + 1)).style, { left: m.l + "px", top: m.t + "px", width: m.w + "px", height: m.h + "px" }); });
     /* Führungslinien: vom Ende der Überschrift zur linken Kante der Markierung */
     var LD = [1, 2, 3].map(function (i) {
       var ws = $$("#co" + i + " b .w"), last = rect(ws[ws.length - 1]), b = rect("#co" + i + " b"), m = MB[i - 1];
-      var x0 = last.x + last.w + 26, y0 = b.y + b.h * 0.5, x1 = scr.x + m.l - 3, y1 = scr.y + m.t + m.h / 2, xm = Math.max(x0 + 20, x1 - 200);
+      /* Hochformat: zweizeilige Überschriften – die Linie läuft erst rechts an allen Zeilen vorbei, dann zur Markierung */
+      var right = Math.max.apply(null, ws.map(function (w) { var r = rect(w); return r.x + r.w; }));
+      var x0 = last.x + last.w + 26, y0 = V ? last.y + last.h * 0.5 : b.y + b.h * 0.5, x1 = scr.x + m.l * K1 - 3, y1 = scr.y + (m.t + m.h / 2) * K1,
+          xm = Math.max(x0 + 20, V ? right + 22 : 0, x1 - 200);
       $("#ld" + i).setAttribute("d", "M" + x0 + " " + y0 + " L" + xm + " " + y0 + " L" + x1 + " " + y1);
       $("#ls" + i).setAttribute("cx", x0); $("#ls" + i).setAttribute("cy", y0);
       $("#le" + i).setAttribute("cx", x1); $("#le" + i).setAttribute("cy", y1);
@@ -271,7 +291,7 @@
       tl.fromTo("#mk" + i, { autoAlpha: 0, scale: 1.08 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "power3.out" }, h + 0.6);
       sfx("pop", h - 0.06, -17, i);
     });
-    pan(B.AB, PH, 1920, 0, ["#scA"], ["#scB"]);
+    pan(B.AB, PH, SW, 0, ["#scA"], ["#scB"]);
   })();
 
   /* =================================================================== B · Anfragen verteilen sich und gehen unter */
@@ -298,7 +318,7 @@
     /* … und gehen im Alltag unter */
     var g = p("und gehen");
     tl.set("#planner", { autoAlpha: 0 }, 0); tl.set("#planner", { autoAlpha: 1 }, g - 0.15);
-    tl.fromTo("#planner", { y: 960 }, { y: 0, duration: 0.95, ease: "power3.out" }, g - 0.15);
+    tl.fromTo("#planner", { y: V ? 1560 : 960 }, { y: 0, duration: 0.95, ease: "power3.out" }, g - 0.15);
     $$("#planner .slot").forEach(function (s, i) { pop(s, g + 0.25 + i * 0.07, { y: 18 }, 0.5); });
     sfx("paper", g - 0.05, -17, 0);
     cards.forEach(function (c, i) {
@@ -310,7 +330,7 @@
     var o = B.Bout;
     cards.forEach(function (c) { tl.to(c, { y: "+=420", autoAlpha: 0, duration: 0.5, ease: "power2.in" }, o - 0.05); });
     leave("#chans", o - 0.05, { y: -60 }, 0.4);
-    tl.to("#planner", { y: 1000, duration: 0.6, ease: "power3.in" }, o);
+    tl.to("#planner", { y: V ? 1600 : 1000, duration: 0.6, ease: "power3.in" }, o);
     sfx("riser", p("genau hier") - 0.02, -14, 0);
   })();
 
@@ -349,7 +369,7 @@
     pop("#d1chips", t("erstgespräch", 1) + 0.4, { y: 16 }, 0.5);
     /* Termin wird gewählt */
     var cur = "#cur1", c0 = t("steht", 1) - 0.1;
-    tl.set(cur, { x: 1010, y: 900 }, 0);
+    tl.set(cur, { x: V ? 880 : 1010, y: V ? 1290 : 900 }, 0);
     tl.fromTo(cur, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, c0);
     var dT = t("kostenfreies", 1) - 0.02, sT = t("erstgespräch", 1) + 0.05;
     cursorTo(cur, c0, day.x + day.w * 0.55, day.y + day.h * 0.58, dT - c0 - 0.06);
@@ -359,7 +379,7 @@
     tl.to(cur, { x: "+=80", y: "+=120", autoAlpha: 0, duration: 0.5, ease: "power2.in" }, sT + 0.35);
     grow("#bkok", sT + 0.28, 0.45);
     sfx("success", sT + 0.32, -18, 0);
-    pan(B.D12, PH, 1920, 0, ["#scD1"], ["#scD2"]);
+    pan(B.D12, PH, SW, 0, ["#scD1"], ["#scD2"]);
   })();
 
   /* =================================================================== D2 · Angebot in 48 Stunden */
@@ -387,7 +407,7 @@
     var st = t("angebot", 1) - 0.12;
     pop("#stamp", st, { scale: 1.6, rotation: -14, to: { rotation: -4 } }, 0.42, "power4.out");
     sfx("impact", st + 0.08, -18, 1);
-    pan(B.D2E, PV, 0, 1080, ["#scD2"], ["#scE"]);
+    pan(B.D2E, PV, 0, SH, ["#scD2"], ["#scE"]);
   })();
 
   /* =================================================================== E · Ablauf, Website, System */
@@ -395,6 +415,7 @@
     /* Maße vor allen Startzuständen nehmen */
     var pub = rect("#pub"), ang = rect("#pcAng"), auf = rect("#slotAuf"), tagO = $("#tagO");
     var tagH = tagO.offsetHeight + 10;     /* Hinweis + Abstand, solange er zu ist */
+    var KD = BS["#dash"] || 1;   /* Maßstab des Dashboards */
     var lis = $$("#rail li"), on = function (i, at) {
       morph(lis[i], "on", [lis[i], $("i", lis[i])], at, 0.25);
       pulse($("i", lis[i]), at, 1.14);
@@ -413,8 +434,8 @@
     tl.fromTo("#rboard", { clipPath: "inset(0% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 100%)", duration: 0.6, ease: "power2.inOut" }, s2 - 0.2);
     var w0 = t("neue") - 0.05, wd = 0.85;
     tl.fromTo("#wf", { clipPath: "inset(0% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 100%)", duration: wd, ease: "power2.inOut" }, w0);
-    tl.fromTo("#wipe", { x: 0, autoAlpha: 1 }, { x: 1420, duration: wd, ease: "power2.inOut" }, w0);
-    tl.set("#wipe", { autoAlpha: 0 }, w0 + wd);
+    tl.fromTo("#wipe", { x: 0 }, { x: 1420, duration: wd, ease: "power2.inOut" }, w0);
+    vis("#wipe", w0, w0 + wd);          /* die Wischkante ist nur während des Wischens zu sehen */
     sfx("swoosh", w0 + 0.3, -18, 3);
     /* 3 · Entwicklung: Formular und Galerie setzen sich ein */
     on(2, s3);
@@ -428,7 +449,7 @@
     $$("#checks span").forEach(function (c, i) { pop(c, s4 + 0.2 + i * 0.16, { y: 18, scale: 0.95 }, 0.45); sfx("blips", s4 + 0.25 + i * 0.16, -25, i % 4); });
     /* 5 · Live: Klick auf Veröffentlichen */
     var cur = "#cur2", c0 = s5 - 1.0;
-    tl.set(cur, { x: 1480, y: 780 }, 0);
+    tl.set(cur, { x: V ? 900 : 1480, y: V ? 1240 : 780 }, 0);
     tl.fromTo(cur, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 }, c0);
     cursorTo(cur, c0, pub.x + pub.w * 0.5, pub.y + pub.h * 0.6, 0.72);
     click(cur, s5 - 0.16);
@@ -445,9 +466,9 @@
     /* Dahinter: Website dreht sich um, dahinter das eigene System */
     var f = B.flip;
     leave("#rail", f - 0.2, { y: -30 }, 0.4);
-    tl.fromTo("#brw", { rotationY: 0, y: 0, transformPerspective: 2600 }, { rotationY: 90, y: -43, transformPerspective: 2600, duration: 0.5, ease: "power2.in", immediateRender: false }, f);
+    tl.fromTo("#brw", { rotationY: 0, y: 0, transformPerspective: 2600 }, { rotationY: 90, y: FY / 2, transformPerspective: 2600, duration: 0.5, ease: "power2.in", immediateRender: false }, f);
     tl.set("#brw", { autoAlpha: 0 }, f + 0.5);
-    tl.fromTo("#dash", { rotationY: -90, y: -43, autoAlpha: 1, transformPerspective: 2600 }, { rotationY: 0, y: -86, autoAlpha: 1, transformPerspective: 2600, duration: 0.6, ease: "power2.out", immediateRender: false }, f + 0.5);
+    tl.fromTo("#dash", { rotationY: -90, y: FY / 2, autoAlpha: 1, transformPerspective: 2600 }, { rotationY: 0, y: FY, autoAlpha: 1, transformPerspective: 2600, duration: 0.6, ease: "power2.out", immediateRender: false }, f + 0.5);
     tl.set("#dash", { autoAlpha: 0 }, 0);
     sfx("whoosh", f + 0.48, -15, 1);
     /* jede Anfrage */
@@ -467,13 +488,21 @@
     /* jeder Auftrag: Karte wandert nach „Auftrag“ */
     var oT = t("auftrag");
     grow("#slotAuf", oT - 0.3, 0.55, { paddingTop: [0, 15], paddingBottom: [0, 15], marginBottom: [-12, 0], borderTopWidth: [0, 1], borderBottomWidth: [0, 1] });
-    tl.to("#pcAng", { x: auf.x - ang.x, y: auf.y - ang.y, duration: 0.8, ease: "power3.inOut" }, oT - 0.3);
+    tl.to("#pcAng", { x: (auf.x - ang.x) / KD, y: (auf.y - ang.y) / KD, duration: 0.8, ease: "power3.inOut" }, oT - 0.3);
     tl.fromTo("#pcAng", { boxShadow: "0 0 0 0 rgba(0,0,0,0)" }, { boxShadow: "0 22px 40px -12px rgba(0,0,0,0.6)", duration: 0.4, yoyo: true, repeat: 1, ease: "sine.inOut", immediateRender: false }, oT - 0.3);
-    tl.to("#pcY", { y: -(ang.h - tagH + 12), duration: 0.6, ease: "power3.inOut" }, oT);
+    tl.to("#pcY", { y: -(ang.h / KD - tagH + 12), duration: 0.6, ease: "power3.inOut" }, oT);
     grow(tagO, oT + 0.35, 0.4, { marginTop: [-4, 6], paddingTop: [0, 4], paddingBottom: [0, 4] });
     text("#nAng", [[0, "2"], [oT + 0.35, "1"]]); text("#nAuf", [[0, "1"], [oT + 0.35, "2"]]); text("#kO", [[0, "5"], [oT + 0.5, "6"]]);
     pulse("#kO", oT + 0.5, 1.12);
     sfx("swoosh", oT - 0.05, -21, 0); sfx("success", oT + 0.5, -17, 2);
+    if (V) {
+      ["#evA", "#evT", "#evO"].forEach(function (s, i) { pop(s, f + 1.0 + i * 0.09, { y: 28, to: { autoAlpha: 0.32 } }, 0.6); });
+      [["#evA", aT - 0.08], ["#evT", tT - 0.08], ["#evO", oT - 0.1]].forEach(function (e) {
+        tl.to(e[0], { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, e[1]);
+        tl.fromTo(e[0], { borderColor: "rgba(150,178,224,0.22)" }, { borderColor: "rgba(255,87,87,0.85)", duration: 0.22, yoyo: true, repeat: 1, repeatDelay: 0.3, ease: "power1.inOut", immediateRender: false }, e[1]);
+      });
+      leave("#evs", B.EF - 0.02, { y: 40 }, 0.4);
+    }
   })();
 
   /* =================================================================== F · Alles aus einer Hand */
@@ -482,7 +511,8 @@
     var k = v.w / dash.w, ty = v.y + (v.h - dash.h * k) / 2;
     var z = B.EF;
     /* das Dashboard wird kleiner und landet in seiner Kachel */
-    tl.fromTo("#dash", { x: 0, y: -86, scale: 1, transformOrigin: "0 0" }, { x: v.x - dash.x, y: ty - dash.y, scale: k, duration: 1.1, ease: "power3.inOut", immediateRender: false }, z);
+    if (V) tl.fromTo("#dash", { x: 0, y: FY, scale: BS["#dash"] }, { x: (v.x + v.w / 2) - (dash.x + dash.w / 2), y: (v.y + v.h / 2) - (dash.y + dash.h / 2), scale: BS["#dash"] * k, duration: 1.1, ease: "power3.inOut", immediateRender: false }, z);
+    else tl.fromTo("#dash", { x: 0, y: -86, scale: 1, transformOrigin: "0 0" }, { x: v.x - dash.x, y: ty - dash.y, scale: k, duration: 1.1, ease: "power3.inOut", immediateRender: false }, z);
     sfx("whoosh", z + 0.5, -16, 2);
     pop("#tS", z + 0.75, { y: 0, scale: 0.97 }, 0.6);
     reveal("#hlF", [t("alles", 1), t("aus", 1), t("einer", 1), t("hand", 1)].map(function (x) { return x - 0.05; }));
@@ -507,7 +537,15 @@
     sfx("pop", S - 0.04, -20, 3);
     /* aufeinander abgestimmt: Verbindungen zum gemeinsamen Ansprechpartner */
     var nx = 960, ny = 812;
-    TR.forEach(function (r, i) {
+    if (V) {
+      /* Hochkant: vier Kacheln im Quadrat, die Verbindungen laufen in den Fugen zur Mitte */
+      nx = (TR[0].x + TR[0].w + TR[1].x) / 2; ny = (TR[0].y + TR[0].h + TR[2].y) / 2;
+      [[TR[0].x + 14, ny], [nx, TR[0].y + 14], [TR[1].x + TR[1].w - 14, ny], [nx, TR[2].y + TR[2].h - 14]].forEach(function (a, i) {
+        var d = "M" + a[0] + " " + a[1] + " L" + nx + " " + ny;
+        $("#lk" + (i + 1)).setAttribute("d", d); $("#lp" + (i + 1)).setAttribute("d", d);
+      });
+      $("#node").setAttribute("cx", nx); $("#node").setAttribute("cy", ny);
+    } else TR.forEach(function (r, i) {
       var x0 = r.x + r.w / 2, y0 = r.y + r.h;
       var d = "M" + x0 + " " + y0 + " C" + x0 + " " + (y0 + 88) + " " + nx + " " + (ny - 82) + " " + nx + " " + ny;
       $("#lk" + (i + 1)).setAttribute("d", d); $("#lp" + (i + 1)).setAttribute("d", d);
@@ -519,6 +557,7 @@
       lp.style.strokeDasharray = "80 " + (L + 200);
       tl.fromTo(lp, { strokeDashoffset: 80, autoAlpha: 1 }, { strokeDashoffset: -L, duration: 0.85, ease: "power1.in" }, t("abgestimmt") - 0.2 + i * 0.06);
       tl.set(lp, { autoAlpha: 0 }, t("abgestimmt") + 0.75 + i * 0.06);
+      vis(lp, t("abgestimmt") - 0.2 + i * 0.06, t("abgestimmt") + 0.75 + i * 0.06);
     });
     tl.fromTo("#node", { autoAlpha: 0, scale: 0, transformOrigin: "50% 50%" }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, ab + 0.5);
     pulse("#node", t("abgestimmt") + 0.62, 1.5, 0.18);
@@ -529,7 +568,7 @@
     $$("#hub > *").forEach(function (c, i) { pop(c, hb + 0.18 + i * 0.08, { y: 10 }, 0.45); });
     leave("#node", hb + 0.2, { scale: 0.6 }, 0.25);
     sfx("pop", hb + 0.05, -17, 1);
-    pan(B.FG, PH, 1920, 0, ["#scF", "#scE"], ["#scG"]);
+    pan(B.FG, PH, SW, 0, ["#scF", "#scE"], ["#scG"]);
   })();
 
   /* =================================================================== G · Erfahrung */
@@ -555,7 +594,7 @@
     var wk = t("wissen") + 0.3;
     hot.forEach(function (n, i) { tl.fromTo($("s", cells[n]), { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, wk + i * 0.025); });
     sfx("success", wk + 0.05, -19, 3);
-    pan(B.GH, PV, 0, 1080, ["#scG"], ["#scH"]);
+    pan(B.GH, PV, 0, SH, ["#scG"], ["#scH"]);
   })();
 
   /* =================================================================== H · Ergebnis RechnungsRadar */
@@ -570,7 +609,7 @@
     var kc = t("neuen", 1) - 0.1;
     $$("#kpirow .kc").forEach(function (c, i) { pop(c, kc + i * 0.12, { y: 30 }, 0.6); sfx("pop", kc + 0.02 + i * 0.12, -23, i); });
     pop("#rrSrc", kc + 0.5, { y: 8 }, 0.5);
-    pan(B.HI, PH, 1920, 0, ["#scH"], ["#scI"]);
+    pan(B.HI, PH, SW, 0, ["#scH"], ["#scI"]);
   })();
 
   /* =================================================================== I · Und wenn sich etwas ändert? */
@@ -580,17 +619,19 @@
     var qw = Math.max(rect(lns[0]).w, rect(lns[1]).w), qoff = (1920 - qw) / 2 - 150;
     all.forEach(function (w, i) { tl.fromTo(w, { yPercent: 140 }, { yPercent: 0, duration: 0.75, ease: "power4.out" }, ws[i] - 0.06); });
     var cg = [t("öffnungszeiten", 2) - 0.1, t("angebot", 2) - 0.12, t("frische") - 0.02];
-    tl.fromTo("#qI", { x: qoff }, { x: 0, duration: 0.8, ease: "power3.inOut" }, cg[0] - 0.62);
+    if (V) { var qr = rect("#qI"); tl.fromTo("#qI", { y: SH * 0.44 - qr.h / 2 - qr.y }, { y: 0, duration: 0.8, ease: "power3.inOut" }, cg[0] - 0.62); }
+    else tl.fromTo("#qI", { x: qoff }, { x: 0, duration: 0.8, ease: "power3.inOut" }, cg[0] - 0.62);
     ["#cg1", "#cg2", "#cg3"].forEach(function (s, i) { pop(s, cg[i], { x: 70, y: 0 }, 0.6); sfx("pop", cg[i] + 0.02, -18, i); });
-    pan(B.IJ, PV, 0, 1080, ["#scI"], ["#scJ"]);
+    pan(B.IJ, PV, 0, SH, ["#scI"], ["#scJ"]);
   })();
 
   /* =================================================================== J · KI-Agent per WhatsApp */
   (function () {
     /* Maße der fertigen Unterhaltung */
     var bIn = rect("#bIn"), info = rect("#info");
-    var x0 = bIn.x + bIn.w - 30, y0 = bIn.y + bIn.h * 0.5, x1 = info.x + 30, y1 = info.y + info.h * 0.5;
-    $("#flowP").setAttribute("d", "M" + x0 + " " + y0 + " C" + (x0 + 160) + " " + (y0 - 30) + " " + (x1 - 170) + " " + (y1 + 40) + " " + x1 + " " + y1);
+    var x0 = bIn.x + bIn.w + 4, y0 = bIn.y + bIn.h * 0.5, x1 = info.x + 6, y1 = info.y + info.h * 0.5;   /* vom Rand der Antwortblase zur Infobox */
+    if (V) $("#flowP").setAttribute("d", "M" + x0 + " " + y0 + " C" + (x0 + 46) + " " + y0 + " " + (x1 - 46) + " " + y1 + " " + x1 + " " + y1);
+    else $("#flowP").setAttribute("d", "M" + x0 + " " + y0 + " C" + (x0 + 160) + " " + (y0 - 30) + " " + (x1 - 170) + " " + (y1 + 40) + " " + x1 + " " + y1);
     var bub = { marginTop: [0, 10], paddingTop: [0, 12], paddingBottom: [0, 9] };
     var w0 = t("schreiben") - 0.05, msg = "Ab Montag haben wir 8–18 Uhr geöffnet. Und bitte das neue Foto in die Galerie.";
     var tw = 1.45, sent = w0 + tw + 0.12;
@@ -633,9 +674,9 @@
     pop("#upd", up + 0.35, { scale: 0.7, y: 0 }, 0.4, "back.out(2)");
     sfx("success", up + 0.05, -16, 0);
     var gl = up + 0.1;
-    tl.fromTo("#galT", { x: -222 }, { x: 0, duration: 0.65, ease: "power3.inOut" }, gl);
+    tl.fromTo("#galT", { x: -($("#gNew").offsetWidth + 14) }, { x: 0, duration: 0.65, ease: "power3.inOut" }, gl);
     sfx("swoosh", gl + 0.2, -21, 1);
-    pan(B.JK, PH, 1920, 0, ["#scJ"], ["#scK"]);
+    pan(B.JK, PH, SW, 0, ["#scJ"], ["#scK"]);
   })();
 
   /* =================================================================== K · Dashboard und Team */
@@ -654,12 +695,12 @@
     sfx("pop", go + 0.62, -19, 2);
     /* persönlich: das Team */
     var tm = t("team") - 0.25;
-    leave("#pg", tm - 0.25, { y: -40, scale: 0.96 }, 0.4);
+    leave("#pg", tm - 0.52, { y: -40, scale: 0.96 }, 0.34);
     pop("#team", tm, { y: 60 }, 0.75);
     $$("#team li").forEach(function (li, i) { pop(li, tm + 0.3 + i * 0.14, { x: 24, y: 0 }, 0.45); });
     sfx("swoosh", tm + 0.1, -19, 3);
     /* Abgang vor dem Logo */
-    tl.to(["#db2", "#team"], { autoAlpha: 0, scale: 0.97, duration: 0.45, ease: "sine.inOut" }, B.Kout);
+    tl.to(["#db2", "#team"], { autoAlpha: 0, scale: function (i, el) { return (BS["#" + el.id] || 1) * 0.97; }, duration: 0.45, ease: "sine.inOut" }, B.Kout);
   })();
 
   /* =================================================================== L · Abschluss */
@@ -668,7 +709,7 @@
     var ring = $("#ctaRing"); Object.assign(ring.style, { left: cta.x + "px", top: cta.y + "px", width: cta.w + "px", height: cta.h + "px" });
     var a = B.L;
     tl.fromTo("#endGlow", { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 2.2, ease: "power2.out" }, a);
-    var lk = rect("#lock"), mk = rect("#endMk"), mx = (960 - (mk.x + mk.w / 2));
+    var lk = rect("#lock"), mk = rect("#endMk"), mx = (SW / 2 - (mk.x + mk.w / 2));
     pop("#endMk", a, { y: 0, scale: 0.8, x: mx, to: { x: mx } }, 0.8, "power3.out");
     tl.to("#endMk", { x: 0, duration: 0.72, ease: "power3.inOut" }, t("medialyte") + 0.03);
     tl.fromTo("#endWm", { clipPath: "inset(-10% -2% 100% -2%)", y: 70 }, { clipPath: "inset(-10% -2% -12% -2%)", y: 0, duration: 0.8, ease: "power4.out" }, t("medialyte") + 0.46);
@@ -679,7 +720,7 @@
     sfx("pop", t("buchen") - 0.06, -18, 2);
     /* Klick auf den Termin-Knopf */
     var cur = "#cur3", ck = t("erstgespräch", 2) + 0.05;
-    tl.set(cur, { x: 1450, y: 980 }, 0);
+    tl.set(cur, { x: V ? 900 : 1450, y: V ? 1390 : 980 }, 0);
     tl.fromTo(cur, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, ck - 1.0);
     cursorTo(cur, ck - 1.0, cta.x + cta.w * 0.62, cta.y + cta.h * 0.6, 0.85);
     click(cur, ck);
@@ -693,6 +734,7 @@
 
   /* ---------- Schnittstelle für Rendern und Prüfen ---------- */
   window.__dur = DUR;
+  window.__fmt = V ? "v" : "h";
   window.__B = B;
   window.__sfx = SFX;
   window.__seek = function (s, ft) {

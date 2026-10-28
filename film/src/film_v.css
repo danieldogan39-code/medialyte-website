@@ -1,0 +1,169 @@
+/* Medialyte Erklärfilm – Hochkant 1080 × 1920 für Reels, TikTok und Shorts.
+   Gilt nur mit <body class="v"> und ergänzt film.css. Jede Szene ist für das Hochformat neu angeordnet, nicht beschnitten.
+   Wichtiges steht in der sicheren Fläche x 72–1008, y 330–1350 (oben und unten liegen die Bedienelemente der Apps);
+   darunter bleibt bei y 1380–1500 Platz für die Untertitel, die beim Kodieren eingeblendet werden. */
+body.v,html:has(body.v){width:1080px;height:1920px}
+body.v #stage{width:1080px;height:1920px}
+
+/* Hintergrund */
+body.v .lt1{left:-760px;top:-520px;width:1800px;height:1800px}
+body.v .lt2{left:-80px;top:1040px;width:1800px;height:1800px}
+body.v .lt3{left:40px;top:250px;width:1000px;height:1000px}
+body.v .grid{width:2040px;height:2880px;-webkit-mask-image:radial-gradient(ellipse 46% 40% at 50% 48%,#000 30%,transparent 96%);mask-image:radial-gradient(ellipse 46% 40% at 50% 48%,#000 30%,transparent 96%)}
+body.v .vig{background:radial-gradient(ellipse 92% 70% at 50% 42%,transparent 60%,rgba(3,7,14,.34) 100%)}
+body.v .chap{left:72px;top:262px}
+
+/* ---------- A: Suche, Absprung, Mängel ---------- */
+body.v #ph1{left:584px;top:400px}
+body.v #glowA{left:280px;top:280px;width:1080px;height:1080px}
+body.v #ktA{left:72px;top:410px;font-size:100px}
+body.v .visit{left:72px;top:768px;width:456px;display:grid;grid-template-columns:56px 1fr;gap:16px 18px;padding:22px 24px 24px}
+body.v .visit .ic{width:56px;height:56px;border-radius:16px}
+body.v .visit .ic svg{width:27px;height:27px}
+body.v .visit__t small{font-size:17px}
+body.v .visit__t b{font-size:46px}
+body.v .visit .st{grid-column:1/-1;justify-self:start;min-width:0;font-size:20px;padding:10px 18px}
+body.v .co{left:72px;width:480px;gap:20px}
+body.v .co .num{width:50px;height:50px;font-size:22px;margin-top:4px}
+body.v .co b{font-size:56px;white-space:normal;line-height:1.02;max-width:400px}
+body.v .co small{margin-top:12px;font-size:25px;line-height:1.3;max-width:380px}
+body.v #co1{top:404px}body.v #co2{top:706px}body.v #co3{top:1008px}
+
+/* ---------- B: Anfragen verstreut ---------- */
+body.v .chans{top:360px;gap:12px}
+body.v .chan{font-size:20px;gap:12px;padding:10px 20px 10px 10px}
+body.v .chan .ic{width:40px;height:40px}
+body.v #n1{left:96px!important;top:452px!important}
+body.v #n2{left:540px!important;top:464px!important}
+body.v #n3{left:582px!important;top:646px!important}
+body.v #n4{left:62px!important;top:658px!important}
+body.v #n5{left:312px!important;top:840px!important}
+body.v #n6{left:728px!important;top:858px!important}
+body.v #n7{left:58px!important;top:1050px!important}
+body.v #n8{left:548px!important;top:1080px!important}
+body.v #n9{left:286px!important;top:1244px!important}
+body.v .planner{left:130px;top:456px;width:820px}
+body.v .slot{height:110px}
+body.v .slot div{font-size:26px}
+
+/* ---------- C: Wende ---------- */
+body.v .turn{top:580px}
+body.v .turn__hl{font-size:124px}
+body.v .sweep{top:-420px;height:2700px}
+
+/* ---------- D1: Erstgespräch ---------- */
+body.v .bk{left:72px;top:356px;width:936px;padding:36px 40px 38px}
+body.v .bk__meta{margin:20px 0 24px}
+body.v .cal u{height:62px}
+body.v .d1{left:72px;top:1060px;width:936px}
+body.v .d1__kt{font-size:90px}
+body.v .d1__sub{display:none}
+body.v .d1__chips{margin-top:24px;gap:10px}
+body.v .d1__chips span{font-size:21px}
+
+/* ---------- D2: Angebot in 48 Stunden ---------- */
+body.v .r48{left:220px;top:212px}
+body.v .offer{left:96px;top:760px;width:888px;height:560px;padding:34px 44px}
+body.v .offer__top small{font-size:16px}
+body.v .offer__top b{margin-top:6px;font-size:44px}
+body.v .offer__mk{width:58px}
+body.v .offer__to{margin-top:14px;font-size:18px;line-height:1.5}
+body.v .offer ul{margin-top:18px}
+body.v .offer li{padding:11px 0;font-size:22px}
+body.v .offer li small{font-size:15.5px;margin-top:2px}
+body.v .offer li i{width:32px;height:32px}
+body.v .offer__note{display:none}
+body.v .offer__sig{left:44px;right:44px;bottom:30px}
+body.v .stamp{font-size:20px;padding:12px 20px}
+
+/* ---------- E: Ablauf, Website, System ---------- */
+body.v .rail{left:72px;right:72px;top:990px;height:120px}
+body.v .rail li{font-size:25px;gap:14px;width:60px}
+body.v .rail li i{width:60px;height:60px;font-size:24px}
+body.v .rail__line{left:30px;right:30px;top:28px;height:4px}
+/* Browser und Dashboard behalten ihr Breitbild-Layout und werden als Ganzes verkleinert (Mitte als Bezugspunkt) */
+body.v .br,body.v #dash{left:-169.4px;top:267.4px}
+body.v .mini-tab{left:-27.5px;top:561px}
+body.v .mini-phone{left:771px;top:492px}
+body.v .checks{left:72px;right:72px;top:1150px;flex-wrap:wrap;gap:12px}
+body.v .checks span{font-size:20px}
+/* Ereignisse unter dem Dashboard (Aussehen in film.css, im Breitbild ausgeblendet) */
+body.v .evs{display:grid;position:absolute;left:72px;right:72px;top:930px;gap:14px}
+
+/* ---------- F: Aus einer Hand ---------- */
+body.v .f__hl{top:352px;font-size:84px}
+body.v .tile{width:450px;height:330px;z-index:1}
+body.v #tW{left:72px;top:480px}body.v #tS{left:558px;top:480px}
+body.v #tP{left:72px;top:842px}body.v #tA{left:558px;top:842px}
+body.v .tile__v{top:104px;width:402px;height:202px}
+body.v .tvw__img{width:186px}
+body.v .links{z-index:0}
+body.v .hub{left:96px;top:1210px;width:888px}
+
+/* ---------- G: Erfahrung ---------- */
+body.v .big{left:72px;top:340px}
+body.v .big b{font-size:268px}
+body.v .big b sup{font-size:134px;top:12px}
+body.v .big small{margin-top:30px;font-size:52px}
+body.v .big em{margin-top:10px;font-size:42px}
+body.v .matrix{left:84px;top:760px;grid-template-columns:repeat(20,38px);gap:8px}
+body.v .matrix i,body.v .matrix u,body.v .matrix s{width:38px;height:38px}
+body.v .mtags{left:84px;top:1236px}
+
+/* ---------- H: Ergebnis ---------- */
+body.v .rr__h{left:72px;top:352px}
+body.v .rr__big{left:72px;top:456px}
+body.v .rr__big b{font-size:236px}
+body.v .rr__big small{margin-top:26px;font-size:50px}
+body.v .rr__bars{left:72px;top:802px;width:936px;gap:30px}
+body.v .rbar u{height:66px}
+body.v .kpirow{left:72px;right:72px;top:1098px;gap:16px}
+body.v .kc{display:block;padding:22px 24px}
+body.v .kc span{display:block;font-size:21px}
+body.v .kc b{display:block;margin-top:6px;font-size:54px}
+body.v .src{left:72px;right:72px;bottom:auto;top:1272px;font-size:17px;line-height:1.4}
+
+/* ---------- I: Änderungen ---------- */
+body.v .q{left:0;right:0;top:356px;font-size:104px;text-align:center}
+body.v .chg{left:72px;width:936px;padding:28px 30px}
+body.v .chg .ic{width:84px;height:84px}
+body.v .chg b{font-size:40px}
+body.v .chg small{font-size:24px}
+body.v #cg1{top:670px}body.v #cg2{top:900px}body.v #cg3{top:1130px}
+
+/* ---------- J: KI-Agent per WhatsApp ---------- */
+body.v #ph2{left:56px;top:360px}
+body.v #glowJ{left:-280px;top:280px;width:1100px;height:1100px}
+body.v .site{left:530px;top:436px;width:494px;height:780px}
+body.v .site .br__url{width:300px;margin-left:-130px;font-size:16px}
+body.v .site .ns__nav{height:64px;padding:0 24px}
+body.v .site .ns__links{display:none}
+body.v .site .ns__logo{font-size:24px}
+body.v .site__hero{grid-template-columns:1fr;gap:16px;padding:20px 24px 0}
+body.v .site__hero .ns__title{font-size:34px}
+body.v .site__hero .ns__img{height:168px}
+body.v .site__info{margin:18px 24px 0;padding:16px 18px;display:grid;grid-template-columns:24px auto 1fr;gap:8px 10px;font-size:22px}
+body.v .site__info .v{grid-column:1/-1;width:100%}
+body.v .site__info em{grid-column:3;grid-row:1;justify-self:end;margin-left:0}
+body.v .site__galh{margin:20px 24px 0;font-size:20px}
+body.v .site__gal{margin:12px 24px 0}
+body.v .gal__track div{width:196px;height:140px}
+
+/* ---------- K: Dashboard und Team ---------- */
+body.v .db2{left:-30px;top:284px}
+body.v .pg{left:560px;top:742px}
+body.v .team{left:560px;top:742px;padding:34px 32px 36px}
+body.v .team > b{font-size:42px}
+body.v .team > small{font-size:21px}
+body.v .team ul{margin-top:26px;gap:12px}
+body.v .team li{padding:15px 18px;font-size:22px}
+
+/* ---------- L: Abschluss ---------- */
+body.v .endglow{left:-10px;top:360px;width:1100px;height:1000px}
+body.v .end{top:600px}
+body.v .lock{gap:30px}
+body.v .lock__mk{width:150px}
+body.v .lock__wm{width:470px}
+body.v .end__tag{margin:60px auto 0;max-width:860px;font-size:72px;line-height:1.08}
+body.v .end__cta{margin-top:56px;font-size:31px}
+body.v .end__url{margin-top:30px}

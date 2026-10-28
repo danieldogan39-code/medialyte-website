@@ -1,8 +1,8 @@
 """Ton des Films: Sprecher + Musik (im Takt geschnitten, unter der Stimme abgesenkt) + Geräusche aus cues.json.
 python3 mix.py   ->  out/mix.wav (48 kHz Stereo, -16 LUFS, Spitze -1,5 dBTP)
-Musik: ElevenLabs Music (audio/music1.mp3, 95,7 BPM). Der Aufbruch der Musik (Quelle 40,13 s) liegt auf der Wende
-„Genau hier setzen wir an“; mitten in der Kamerafahrt zum Ablauf springt die Musik zwölf Takte weiter (auf einer
-Phrasengrenze, über einen Takt überblendet), damit ihr natürliches Ende unter der Schlusskarte ausklingt."""
+Musik: ElevenLabs Music (audio/music1.mp3, 96 BPM, am Stück gemessen). Der Aufbruch der Musik (erste Zählzeit bei 39,965 s)
+fällt auf die Wende „Genau hier setzen wir an“. Mitten in der Kamerafahrt zum Ablauf springt die Musik zwölf Takte weiter –
+auf einer Phrasengrenze, taktgenau und kurz vor der Zählzeit überblendet –, damit ihr natürliches Ende unter der Schlusskarte ausklingt."""
 import json, math, subprocess
 from pathlib import Path
 import numpy as np
@@ -22,21 +22,40 @@ def word(w, n=1):
     raise KeyError(w)
 
 # ---------------- Musik
-BAR = 4 * 60 / 95.7
-LIFT = 40.13                                   # Aufbruch im Stück
-A = LIFT - word("genau", 2)                    # Quelle = Film + A
-PHRASE = 4 * BAR
-k = math.ceil((32.4 + A - LIFT) / PHRASE)      # erste Phrasengrenze ab der Fahrt zum Ablauf
-X = LIFT + k * PHRASE - A                      # Filmzeit der Überblendung
-Bj = A + 12 * BAR                              # nach dem Sprung
+# Tempo und Schlagraster sind am Stück gemessen (Autokorrelation der Einsätze: 96,00 BPM, Schläge bei 0,590 s + k·0,625 s,
+# ohne Drift). Mit dem früher geschätzten Tempo (95,7) lag der Sprung 90 ms neben dem Takt – das klang wie ein Hänger.
+BPM, BEAT0 = 96.0, 0.590
+BEAT = 60 / BPM; BAR = 4 * BEAT; PHRASE = 4 * BAR
+DOWN = BEAT0 + 63 * BEAT                       # 39,965 s: erste Zählzeit des Aufbruchs (volle Besetzung)
+A = DOWN - (word("genau", 2) - 0.01)           # Quelle = Film + A: der Aufbruch fällt auf „Genau“
+J = 12 * BAR                                   # zwölf Takte weiter, damit das natürliche Ende unter der Schlusskarte ausklingt
+pan = C["B"]["D2E"] + 0.45                     # Mitte der Kamerafahrt zum Ablauf: das Rauschen deckt den Schnitt
+X = DOWN + round((pan + A - DOWN) / PHRASE) * PHRASE - A      # Filmzeit des Schnitts, auf einer Phrasengrenze
 m = load("audio/music1.mp3")
 n = int(DUR * SR); t = np.arange(n) / SR
 def take(off):
-    idx = ((t + off) * SR).astype(int); v = np.zeros((n, 2), np.float32); ok = (idx >= 0) & (idx < len(m)); v[ok] = m[idx[ok]]; return v
-w = np.clip((t - (X - BAR / 2)) / BAR, 0, 1)[:, None]
-mus = take(A) * np.cos(w * np.pi / 2) + take(Bj) * np.sin(w * np.pi / 2)
+    idx = np.rint((t + off) * SR).astype(int); v = np.zeros((n, 2), np.float32); ok = (idx >= 0) & (idx < len(m)); v[ok] = m[idx[ok]]; return v
+def onsets(x):
+    """Einsatzkurve (spektraler Fluss) in 5-ms-Schritten"""
+    H, N = 240, 1024; x = x.mean(1)
+    fr = np.lib.stride_tricks.sliding_window_view(x, N)[::H]
+    S = np.log1p(10 * np.abs(np.fft.rfft(fr * np.hanning(N), axis=1)))
+    return np.maximum(0, np.diff(S, axis=0)).sum(1), H / SR
+# Feinabgleich: Einsatzkurven beider Stellen um den Schnitt vergleichen und den Sprung auf den besten Versatz legen
+def seg(off, a, b):
+    i0, i1 = int((X + off + a) * SR), int((X + off + b) * SR); return m[i0:i1]
+ea, hop = onsets(seg(A, -2.5, 2.5)); eb, _ = onsets(seg(A + J, -2.5, 2.5))
+ea = (ea - ea.mean()) / ea.std(); eb = (eb - eb.mean()) / eb.std()
+L = int(0.15 / hop); core = slice(L, len(ea) - L)
+lags = list(range(-L, L + 1)); cc = [float(np.dot(ea[core], eb[L + q:len(eb) - L + q])) / (len(ea) - 2 * L) for q in lags]
+q = lags[int(np.argmax(cc))]; J += q * hop
+print(f"Musik: Sprung 12 Takte, Feinabgleich {q * hop * 1000:+.0f} ms (Übereinstimmung {max(cc):.2f}, ohne Abgleich {cc[L]:.2f})")
+# kurze Überblendung, die kurz vor der Zählzeit endet: der Anschlag kommt schon aus dem neuen Teil
+XF = 0.05
+w = np.clip((t - (X - 0.015 - XF)) / XF, 0, 1)[:, None]
+mus = take(A) * np.cos(w * np.pi / 2) + take(A + J) * np.sin(w * np.pi / 2)
 mus *= np.clip(t / 0.8, 0, 1)[:, None] * np.clip((DUR - t) / 1.6, 0, 1)[:, None]
-print(f"Musik: Quelle = Film + {A:.2f} s, Sprung um 12 Takte bei {X:.2f} s, Ende der Quelle {DUR + Bj:.1f} s")
+print(f"Musik: Quelle = Film + {A:.3f} s, Schnitt bei {X:.3f} s (Quelle {X + A:.3f} -> {X + A + J:.3f}), Ende der Quelle {DUR + A + J:.1f} s")
 
 # ---------------- Geräusche
 M = json.load(open("sfx/sfx_map.json"))

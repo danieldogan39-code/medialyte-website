@@ -9,7 +9,10 @@ import asyncio, base64, functools, http.server, json, math, os, socketserver, su
 from pathlib import Path
 import numpy as np, cv2
 from playwright.async_api import async_playwright
-D = Path("stage")
+V = "--v" in sys.argv                                 # Hochkant: Bühne stage_v/, 1080 × 1920, eigene Messdatei
+D = Path("stage_v" if V else "stage")
+W, H = (1080, 1920) if V else (1920, 1080)
+MOTION, CUES = ("motion_v.json", "cues_v.json") if V else ("motion.json", "cues.json")
 SHUTTER, SPACING, SMAX, CALM = 0.5, 3.0, 20, 1.5   # Belichtung in Bildern, Abstand der Abtastungen in px, Obergrenze, Ruhe-Schwelle in px
 class Q(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *a): pass
@@ -18,7 +21,7 @@ port = srv.server_address[1]; threading.Thread(target=srv.serve_forever, daemon=
 
 async def open_page(p):
     b = await p.chromium.launch(args=["--force-color-profile=srgb", "--font-render-hinting=none", "--disable-lcd-text", "--disable-checker-imaging", "--disable-partial-raster", "--disable-gpu-rasterization"])
-    ctx = await b.new_context(viewport={"width": 1920, "height": 1080}, device_scale_factor=1)
+    ctx = await b.new_context(viewport={"width": W, "height": H}, device_scale_factor=1)
     pg = await ctx.new_page(); errs = []
     pg.on("pageerror", lambda e: errs.append(str(e)))
     pg.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
@@ -44,7 +47,7 @@ def samples(motion, i):
 
 async def part(p, out, fps, i0, i1, motion, tag, blur):
     b, pg, cdp, errs = await open_page(p)
-    ff = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", "1920x1080", "-framerate", str(fps), "-i", "-",
+    ff = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}", "-framerate", str(fps), "-i", "-",
                            "-c:v", "libx264", "-preset", "ultrafast", "-qp", "0", "-pix_fmt", "yuv444p",
                            "-vf", "scale=out_color_matrix=bt709:out_range=tv", "-colorspace", "bt709", "-color_primaries", "bt709",
                            "-color_trc", "bt709", "-color_range", "tv", out], stdin=subprocess.PIPE)
@@ -72,8 +75,8 @@ async def video(out, fps, parts, blur, t0, t1):
     async with async_playwright() as p:
         b, pg, cdp, errs = await open_page(p)
         dur = await pg.evaluate("window.__dur"); await b.close()
-        motion = json.load(open("motion.json"))["disp"] if blur else None
-        if motion is not None and len(motion) < int(round(dur * fps)): raise SystemExit("motion.json passt nicht zur Länge – erst probe")
+        motion = json.load(open(MOTION))["disp"] if blur else None
+        if motion is not None and len(motion) < int(round(dur * fps)): raise SystemExit(MOTION + " passt nicht zur Länge – erst probe")
         a, z = int(round((t0 or 0) * fps)), int(round((t1 if t1 is not None else dur) * fps))
         if motion:   # Abschnitte nach Aufwand teilen, nicht nach Bildzahl
             cost = np.cumsum([samples(motion, i) * 1.0 + 0.4 for i in range(a, z)])
@@ -81,10 +84,11 @@ async def video(out, fps, parts, blur, t0, t1):
         else:
             cuts = [a + round((z - a) * k / parts) for k in range(parts + 1)]
         Path("out").mkdir(exist_ok=True)
-        names = [f"out/part{k}.mkv" for k in range(parts)]
+        names = [f"{out}.teil{k}.mkv" for k in range(parts)]      # eigene Namen je Ausgabe: mehrere Renderläufe stören sich nicht
         await asyncio.gather(*[part(p, names[k], fps, cuts[k], cuts[k + 1], motion, k, blur) for k in range(parts)])
-    Path("out/parts.txt").write_text("".join(f"file '{Path(x).name}'\n" for x in names))
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", "out/parts.txt", "-c", "copy", out], check=True)
+    Path(f"{out}.teile.txt").write_text("".join(f"file '{Path(x).name}'\n" for x in names))
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", f"{out}.teile.txt", "-c", "copy", out], check=True)
+    os.remove(f"{out}.teile.txt")
     for x in names: os.remove(x)
     print("Bilder:", z - a, "->", out)
 
@@ -95,7 +99,7 @@ async def probe(fps):
         n = int(round(dur * fps))
         disp = await pg.evaluate(f"(() => {{ const out = []; window.__probeReset(); for (let i = 0; i < {n}; i++) out.push(Math.round(window.__probe(i / {fps}) * 100) / 100); return out; }})()")
         await b.close()
-    json.dump({"fps": fps, "disp": disp}, open("motion.json", "w"))
+    json.dump({"fps": fps, "disp": disp}, open(MOTION, "w"))
     S = [samples(disp, i) for i in range(n)]
     print(f"Bilder {n}, bewegt {sum(1 for s in S if s > 1)}, Aufnahmen gesamt {sum(S)} (Faktor {sum(S) / n:.2f}), größter Weg {max(disp):.0f}px")
     print("Fehler:", errs or "keine")
@@ -105,7 +109,7 @@ async def cues():
         b, pg, cdp, errs = await open_page(p)
         d = await pg.evaluate("({sfx: window.__sfx, B: window.__B, dur: window.__dur})")
         await b.close()
-    json.dump(d, open("cues.json", "w"), ensure_ascii=False, indent=1)
+    json.dump(d, open(CUES, "w"), ensure_ascii=False, indent=1)
     print(len(d["sfx"]), "Geräusche, Länge", d["dur"])
 
 if __name__ == "__main__":

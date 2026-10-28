@@ -16,3 +16,8 @@ film/audio/music_edit.wav
 film/audio/mix*.wav
 film/cues.json
 film/motion.json
+film/stage_v/
+film/stills_v/
+film/capcache/
+film/cues_v.json
+film/motion_v.json

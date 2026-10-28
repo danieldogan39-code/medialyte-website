@@ -1,0 +1,1234 @@
+{
+"words": [
+{
+"text": "Jemand",
+"type": "word",
+"start": 0.0,
+"end": 0.4
+},
+{
+"text": "sucht",
+"type": "word",
+"start": 0.48,
+"end": 0.72
+},
+{
+"text": "genau",
+"type": "word",
+"start": 0.88,
+"end": 1.12
+},
+{
+"text": "das,",
+"type": "word",
+"start": 1.28,
+"end": 1.56
+},
+{
+"text": "was",
+"type": "word",
+"start": 1.6,
+"end": 1.76
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 1.88,
+"end": 2.0
+},
+{
+"text": "anbieten.",
+"type": "word",
+"start": 2.12,
+"end": 2.8
+},
+{
+"text": "Er",
+"type": "word",
+"start": 3.04,
+"end": 3.2
+},
+{
+"text": "findet",
+"type": "word",
+"start": 3.28,
+"end": 3.52
+},
+{
+"text": "Ihre",
+"type": "word",
+"start": 3.6,
+"end": 3.76
+},
+{
+"text": "Website",
+"type": "word",
+"start": 3.84,
+"end": 4.4
+},
+{
+"text": "–",
+"type": "word",
+"start": 4.8,
+"end": 4.84
+},
+{
+"text": "und",
+"type": "word",
+"start": 4.88,
+"end": 5.12
+},
+{
+"text": "ist",
+"type": "word",
+"start": 5.36,
+"end": 5.52
+},
+{
+"text": "nach",
+"type": "word",
+"start": 5.6,
+"end": 5.76
+},
+{
+"text": "wenigen",
+"type": "word",
+"start": 5.84,
+"end": 6.16
+},
+{
+"text": "Sekunden",
+"type": "word",
+"start": 6.24,
+"end": 6.72
+},
+{
+"text": "wieder",
+"type": "word",
+"start": 6.76,
+"end": 6.96
+},
+{
+"text": "weg.",
+"type": "word",
+"start": 7.04,
+"end": 7.52
+},
+{
+"text": "Veraltet.",
+"type": "word",
+"start": 7.76,
+"end": 8.68
+},
+{
+"text": "Auf",
+"type": "word",
+"start": 8.88,
+"end": 8.96
+},
+{
+"text": "dem",
+"type": "word",
+"start": 9.04,
+"end": 9.12
+},
+{
+"text": "Handy",
+"type": "word",
+"start": 9.2,
+"end": 9.52
+},
+{
+"text": "kaum",
+"type": "word",
+"start": 9.68,
+"end": 9.92
+},
+{
+"text": "zu",
+"type": "word",
+"start": 10.0,
+"end": 10.08
+},
+{
+"text": "bedienen.",
+"type": "word",
+"start": 10.16,
+"end": 10.8
+},
+{
+"text": "Die",
+"type": "word",
+"start": 10.96,
+"end": 11.04
+},
+{
+"text": "Öffnungszeiten",
+"type": "word",
+"start": 11.12,
+"end": 11.92
+},
+{
+"text": "vom",
+"type": "word",
+"start": 12.0,
+"end": 12.16
+},
+{
+"text": "letzten",
+"type": "word",
+"start": 12.24,
+"end": 12.64
+},
+{
+"text": "Jahr.",
+"type": "word",
+"start": 12.72,
+"end": 13.2
+},
+{
+"text": "Und",
+"type": "word",
+"start": 13.44,
+"end": 13.6
+},
+{
+"text": "die",
+"type": "word",
+"start": 13.64,
+"end": 13.68
+},
+{
+"text": "Anfragen,",
+"type": "word",
+"start": 13.76,
+"end": 14.4
+},
+{
+"text": "die",
+"type": "word",
+"start": 14.48,
+"end": 14.56
+},
+{
+"text": "trotzdem",
+"type": "word",
+"start": 14.64,
+"end": 15.12
+},
+{
+"text": "kommen,",
+"type": "word",
+"start": 15.2,
+"end": 15.68
+},
+{
+"text": "verteilen",
+"type": "word",
+"start": 15.76,
+"end": 16.16
+},
+{
+"text": "sich",
+"type": "word",
+"start": 16.24,
+"end": 16.4
+},
+{
+"text": "auf",
+"type": "word",
+"start": 16.48,
+"end": 16.64
+},
+{
+"text": "Telefon,",
+"type": "word",
+"start": 16.8,
+"end": 17.6
+},
+{
+"text": "E-Mail",
+"type": "word",
+"start": 17.68,
+"end": 18.08
+},
+{
+"text": "und",
+"type": "word",
+"start": 18.24,
+"end": 18.32
+},
+{
+"text": "WhatsApp",
+"type": "word",
+"start": 18.4,
+"end": 18.88
+},
+{
+"text": "–",
+"type": "word",
+"start": 19.2,
+"end": 19.24
+},
+{
+"text": "und",
+"type": "word",
+"start": 19.28,
+"end": 19.44
+},
+{
+"text": "gehen",
+"type": "word",
+"start": 19.6,
+"end": 19.84
+},
+{
+"text": "im",
+"type": "word",
+"start": 19.92,
+"end": 20.0
+},
+{
+"text": "Alltag",
+"type": "word",
+"start": 20.08,
+"end": 20.48
+},
+{
+"text": "unter.",
+"type": "word",
+"start": 20.56,
+"end": 21.4
+},
+{
+"text": "[pause]",
+"type": "word",
+"start": 21.92,
+"end": 22.064
+},
+{
+"text": "Genau",
+"type": "word",
+"start": 22.112,
+"end": 22.32
+},
+{
+"text": "hier",
+"type": "word",
+"start": 22.56,
+"end": 22.8
+},
+{
+"text": "setzen",
+"type": "word",
+"start": 22.96,
+"end": 23.28
+},
+{
+"text": "wir",
+"type": "word",
+"start": 23.36,
+"end": 23.52
+},
+{
+"text": "an.",
+"type": "word",
+"start": 23.64,
+"end": 23.84
+},
+{
+"text": "Am",
+"type": "word",
+"start": 24.24,
+"end": 24.4
+},
+{
+"text": "Anfang",
+"type": "word",
+"start": 24.52,
+"end": 24.88
+},
+{
+"text": "steht",
+"type": "word",
+"start": 24.96,
+"end": 25.12
+},
+{
+"text": "ein",
+"type": "word",
+"start": 25.2,
+"end": 25.36
+},
+{
+"text": "kostenfreies",
+"type": "word",
+"start": 25.44,
+"end": 26.16
+},
+{
+"text": "Erstgespräch.",
+"type": "word",
+"start": 26.32,
+"end": 27.2
+},
+{
+"text": "Innerhalb",
+"type": "word",
+"start": 27.52,
+"end": 27.92
+},
+{
+"text": "von",
+"type": "word",
+"start": 28.04,
+"end": 28.16
+},
+{
+"text": "48",
+"type": "word",
+"start": 28.28,
+"end": 28.8
+},
+{
+"text": "Stunden",
+"type": "word",
+"start": 28.88,
+"end": 29.36
+},
+{
+"text": "haben",
+"type": "word",
+"start": 29.52,
+"end": 29.76
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 29.84,
+"end": 29.92
+},
+{
+"text": "Ihr",
+"type": "word",
+"start": 29.96,
+"end": 30.08
+},
+{
+"text": "Angebot.",
+"type": "word",
+"start": 30.16,
+"end": 30.92
+},
+{
+"text": "Dann",
+"type": "word",
+"start": 31.12,
+"end": 31.36
+},
+{
+"text": "lernen",
+"type": "word",
+"start": 31.44,
+"end": 31.76
+},
+{
+"text": "wir",
+"type": "word",
+"start": 31.84,
+"end": 31.92
+},
+{
+"text": "Ihre",
+"type": "word",
+"start": 31.96,
+"end": 32.08
+},
+{
+"text": "Kunden",
+"type": "word",
+"start": 32.24,
+"end": 32.56
+},
+{
+"text": "kennen,",
+"type": "word",
+"start": 32.64,
+"end": 33.2
+},
+{
+"text": "gestalten",
+"type": "word",
+"start": 33.32,
+"end": 33.76
+},
+{
+"text": "Ihre",
+"type": "word",
+"start": 33.8,
+"end": 33.92
+},
+{
+"text": "neue",
+"type": "word",
+"start": 34.0,
+"end": 34.16
+},
+{
+"text": "Website,",
+"type": "word",
+"start": 34.24,
+"end": 35.04
+},
+{
+"text": "bauen",
+"type": "word",
+"start": 35.08,
+"end": 35.44
+},
+{
+"text": "und",
+"type": "word",
+"start": 35.52,
+"end": 35.68
+},
+{
+"text": "testen",
+"type": "word",
+"start": 35.76,
+"end": 36.16
+},
+{
+"text": "sie",
+"type": "word",
+"start": 36.24,
+"end": 36.4
+},
+{
+"text": "–",
+"type": "word",
+"start": 36.72,
+"end": 36.8
+},
+{
+"text": "bis",
+"type": "word",
+"start": 36.88,
+"end": 36.96
+},
+{
+"text": "sie",
+"type": "word",
+"start": 37.04,
+"end": 37.12
+},
+{
+"text": "live",
+"type": "word",
+"start": 37.2,
+"end": 37.52
+},
+{
+"text": "geht.",
+"type": "word",
+"start": 37.6,
+"end": 38.04
+},
+{
+"text": "Dahinter",
+"type": "word",
+"start": 38.24,
+"end": 38.72
+},
+{
+"text": "entsteht",
+"type": "word",
+"start": 38.8,
+"end": 39.12
+},
+{
+"text": "auf",
+"type": "word",
+"start": 39.2,
+"end": 39.36
+},
+{
+"text": "Wunsch",
+"type": "word",
+"start": 39.4,
+"end": 39.68
+},
+{
+"text": "Ihr",
+"type": "word",
+"start": 39.76,
+"end": 39.92
+},
+{
+"text": "eigenes",
+"type": "word",
+"start": 40.0,
+"end": 40.32
+},
+{
+"text": "System,",
+"type": "word",
+"start": 40.4,
+"end": 41.2
+},
+{
+"text": "in",
+"type": "word",
+"start": 41.24,
+"end": 41.28
+},
+{
+"text": "dem",
+"type": "word",
+"start": 41.36,
+"end": 41.52
+},
+{
+"text": "jede",
+"type": "word",
+"start": 41.6,
+"end": 41.84
+},
+{
+"text": "Anfrage,",
+"type": "word",
+"start": 41.92,
+"end": 42.8
+},
+{
+"text": "jeder",
+"type": "word",
+"start": 42.84,
+"end": 43.04
+},
+{
+"text": "Termin",
+"type": "word",
+"start": 43.12,
+"end": 43.6
+},
+{
+"text": "und",
+"type": "word",
+"start": 43.76,
+"end": 43.92
+},
+{
+"text": "jeder",
+"type": "word",
+"start": 44.08,
+"end": 44.32
+},
+{
+"text": "Auftrag",
+"type": "word",
+"start": 44.4,
+"end": 44.88
+},
+{
+"text": "landet.",
+"type": "word",
+"start": 44.96,
+"end": 45.44
+},
+{
+"text": "[pause]",
+"type": "word",
+"start": 46.32,
+"end": 46.464
+},
+{
+"text": "Das",
+"type": "word",
+"start": 46.512,
+"end": 46.56
+},
+{
+"text": "alles",
+"type": "word",
+"start": 46.64,
+"end": 46.96
+},
+{
+"text": "bekommen",
+"type": "word",
+"start": 47.04,
+"end": 47.36
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 47.44,
+"end": 47.6
+},
+{
+"text": "aus",
+"type": "word",
+"start": 47.68,
+"end": 47.84
+},
+{
+"text": "einer",
+"type": "word",
+"start": 48.0,
+"end": 48.32
+},
+{
+"text": "Hand:",
+"type": "word",
+"start": 48.4,
+"end": 48.72
+},
+{
+"text": "Website,",
+"type": "word",
+"start": 49.12,
+"end": 49.92
+},
+{
+"text": "System,",
+"type": "word",
+"start": 50.0,
+"end": 50.88
+},
+{
+"text": "Pflege",
+"type": "word",
+"start": 50.92,
+"end": 51.36
+},
+{
+"text": "und",
+"type": "word",
+"start": 51.6,
+"end": 51.76
+},
+{
+"text": "Werbung",
+"type": "word",
+"start": 51.84,
+"end": 52.24
+},
+{
+"text": "–",
+"type": "word",
+"start": 52.64,
+"end": 52.68
+},
+{
+"text": "aufeinander",
+"type": "word",
+"start": 52.72,
+"end": 53.2
+},
+{
+"text": "abgestimmt,",
+"type": "word",
+"start": 53.28,
+"end": 54.16
+},
+{
+"text": "mit",
+"type": "word",
+"start": 54.24,
+"end": 54.32
+},
+{
+"text": "einem",
+"type": "word",
+"start": 54.48,
+"end": 54.8
+},
+{
+"text": "festen",
+"type": "word",
+"start": 54.88,
+"end": 55.28
+},
+{
+"text": "Ansprechpartner.",
+"type": "word",
+"start": 55.36,
+"end": 56.4
+},
+{
+"text": "Aus",
+"type": "word",
+"start": 56.64,
+"end": 56.88
+},
+{
+"text": "über",
+"type": "word",
+"start": 56.96,
+"end": 57.2
+},
+{
+"text": "200",
+"type": "word",
+"start": 57.36,
+"end": 57.84
+},
+{
+"text": "Kampagnen",
+"type": "word",
+"start": 58.0,
+"end": 58.56
+},
+{
+"text": "wissen",
+"type": "word",
+"start": 58.72,
+"end": 58.96
+},
+{
+"text": "wir,",
+"type": "word",
+"start": 59.12,
+"end": 59.36
+},
+{
+"text": "was",
+"type": "word",
+"start": 59.44,
+"end": 59.68
+},
+{
+"text": "wirkt.",
+"type": "word",
+"start": 59.76,
+"end": 60.32
+},
+{
+"text": "Bei",
+"type": "word",
+"start": 60.48,
+"end": 60.64
+},
+{
+"text": "RechnungsRadar",
+"type": "word",
+"start": 60.72,
+"end": 61.52
+},
+{
+"text": "kamen",
+"type": "word",
+"start": 61.68,
+"end": 61.92
+},
+{
+"text": "mit",
+"type": "word",
+"start": 62.0,
+"end": 62.08
+},
+{
+"text": "der",
+"type": "word",
+"start": 62.16,
+"end": 62.24
+},
+{
+"text": "neuen",
+"type": "word",
+"start": 62.28,
+"end": 62.48
+},
+{
+"text": "Website",
+"type": "word",
+"start": 62.56,
+"end": 63.12
+},
+{
+"text": "230",
+"type": "word",
+"start": 63.2,
+"end": 64.24
+},
+{
+"text": "Prozent",
+"type": "word",
+"start": 64.32,
+"end": 64.72
+},
+{
+"text": "mehr",
+"type": "word",
+"start": 64.96,
+"end": 65.12
+},
+{
+"text": "Anfragen.",
+"type": "word",
+"start": 65.2,
+"end": 66.32
+},
+{
+"text": "[pause]",
+"type": "word",
+"start": 66.8,
+"end": 66.944
+},
+{
+"text": "Und",
+"type": "word",
+"start": 66.992,
+"end": 67.04
+},
+{
+"text": "wenn",
+"type": "word",
+"start": 67.12,
+"end": 67.28
+},
+{
+"text": "sich",
+"type": "word",
+"start": 67.32,
+"end": 67.44
+},
+{
+"text": "etwas",
+"type": "word",
+"start": 67.52,
+"end": 67.76
+},
+{
+"text": "ändert?",
+"type": "word",
+"start": 67.84,
+"end": 68.44
+},
+{
+"text": "Neue",
+"type": "word",
+"start": 68.64,
+"end": 68.88
+},
+{
+"text": "Öffnungszeiten,",
+"type": "word",
+"start": 68.96,
+"end": 70.16
+},
+{
+"text": "ein",
+"type": "word",
+"start": 70.2,
+"end": 70.24
+},
+{
+"text": "neues",
+"type": "word",
+"start": 70.32,
+"end": 70.56
+},
+{
+"text": "Angebot,",
+"type": "word",
+"start": 70.64,
+"end": 71.36
+},
+{
+"text": "frische",
+"type": "word",
+"start": 71.44,
+"end": 71.68
+},
+{
+"text": "Fotos:",
+"type": "word",
+"start": 71.76,
+"end": 72.52
+},
+{
+"text": "Schreiben",
+"type": "word",
+"start": 72.72,
+"end": 73.04
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 73.08,
+"end": 73.12
+},
+{
+"text": "es",
+"type": "word",
+"start": 73.2,
+"end": 73.36
+},
+{
+"text": "einfach",
+"type": "word",
+"start": 73.4,
+"end": 73.68
+},
+{
+"text": "unserem",
+"type": "word",
+"start": 73.76,
+"end": 74.16
+},
+{
+"text": "KI-Agenten",
+"type": "word",
+"start": 74.24,
+"end": 75.12
+},
+{
+"text": "per",
+"type": "word",
+"start": 75.2,
+"end": 75.36
+},
+{
+"text": "WhatsApp.",
+"type": "word",
+"start": 75.44,
+"end": 76.08
+},
+{
+"text": "Er",
+"type": "word",
+"start": 76.24,
+"end": 76.48
+},
+{
+"text": "pflegt",
+"type": "word",
+"start": 76.56,
+"end": 76.88
+},
+{
+"text": "es",
+"type": "word",
+"start": 76.96,
+"end": 77.04
+},
+{
+"text": "für",
+"type": "word",
+"start": 77.12,
+"end": 77.2
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 77.28,
+"end": 77.44
+},
+{
+"text": "ein.",
+"type": "word",
+"start": 77.6,
+"end": 77.92
+},
+{
+"text": "Bei",
+"type": "word",
+"start": 78.08,
+"end": 78.24
+},
+{
+"text": "umfangreichen",
+"type": "word",
+"start": 78.32,
+"end": 78.96
+},
+{
+"text": "Systemen",
+"type": "word",
+"start": 79.2,
+"end": 79.52
+},
+{
+"text": "geht",
+"type": "word",
+"start": 79.6,
+"end": 79.76
+},
+{
+"text": "das",
+"type": "word",
+"start": 79.84,
+"end": 79.92
+},
+{
+"text": "genauso",
+"type": "word",
+"start": 80.0,
+"end": 80.48
+},
+{
+"text": "im",
+"type": "word",
+"start": 80.56,
+"end": 80.64
+},
+{
+"text": "Dashboard.",
+"type": "word",
+"start": 80.72,
+"end": 81.48
+},
+{
+"text": "Und",
+"type": "word",
+"start": 81.68,
+"end": 81.84
+},
+{
+"text": "wenn",
+"type": "word",
+"start": 81.867,
+"end": 81.92
+},
+{
+"text": "es",
+"type": "word",
+"start": 82.0,
+"end": 82.16
+},
+{
+"text": "mehr",
+"type": "word",
+"start": 82.2,
+"end": 82.4
+},
+{
+"text": "braucht,",
+"type": "word",
+"start": 82.48,
+"end": 83.04
+},
+{
+"text": "ist",
+"type": "word",
+"start": 83.16,
+"end": 83.28
+},
+{
+"text": "unser",
+"type": "word",
+"start": 83.36,
+"end": 83.52
+},
+{
+"text": "Team",
+"type": "word",
+"start": 83.68,
+"end": 83.92
+},
+{
+"text": "persönlich",
+"type": "word",
+"start": 84.0,
+"end": 84.72
+},
+{
+"text": "für",
+"type": "word",
+"start": 84.8,
+"end": 84.88
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 84.96,
+"end": 85.04
+},
+{
+"text": "da.",
+"type": "word",
+"start": 85.12,
+"end": 85.88
+},
+{
+"text": "[pause]",
+"type": "word",
+"start": 86.4,
+"end": 86.448
+},
+{
+"text": "/ˈmeːdi̯aˌlaɪ̯t/.",
+"type": "word",
+"start": 86.464,
+"end": 87.2
+},
+{
+"text": "Damit",
+"type": "word",
+"start": 87.6,
+"end": 87.84
+},
+{
+"text": "aus",
+"type": "word",
+"start": 87.92,
+"end": 88.0
+},
+{
+"text": "Besuchern",
+"type": "word",
+"start": 88.08,
+"end": 88.72
+},
+{
+"text": "Kunden",
+"type": "word",
+"start": 88.96,
+"end": 89.28
+},
+{
+"text": "werden.",
+"type": "word",
+"start": 89.36,
+"end": 89.88
+},
+{
+"text": "Buchen",
+"type": "word",
+"start": 90.08,
+"end": 90.4
+},
+{
+"text": "Sie",
+"type": "word",
+"start": 90.48,
+"end": 90.56
+},
+{
+"text": "jetzt",
+"type": "word",
+"start": 90.68,
+"end": 90.96
+},
+{
+"text": "Ihr",
+"type": "word",
+"start": 91.04,
+"end": 91.28
+},
+{
+"text": "kostenfreies",
+"type": "word",
+"start": 91.36,
+"end": 92.08
+},
+{
+"text": "Erstgespräch.",
+"type": "word",
+"start": 92.16,
+"end": 93.28
+}
+]
+}

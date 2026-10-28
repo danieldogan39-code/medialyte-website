@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Medialyte Erklärfilm – Titelbild</title>
+<link rel="stylesheet" href="film.css">
+<link rel="stylesheet" href="film_v.css">
+<style>
+/* Titelbild für Reels, TikTok und Shorts (1080 × 1920). Wichtiges liegt im mittleren 3:4-Ausschnitt (y 240–1680),
+   den die Profilraster der Apps zeigen. */
+.cv{position:absolute;inset:0}
+.cv__lock{position:absolute;left:0;right:0;top:300px;display:flex;justify-content:center;align-items:center;gap:20px}
+.cv__lock .mk{width:84px;color:var(--coral)}.cv__lock .mk svg{width:100%;height:auto;display:block}
+.cv__lock .wm{width:300px;color:var(--text)}.cv__lock .wm svg{width:100%;height:auto;display:block}
+.cv__hl{position:absolute;left:0;right:0;top:446px;text-align:center;font-size:118px;font-weight:620;letter-spacing:-.045em;line-height:1.0;color:var(--text)}
+.cv__sub{position:absolute;left:0;right:0;top:722px;display:flex;justify-content:center;align-items:center;gap:16px;font-size:38px;font-weight:500;color:var(--text-2);letter-spacing:-.01em}
+.cv__play{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:var(--coral);box-shadow:0 12px 30px rgba(255,87,87,.45)}
+.cv__play i{display:block;width:0;height:0;margin-left:5px;border-left:19px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
+.cv .phone{left:315px;top:858px;transform:rotate(-4deg)}
+.cv .cvs{position:absolute;inset:0;background:var(--b-bg);color:var(--b-ink);padding:84px 32px 0}
+.cv .m-nav{margin-bottom:6px}.cv .m-logo{font-size:26px}.cv .m-nav i{width:30px;height:18px;border-width:3px}
+.cv .m-t{font-size:50px;margin-top:30px}
+.cv .m-img{height:300px;margin-top:26px;border-radius:22px}
+.cv .m-btn{height:58px;margin-top:26px;padding:0 28px;font-size:21px}
+.cv .ph__status{color:#10151F}
+.cv__note{position:absolute;left:566px;top:1236px;width:440px;display:flex;align-items:center;gap:16px;padding:20px 22px 20px 18px;border-radius:24px;
+  background:#1E3150;border:1px solid var(--line-3);box-shadow:var(--shadow);transform:rotate(2deg)}
+.cv__note .ic{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;flex:none}
+.cv__note .ic svg{width:28px;height:28px}
+.cv__note b{display:block;font-size:27px;font-weight:620;letter-spacing:-.015em}
+.cv__note small{display:block;margin-top:3px;font-size:19px;color:var(--text-3)}
+</style>
+</head>
+<body class="v">
+<div id="stage">
+  <div class="bg"><i class="lt lt1"></i><i class="lt lt2"></i><i class="grid"></i><i class="grain"></i></div>
+  <div class="cv">
+    <div class="cv__lock"><span class="mk">{{LOGO:}}</span><span class="wm">{{WM}}</span></div>
+    <div class="cv__hl">Aus Besuchern<br>werden Kunden.</div>
+    <div class="cv__sub"><span class="cv__play"><i></i></span>Medialyte in 100 Sekunden</div>
+    <div class="phone"><div class="ph__screen">
+      <div class="ph__status"><span>09:41</span><i></i></div>
+      <div class="cvs">
+        <div class="m-nav"><span class="m-logo">Tischlerei <i>Brandt</i></span><i></i></div>
+        <div class="m-t">Möbel nach Maß. Aus der eigenen Werkstatt.</div>
+        <div class="m-img"></div>
+        <div class="m-btn">Projekt anfragen</div>
+      </div>
+    </div></div>
+    <div class="cv__note"><span class="ic ic--tel">{{I:inbox}}</span><div><b>Neue Anfrage</b><small>Familie Peters · über die Website</small></div></div>
+  </div>
+  <i class="vig"></i>
+</div>
+</body>
+</html>

@@ -11,6 +11,7 @@ async def main():
         await pg.goto(f"http://127.0.0.1:{srv.server_address[1]}/index.html"); await pg.wait_for_function("window.__ready === true")
         B, dur = await pg.evaluate("[window.__B, window.__dur]")
         await b.close()
-    print("Länge", dur, "->", f"{int(dur) // 60}:{int(round(dur)) % 60:02d}")
-    for k in ["s1", "s4", "s8", "s10"]: print(k, round(max(0, B[k] - 0.1), 1))
+    print("Länge", dur, "->", f"{int(round(dur)) // 60}:{int(round(dur)) % 60:02d}")
+    for name, k in [("Die Ausgangslage", None), ("Unser Ablauf", "C"), ("Der Unterschied", "EF"), ("Ihr KI-Agent", "HI")]:
+        print(f"{name:18s}", 0 if k is None else round(max(0, B[k] - 0.1), 1))
 asyncio.run(main())

@@ -91,7 +91,7 @@ def render_home(ctx):
     film_s = f"""
 <section class="section section--deep" id="film">
   <div class="wrap">
-    {sh('Medialyte in 90 Sekunden.', 'Wie wir arbeiten, was uns von anderen Agenturen unterscheidet und wie der KI-Agent Ihre Website aktuell hält.', split=True)}
+    {sh('Medialyte in 100 Sekunden.', 'Wie wir arbeiten, was uns von anderen Agenturen unterscheidet und wie der KI-Agent Ihre Website aktuell hält.', split=True)}
     {film(ctx)}
   </div>
 </section>"""

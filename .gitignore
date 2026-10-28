@@ -14,3 +14,5 @@ film/qa/
 film/audio/vo_timed.wav
 film/audio/music_edit.wav
 film/audio/mix*.wav
+film/cues.json
+film/motion.json

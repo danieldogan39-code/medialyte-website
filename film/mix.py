@@ -1,37 +1,109 @@
-"""Musik auf Filmlänge schneiden (Schnitt im Takt, natürliches Ende) und mit dem Sprecher mischen."""
-import json, subprocess, numpy as np
+"""Ton des Films: Sprecher + Musik (im Takt geschnitten, unter der Stimme abgesenkt) + Geräusche aus cues.json.
+python3 mix.py   ->  out/mix.wav (48 kHz Stereo, -16 LUFS, Spitze -1,5 dBTP)
+Musik: ElevenLabs Music (audio/music1.mp3, 95,7 BPM). Der Aufbruch der Musik (Quelle 40,13 s) liegt auf der Wende
+„Genau hier setzen wir an“; mitten in der Kamerafahrt zum Ablauf springt die Musik zwölf Takte weiter (auf einer
+Phrasengrenze, über einen Takt überblendet), damit ihr natürliches Ende unter der Schlusskarte ausklingt."""
+import json, math, subprocess
+from pathlib import Path
+import numpy as np
 SR = 48000
-dur = json.load(open("timing.json"))["duration"]
-raw = subprocess.run(["ffmpeg","-v","error","-i","audio/music1.mp3","-f","f32le","-ac","2","-ar",str(SR),"-"], capture_output=True).stdout
-m = np.frombuffer(raw, np.float32).reshape(-1, 2)
+T = json.load(open("timing.json")); DUR = T["duration"]
+C = json.load(open("cues.json"))
+Path("out").mkdir(exist_ok=True)
+
+def load(path, ch=2):
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-f", "f32le", "-ac", str(ch), "-ar", str(SR), "-"], capture_output=True).stdout
+    return np.frombuffer(raw, np.float32).reshape(-1, ch).copy()
+
+def word(w, n=1):
+    k = 0
+    for x in T["words"]:
+        if x["w"].lower().strip(".,!?:– ") == w and (k := k + 1) == n: return x["s"]
+    raise KeyError(w)
+
+# ---------------- Musik
 BAR = 4 * 60 / 95.7
-# Sprung um ganze Takte, damit das natürliche Ende des Stücks (bei ~148 s) unter der Schlusskarte liegt;
-# überblendet wird über einen Takt in einem gleich lauten Teil (Takt 20 -> Takt 20 + Sprung)
-JUMP = round((148.4 - dur) / BAR) * BAR
-X0, XL = 20 * BAR, BAR
-n = int(dur * SR)
-out = np.zeros((n, 2), np.float32)
-t = np.arange(n) / SR
-src_a = (t * SR).astype(int)
-src_b = ((t + JUMP) * SR).astype(int)
-def take(idx):
-    v = np.zeros((len(idx), 2), np.float32); ok = idx < len(m); v[ok] = m[idx[ok]]; return v
-A, B = take(src_a), take(src_b)
-w = np.clip((t - X0) / XL, 0, 1)[:, None]
-out = A * np.cos(w * np.pi / 2) + B * np.sin(w * np.pi / 2)
-fade = np.clip((dur - t) / 1.2, 0, 1)[:, None]; out *= fade          # sicherheitshalber sanft auslaufen
-fin = np.clip(t / 0.6, 0, 1)[:, None]; out *= fin
-subprocess.run(["ffmpeg","-v","error","-y","-f","f32le","-ar",str(SR),"-ac","2","-i","-","audio/music_edit.wav"], input=out.astype(np.float32).tobytes())
-# Mischen: Musik leiser, unter der Stimme zusätzlich etwas abgesenkt; danach auf -16 LUFS
-fg = ("[0:a]aresample=48000,pan=stereo|c0=c0|c1=c0,highpass=f=70,acompressor=threshold=0.12:ratio=2.5:attack=8:release=120:makeup=1.6,asplit=2[vo][sc];"
-      "[1:a]volume=-13dB[mu];[mu][sc]sidechaincompress=threshold=0.03:ratio=3:attack=25:release=420:makeup=1[duck];"
-      "[vo][duck]amix=inputs=2:normalize=0:duration=longest[mix]")
-subprocess.run(["ffmpeg","-v","error","-y","-i","audio/vo_timed.wav","-i","audio/music_edit.wav","-filter_complex",fg,"-map","[mix]","-ar","48000","audio/mix_raw.wav"], check=True)
-# Zweistufige Lautheitsnormalisierung
-r = subprocess.run(["ffmpeg","-hide_banner","-nostats","-i","audio/mix_raw.wav","-af","loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json","-f","null","-"], capture_output=True, text=True).stderr
+LIFT = 40.13                                   # Aufbruch im Stück
+A = LIFT - word("genau", 2)                    # Quelle = Film + A
+PHRASE = 4 * BAR
+k = math.ceil((32.4 + A - LIFT) / PHRASE)      # erste Phrasengrenze ab der Fahrt zum Ablauf
+X = LIFT + k * PHRASE - A                      # Filmzeit der Überblendung
+Bj = A + 12 * BAR                              # nach dem Sprung
+m = load("audio/music1.mp3")
+n = int(DUR * SR); t = np.arange(n) / SR
+def take(off):
+    idx = ((t + off) * SR).astype(int); v = np.zeros((n, 2), np.float32); ok = (idx >= 0) & (idx < len(m)); v[ok] = m[idx[ok]]; return v
+w = np.clip((t - (X - BAR / 2)) / BAR, 0, 1)[:, None]
+mus = take(A) * np.cos(w * np.pi / 2) + take(Bj) * np.sin(w * np.pi / 2)
+mus *= np.clip(t / 0.8, 0, 1)[:, None] * np.clip((DUR - t) / 1.6, 0, 1)[:, None]
+print(f"Musik: Quelle = Film + {A:.2f} s, Sprung um 12 Takte bei {X:.2f} s, Ende der Quelle {DUR + Bj:.1f} s")
+
+# ---------------- Geräusche
+M = json.load(open("sfx/sfx_map.json"))
+DEF = {   # Typ: (Varianten [(Datei-Typ, Nr)], Ausrichtung, Ausschnitt in s)
+    "whoosh": ([("whoosh", 0), ("whoosh", 1)], "peak", None),
+    "swoosh": ([("swoosh", 3), ("swoosh", 0)], "peak", None),
+    "tap": ([("tap", 3)], "onset", (0, 0.12)),
+    "pop": ([("pop", 0), ("pop", 3), ("pop", 2)], "onset", (0, 0.35)),
+    "ping": ([("ping", 0), ("ping", 2), ("ping", 3), ("ping", 1)], "onset", None),
+    "typing": ([("typing", 0), ("typing", 1), ("typing", 3)], "onset", (0, 1.5)),
+    "riser": ([("riser", 3), ("riser", 1)], "end", None),
+    "impact": ([("impact", 0), ("swoosh", 1), ("impact", 0)], "onset", None),
+    "paper": ([("paper", 2)], "onset", None),
+    "success": ([("success", 0), ("success", 2), ("success", 3), ("success", 1)], "onset", None),
+    "click": ([("click", 2)], "onset", (0, 0.08)),
+    "blips": ([("blips", 1), ("blips", 0), ("blips", 3), ("blips", 2)], "onset", (0, 0.6)),
+}
+cache = {}
+def clip(typ, v):
+    files, align, cut = DEF[typ]
+    ft, fv = files[v % len(files)]
+    key = (ft, fv, cut)
+    if key not in cache:
+        x = load(Path("sfx") / f"{M[ft][fv]}.mp3")
+        H = int(0.01 * SR); F = len(x) // H
+        env = 20 * np.log10(np.sqrt((x[:F * H].mean(1).reshape(F, H) ** 2).mean(1)) + 1e-9)
+        pk = env.max()
+        on = next(i for i in range(F) if env[i] > pk - 30) * H
+        if cut:
+            x = x[on + int(cut[0] * SR): on + int(cut[1] * SR)].copy(); on = 0
+            fd = min(len(x) // 3, int(0.03 * SR)); x[-fd:] *= np.linspace(1, 0, fd)[:, None]
+            F = len(x) // H; env = 20 * np.log10(np.sqrt((x[:F * H].mean(1).reshape(F, H) ** 2).mean(1)) + 1e-9); pk = env.max()
+        x *= 10 ** ((-12 - pk) / 20)                       # lauteste 10 ms auf -12 dBFS
+        ipk = int(np.argmax(env)) * H
+        end = (F - next(i for i in range(F) if env[F - 1 - i] > pk - 20)) * H
+        cache[key] = (x, {"onset": on, "peak": ipk, "end": end}[align])
+    return cache[key]
+sfx = np.zeros((n + SR * 4, 2), np.float32)
+for c in C["sfx"]:
+    x, ref = clip(c["name"], c["v"])
+    g = 10 ** (c["gain"] / 20)
+    y = x * g
+    if c.get("dir") == "rl":                               # Kamerafahrt nach links: Geräusch wandert von rechts nach links
+        p = np.linspace(0.35, -0.35, len(y))
+        y = y * np.stack([np.sqrt((1 - p) / 2), np.sqrt((1 + p) / 2)], 1) * math.sqrt(2)
+    s = int(round(c["at"] * SR)) - ref
+    if s < 0: y = y[-s:]; s = 0
+    sfx[s:s + len(y)] += y
+sfx = sfx[:n]
+print("Geräusche:", len(C["sfx"]))
+
+# ---------------- Sprecher
+vo = load("audio/vo_timed.wav", 1)[:, 0]
+vo = np.pad(vo, (0, max(0, n - len(vo))))[:n]
+def write(path, x, ch):
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", str(ch), "-i", "-", path], input=x.astype(np.float32).tobytes(), check=True)
+write("out/vo.wav", vo[:, None], 1); write("out/music.wav", mus, 2); write("out/sfx.wav", sfx, 2)
+fg = ("[0:a]pan=stereo|c0=c0|c1=c0,highpass=f=70,acompressor=threshold=0.12:ratio=2.5:attack=8:release=120:makeup=1.6,asplit=2[vo][sc];"
+      "[1:a]volume=-14dB[mu];[mu][sc]sidechaincompress=threshold=0.03:ratio=3.5:attack=25:release=450:makeup=1[duck];"
+      "[2:a]volume=-2dB[fx];"
+      "[vo][duck][fx]amix=inputs=3:normalize=0:duration=first[mix]")
+subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", "out/vo.wav", "-i", "out/music.wav", "-i", "out/sfx.wav", "-filter_complex", fg,
+                "-map", "[mix]", "-ar", "48000", "out/mix_raw.wav"], check=True)
+r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", "out/mix_raw.wav", "-af", "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"], capture_output=True, text=True).stderr
 js = json.loads(r[r.rindex("{"):r.rindex("}") + 1])
 ln = (f"loudnorm=I=-16:TP=-1.5:LRA=11:measured_I={js['input_i']}:measured_TP={js['input_tp']}:measured_LRA={js['input_lra']}"
       f":measured_thresh={js['input_thresh']}:offset={js['target_offset']}:linear=true")
-subprocess.run(["ffmpeg","-v","error","-y","-i","audio/mix_raw.wav","-af",ln,"-ar","48000","audio/mix.wav"], check=True)
-r = subprocess.run(["ffmpeg","-hide_banner","-nostats","-i","audio/mix.wav","-af","ebur128=peak=true","-f","null","-"], capture_output=True, text=True).stderr
+subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", "out/mix_raw.wav", "-af", ln, "-ar", "48000", "out/mix.wav"], check=True)
+r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", "out/mix.wav", "-af", "ebur128=peak=true", "-f", "null", "-"], capture_output=True, text=True).stderr
 print([l.strip() for l in r.splitlines() if "I:" in l or "Peak:" in l][-3:])

@@ -1,18 +1,7 @@
-"""Untertitel (WebVTT) aus den Wortzeiten – mit der Schreibweise aus dem Drehbuch."""
+"""Untertitel aus den Wortzeiten (Schreibweise steht schon in timing.json) – als WebVTT und SRT."""
 import json, re
 d = json.load(open("timing.json"))
-W = [dict(w) for w in d["words"]]
-# Schreibweise aus dem Drehbuch (Whisper hört z. B. „Medialeit“ und „%“)
-FIX = {9: "Ihre", 10: "Website …", 43: "WhatsApp –", 44: "und", 81: "sie –", 93: "in dem", 108: "Hand:", 113: "Werbung –",
-       129: "RechnungsRadar", 136: "Prozent", 150: "Fotos:", 186: "Medialyte.", 187: "Damit"}
-for i, v in FIX.items(): W[i]["w"] = v
-# getrennte Teile zusammenführen: „E -Mail“, „KI -Agenten“
-out = []
-for w in W:
-    if w["w"].startswith("-") and out:
-        out[-1]["w"] += w["w"]; out[-1]["e"] = w["e"]
-    else: out.append(w)
-W = out
+W = d["words"]
 cues, cur = [], []
 def text(ws): return " ".join(x["w"] for x in ws)
 for i, w in enumerate(W):
@@ -21,23 +10,32 @@ for i, w in enumerate(W):
     nxt = W[i + 1] if i + 1 < len(W) else None
     if end or (soft and len(t) > 34) or len(t) > 78 or nxt is None or (nxt and nxt["s"] - w["e"] > 0.6):
         cues.append(cur); cur = []
-def ts(x):
-    m, s = divmod(max(0, x), 60); return f"00:{int(m):02d}:{s:06.3f}"
-lines = ["WEBVTT", ""]
+WEAK = {"auf", "jeder", "jede", "ist", "mit", "der", "die", "das", "dem", "ihr", "ihre", "von", "und", "in", "im", "zu", "ein",
+        "einem", "einer", "sie", "wir", "es", "bei", "aus", "über", "unser", "unserem", "per", "für", "nach"}
+def wrap(t):
+    """zwei ausgewogene Zeilen; lieber nach Satzzeichen trennen, nie nach einem kleinen Bindewort"""
+    if len(t) <= 42: return t
+    words = t.split(" "); best = None
+    for j in range(1, len(words)):
+        a, b = " ".join(words[:j]), " ".join(words[j:])
+        score = abs(len(a) - len(b)) + (40 if max(len(a), len(b)) > 42 else 0)
+        if a[-1] in ",:–": score -= 12
+        if words[j - 1].lower().strip(",.:") in WEAK: score += 15
+        if best is None or score < best[0]: best = (score, a + "\n" + b)
+    return best[1]
+spans = []
 for k, c in enumerate(cues):
     s = c[0]["s"] - 0.05
     e = c[-1]["e"] + 0.35
     if k + 1 < len(cues): e = min(e, cues[k + 1][0]["s"] - 0.06)
-    e = max(e, s + 0.9)
-    t = text(c)
-    if len(t) > 42:  # auf zwei Zeilen umbrechen, möglichst in der Mitte
-        words = t.split(" "); best = None
-        for j in range(1, len(words)):
-            a, b = " ".join(words[:j]), " ".join(words[j:])
-            score = abs(len(a) - len(b))
-            if best is None or score < best[0]: best = (score, a + "\n" + b)
-        t = best[1]
-    lines += [f"{ts(s)} --> {ts(e)}", t, ""]
-open("out/medialyte-film.de.vtt", "w").write("\n".join(lines))
-print("\n".join(lines[:40]))
-print("…", len(cues), "Untertitel")
+    spans.append((s, max(e, s + 0.9), wrap(text(c))))
+def ts(x, sep="."):
+    m, s = divmod(max(0, x), 60); return f"00:{int(m):02d}:{s:06.3f}".replace(".", sep)
+vtt = ["WEBVTT", ""]
+srt = []
+for k, (s, e, t) in enumerate(spans):
+    vtt += [f"{ts(s)} --> {ts(e)}", t, ""]
+    srt += [str(k + 1), f"{ts(s, ',')} --> {ts(e, ',')}", t, ""]
+open("out/medialyte-film.de.vtt", "w").write("\n".join(vtt))
+open("out/medialyte-film.de.srt", "w").write("\n".join(srt))
+print("\n".join(vtt[:24])); print("…", len(spans), "Untertitel")

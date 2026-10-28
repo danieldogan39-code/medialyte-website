@@ -504,14 +504,14 @@ def process(items=None, cls=""):
 
 
 # ======================================================================= Film (Platzhalter)
-# Kapitel des Films: Startzeit in Sekunden (aus dem Schnitt), Titel, kurze Beschreibung
+# Kapitel des Films: Startzeit in Sekunden (Szenengrenzen aus film/chapters.py), Titel, kurze Beschreibung
 FILM_CHAPTERS = [
     (0, "Die Ausgangslage", "Warum viele Websites Kunden verlieren statt gewinnen"),
-    (21.5, "Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
-    (46.3, "Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
-    (66.5, "Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
+    (18.9, "Unser Ablauf", "Vom Erstgespräch über den Entwurf bis zum Livegang"),
+    (40.4, "Der Unterschied", "Was Medialyte anders macht als eine klassische Agentur"),
+    (57.5, "Ihr KI-Agent", "So bleiben Website und System ohne Aufwand aktuell"),
 ]
-FILM_LENGTH = "1:37"
+FILM_LENGTH = "1:26"
 
 
 def film(ctx):

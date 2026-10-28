@@ -10,6 +10,7 @@ __pycache__/
 film/stage/
 film/out/
 film/stills/
+film/qa/
 film/audio/vo_timed.wav
 film/audio/music_edit.wav
 film/audio/mix*.wav

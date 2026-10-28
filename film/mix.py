@@ -5,8 +5,10 @@ dur = json.load(open("timing.json"))["duration"]
 raw = subprocess.run(["ffmpeg","-v","error","-i","audio/music1.mp3","-f","f32le","-ac","2","-ar",str(SR),"-"], capture_output=True).stdout
 m = np.frombuffer(raw, np.float32).reshape(-1, 2)
 BAR = 4 * 60 / 95.7
-JUMP = 20 * BAR              # 20 Takte weiter: Takt bleibt im Raster
-X0, XL = 80.0, BAR           # Überblendung über einen Takt
+# Sprung um ganze Takte, damit das natürliche Ende des Stücks (bei ~148 s) unter der Schlusskarte liegt;
+# überblendet wird über einen Takt in einem gleich lauten Teil (Takt 20 -> Takt 20 + Sprung)
+JUMP = round((148.4 - dur) / BAR) * BAR
+X0, XL = 20 * BAR, BAR
 n = int(dur * SR)
 out = np.zeros((n, 2), np.float32)
 t = np.arange(n) / SR

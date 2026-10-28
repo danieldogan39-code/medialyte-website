@@ -16,7 +16,7 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 | `api/` | PHP-Endpunkte für die Terminbuchung (`termin.php`, `slots.php`) |
 | `deploy/.htaccess` | HTTPS, Weiterleitungen alter WordPress-Adressen, Caching, Sicherheits-Header |
 | `tools/` | Hilfsskripte (Screenshots, Funktionstest, Referenzbilder, Wortmarke, Vorschaubild) |
-| `film/` | Erklärfilm „Medialyte in 100 Sekunden“: Szenen, Zeitplan, Sprecher, Musik und Skripte zum Neu-Bauen (siehe `film/README.md`) |
+| `film/` | Erklärfilm „Medialyte in 90 Sekunden“: Szenen, Zeitplan, Sprecher, Musik und Skripte zum Neu-Bauen (siehe `film/README.md`) |
 
 CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site.js` zusammengefügt (mit Prüfsumme gegen alte Browser-Caches).
 

@@ -138,7 +138,7 @@ async def desktop(b):
 
     # Ergebnisse: Wirkungskarte mit aktuellem Logo
     await pg.evaluate("document.getElementById('ergebnisse').scrollIntoView()")
-    await pg.wait_for_timeout(2500)
+    await pg.wait_for_timeout(4000)   # weiches Scrollen (~1 s) plus Hochzählen (1,5 s)
     imp = await pg.evaluate("(function(){var c=document.querySelector('.impact');if(!c)return 'fehlt';var im=c.querySelector('.impact__h img');return c.querySelectorAll('.impact__row').length+'|'+!!(im&&im.complete&&im.naturalWidth)+'|'+c.querySelector('[data-count]').textContent.trim()})()")
     check("Ergebnisse: Wirkungskarte mit Logo", imp == "4|true|230", imp)
 
@@ -182,8 +182,8 @@ async def desktop(b):
     await pg.wait_for_timeout(700)
     await pg.click(".film__ch >> nth=2")
     await pg.wait_for_timeout(3000)
-    st = await pg.evaluate("(function(){var v=document.querySelector('.film__video');return [document.querySelector('[data-film]').classList.contains('is-started'), Math.round(v.currentTime), document.querySelector('.film__ch.is-on b').textContent, v.currentSrc.split('/').pop().split('?')[0], v.paused]})()")
-    check("Film: Kapitel springt an die Stelle", st[0] and st[1] >= 46 and st[2] == "Der Unterschied" and not st[4], str(st))
+    st = await pg.evaluate("(function(){var v=document.querySelector('.film__video');return [document.querySelector('[data-film]').classList.contains('is-started'), Math.round(v.currentTime), document.querySelector('.film__ch.is-on b').textContent, v.currentSrc.split('/').pop().split('?')[0], v.paused, parseFloat(document.querySelectorAll('.film__ch')[2].getAttribute('data-at'))]})()")
+    check("Film: Kapitel springt an die Stelle", st[0] and st[5] <= st[1] <= st[5] + 5 and st[2] == "Der Unterschied" and not st[4], str(st))
     await pg.evaluate("document.querySelector('.film__video').pause()")
 
     # Referenz-Vorschau

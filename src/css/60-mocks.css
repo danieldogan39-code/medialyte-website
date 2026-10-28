@@ -321,9 +321,10 @@
   .pl__card[data-st="gespraech"] .pl__st{background:rgba(120,160,255,.14);color:#B9CCFF}
   .pl__card[data-st="angebot"] .pl__st{background:rgba(255,196,90,.13);color:#FFD58A}
   .pl__card[data-st="auftrag"] .pl__st{background:var(--ok-soft);color:var(--ok)}
-  .pl__agent{min-height:calc(3 * 1.45em + 24px)}
+  /* Platz für die längste Nachricht (mit Antwort-Button), damit beim Wechsel nichts springt */
+  .pl__agent{min-height:calc(4 * 1.45em + 24px)}
 }
-@container (max-width:340px){.pl__agent{min-height:calc(4 * 1.45em + 24px)}}
+@container (max-width:340px){.pl__agent{min-height:calc(5 * 1.45em + 24px)}}
 
 /* ---------- Kundenreise: Agent-Demo ---------- */
 .ad{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1fr);gap:18px;align-items:center;padding:18px;background:linear-gradient(180deg,#14223A,#111D31)}

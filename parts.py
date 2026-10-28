@@ -46,14 +46,6 @@ REFS = {
     },
 }
 
-TEAM = [
-    ("Daniel", "D", "Inhaber · Kunden und Projekte", "Ihr Ansprechpartner vom ersten Gespräch bis lange nach dem Livegang. Daniel hört zu, plant Ihr Projekt und sorgt dafür, dass am Ende alles zusammenpasst."),
-    ("Hannes", "H", "Entwicklung", "Hannes baut Websites, Apps und Systeme, die schnell laden, sicher laufen und mit Ihrem Betrieb mitwachsen."),
-    ("Maximilian", "M", "Design", "Maximilian gestaltet Oberflächen, die Ihre Marke tragen und Ihre Kunden ohne Umwege ans Ziel bringen."),
-    ("Aurelia", "A", "Marketing", "Aurelia plant Kampagnen und Inhalte, damit genau die richtigen Menschen auf Sie aufmerksam werden."),
-    ("Finn", "F", "Buchhaltung und Management", "Finn hält im Hintergrund alles zusammen: Angebote, Abrechnung und Organisation – klar und verlässlich."),
-]
-
 FAQ_MAIN = [
     ("Was kostet eine Website bei Medialyte?",
      "<p>Jedes Angebot besteht aus zwei Teilen: einer einmaligen Pauschale für Konzept, Design und Entwicklung und einem monatlichen Abo für Hosting, Pflege, KI-Agent und Support. Wie hoch beides ist, hängt davon ab, was Ihr Betrieb braucht.</p><p>Nach dem kostenfreien Erstgespräch erhalten Sie innerhalb von 48 Stunden ein Angebot – transparent und ohne versteckte Kosten.</p>"),
@@ -165,51 +157,63 @@ def closing(ctx, title="Bereit für eine Website, die Kunden bringt?", quiet="Wi
 
 
 # ======================================================================= Die Idee (3V)
+# Die Idee: drei Säulen, jede mit Nutzen, Leistungen und einer Frage zum Selbstcheck.
+# (Schlüssel, Säule, Farbe, Titel, Text, Leistungen, Frage, Antwort „passt“, Antwort „Hebel“, Anliegen für die Buchung)
 IDEA = [
-    ("vermehrung", "Vermehrung", "Neue Kunden gewinnen",
-     "Wir sorgen dafür, dass die richtigen Menschen Sie finden: mit einer Website, die bei Google gefunden wird, und Werbung, die genau Ihre Zielgruppe erreicht. Aus Besuchern werden Anfragen.",
-     [("/leistungen/website-erstellung/", "Website-Erstellung"), ("/leistungen/online-marketing/", "Online-Marketing")], -90),
-    ("verbesserung", "Verbesserung", "Kunden überzeugen und halten",
-     "Ein Auftritt, der Vertrauen schafft, schnelle Antworten und Informationen, die immer stimmen. Der KI-Agent hält Ihre Seite aktuell, damit kein Kunde vor veralteten Öffnungszeiten steht.",
-     [("/leistungen/website-erstellung/", "Website-Erstellung"), ("/leistungen/ki-agent/", "KI-Agent")], 30),
-    ("verwaltung", "Verwaltung", "Den Überblick behalten",
-     "Anfragen, Termine, Angebote und Kunden laufen in Ihrem eigenen System zusammen. Nichts geht verloren, und Ihr Team sieht jederzeit, was als Nächstes zu tun ist.",
-     [("/leistungen/kundenmanagement-system/", "Kundenmanagement-System"), ("/leistungen/ki-agent/", "KI-Agent")], 150),
+    ("vermehrung", "Vermehrung", "ads", "Neue Kunden gewinnen",
+     "Damit die richtigen Menschen Sie finden: eine Website, die bei Google gefunden wird, und Werbung, die genau Ihre Zielgruppe erreicht.",
+     [("/leistungen/website-erstellung/", "Website-Erstellung"), ("/leistungen/online-marketing/", "Online-Marketing")],
+     "Kommen genug neue Anfragen über Ihre Website?", "Ja, genug", "Zu wenige", ["werbung", "web-besser"]),
+    ("verbesserung", "Verbesserung", "ai", "Kunden überzeugen und halten",
+     "Ein Auftritt, der Vertrauen schafft, und Informationen, die immer stimmen. Der KI-Agent hält Ihre Seite aktuell – per WhatsApp.",
+     [("/leistungen/website-erstellung/", "Website-Erstellung"), ("/leistungen/ki-agent/", "KI-Agent")],
+     "Ist Ihre Website aktuell – auch auf dem Handy?", "Ja", "Eher nicht", ["web-besser", "agent"]),
+    ("verwaltung", "Verwaltung", "crm", "Alles an einem Ort",
+     "Anfragen, Termine, Angebote und Aufträge laufen in Ihrem eigenen System zusammen. Nichts geht verloren, Ihr Team sieht, was zu tun ist.",
+     [("/leistungen/kundenmanagement-system/", "Kundenmanagement-System")],
+     "Landen alle Anfragen an einem Ort?", "Ja", "Nein, verstreut", ["system"]),
 ]
+
+# Kleine Bilder je Säule (gezeichnet, keine Fotos)
+_PILLAR_VIS = {
+    "vermehrung": '<span class="pv pv--bars" aria-hidden="true">' + "".join(f'<i style="--h:{h}%;--d:{i}"></i>' for i, h in enumerate([26, 34, 31, 48, 57, 72, 94])) + '<b>Anfragen</b></span>',
+    "verbesserung": ('<span class="pv pv--site" aria-hidden="true"><span class="pv__win"><span class="pv__bar"><i></i><i></i><i></i></span>'
+                     '<span class="pv__line"></span><span class="pv__line pv__line--s"></span>'
+                     '<span class="pv__row"><span>Öffnungszeiten</span><em>Aktualisiert</em></span></span>'
+                     '<span class="pv__msg">Ab Montag: 8–18 Uhr</span></span>'),
+    "verwaltung": ('<span class="pv pv--flow" aria-hidden="true"><span class="pv__src"><i>Website</i><i>WhatsApp</i><i>Telefon</i></span>'
+                   '<svg viewBox="0 0 60 88" preserveAspectRatio="none"><path d="M0 12 C30 12 30 44 60 44 M0 44 H60 M0 76 C30 76 30 44 60 44"/></svg>'
+                   '<span class="pv__hub">Dashboard</span></span>'),
+}
 
 
 def idea(ctx):
-    r = 44
-    arcs, nodes, panels, dots = "", "", "", ""
-    for i, (key, name, h, text, uses, ang) in enumerate(IDEA):
-        a0, a1 = math.radians(ang - 46), math.radians(ang + 46)
-        x0, y0 = 50 + r * math.cos(a0), 50 + r * math.sin(a0)
-        x1, y1 = 50 + r * math.cos(a1), 50 + r * math.sin(a1)
-        arcs += f'<path class="orb__arc{" is-on" if i == 0 else ""}" data-arc="{i}" d="M{x0:.2f} {y0:.2f}A{r} {r} 0 0 1 {x1:.2f} {y1:.2f}"/>'
-        nx, ny = 50 + r * math.cos(math.radians(ang)), 50 + r * math.sin(math.radians(ang))
-        nodes += (f'<button class="orb__node" type="button" role="tab" id="idea-t{i}" aria-controls="idea-p{i}" aria-selected="{"true" if i == 0 else "false"}" '
-                  f'tabindex="{0 if i == 0 else -1}" style="--x:{nx:.1f}%;--y:{ny:.1f}%">{name}</button>')
+    ICN = {"vermehrung": "trend", "verbesserung": "spark", "verwaltung": "inbox"}
+    cards, dots = "", ""
+    for i, (key, name, tone, h, text, uses, qn, ok, gap, asks) in enumerate(IDEA):
         tags = "".join(f'<li><a href="{ctx.u(p)}">{e(t)}</a></li>' for p, t in uses)
-        panels += f"""
-<div class="idea__panel{' is-on' if i == 0 else ''}" role="tabpanel" id="idea-p{i}" aria-labelledby="idea-t{i}"{'' if i == 0 else ' aria-hidden="true"'}>
-  <span class="idea__label">{name}</span>
-  <h3>{h}</h3>
-  <p>{text}</p>
-  <div class="idea__uses"><small>Dafür bauen wir</small><ul class="tags">{tags}</ul></div>
-</div>"""
-        dots += f'<button type="button" class="idea__dot{" is-on" if i == 0 else ""}" tabindex="-1" aria-label="{name} zeigen"><i></i></button>'
+        dots += f'<i class="po__dot po__dot--{tone}" data-k="{key}" title="{name}"></i>'
+        cards += f"""
+<article class="pillar pillar--{tone}" data-pillar="{key}" data-name="{name}" data-asks="{','.join(asks)}" data-reveal style="--rd:{i}">
+  <div class="pillar__vis">{_PILLAR_VIS[key]}</div>
+  <div class="pillar__body">
+    <span class="pillar__name"><span class="ic ic--sm ic--{tone}">{icon(ICN[key])}</span>{name}</span>
+    <h3>{h}</h3>
+    <p>{text}</p>
+    <ul class="tags">{tags}</ul>
+  </div>
+  <div class="pillar__check" role="group" aria-labelledby="pq-{key}">
+    <span class="pillar__q" id="pq-{key}">{qn}</span>
+    <span class="pillar__ans chips"><button type="button" class="chip" data-a="ok" aria-pressed="false">{ok}</button><button type="button" class="chip" data-a="gap" aria-pressed="false">{gap}</button></span>
+  </div>
+</article>"""
     return f"""
-<div class="idea" data-idea>
-  <div class="orb" data-reveal="scale">
-    <svg class="orb__svg" viewBox="0 0 100 100" aria-hidden="true"><circle class="orb__ring" cx="50" cy="50" r="{r}"/><circle class="orb__ring orb__ring--in" cx="50" cy="50" r="34"/>{arcs}</svg>
-    <div class="orb__spin" aria-hidden="true"><i></i></div>
-    <div class="orb__center" aria-hidden="true">{LOGO}<b>Ihr Betrieb</b><small>und seine Kundenbeziehungen</small></div>
-    <div role="tablist" aria-label="Die drei Bereiche">{nodes}</div>
-  </div>
-  <div data-reveal>
-    <div class="idea__panels">{panels}</div>
-    <div class="idea__dots">{dots}</div>
-  </div>
+<div class="pillars" data-pillars>{cards}
+</div>
+<div class="po" data-pillars-out data-reveal>
+  <span class="po__dots" aria-hidden="true">{dots}</span>
+  <p class="po__text" data-po-text aria-live="polite"><b>Wo liegt Ihr größter Hebel?</b> <span>Beantworten Sie die drei Fragen oben – das Ergebnis nehmen wir direkt ins Erstgespräch mit.</span></p>
+  <a class="btn btn--primary" href="{book_link(ctx)}" data-po-cta data-ask="">Erstgespräch buchen</a>
 </div>"""
 
 
@@ -335,37 +339,38 @@ def ref_dialog(ctx):
 <script type="application/json" id="refs-data">{json.dumps(data, ensure_ascii=False)}</script>"""
 
 
-# ======================================================================= Vorher/Nachher
-def ba_slider(ctx):
+# ======================================================================= Ergebnisse
+# Ergebnis nach dem Relaunch: die vier echten Kennzahlen von RechnungsRadar, je Zeile vorher und nachher.
+# Balken je Kennzahl auf den größeren Wert bezogen (vorher = 100): 330, 33, 173 und 85.
+IMPACT = [("Kundenanfragen", "+", 230, 30.3, 100), ("Absprungrate", "−", 67, 100, 33),
+          ("Conversionrate", "+", 73, 57.8, 100), ("Marketingkosten", "−", 15, 100, 85)]
+
+
+def impact(ctx):
+    rows = "".join(f"""
+    <li class="impact__row" style="--i:{i}"><span class="impact__k">{k}</span><b class="impact__v">{sign}<span data-count="{v}">{v}</span> %</b>
+      <span class="impact__bars" aria-hidden="true"><span class="impact__bar"><small>vorher</small><i style="--w:{b0}%"></i></span><span class="impact__bar impact__bar--after"><small>nachher</small><i style="--w:{b1}%"></i></span></span></li>"""
+        for i, (k, sign, v, b0, b1) in enumerate(IMPACT))
     return f"""
-<div class="ba" data-ba role="group" aria-label="Vorher-Nachher-Vergleich der Website RechnungsRadar">
-  {img(ctx, 'img/refs/rechnungsradar-nachher.webp', 1280, 560, 'Website RechnungsRadar nach dem Relaunch')}
-  {img(ctx, 'img/refs/rechnungsradar-vorher.webp', 1280, 560, 'Website RechnungsRadar vor dem Relaunch', cls='ba__before')}
-  <input type="range" min="0" max="100" value="50" step="1" aria-label="Vergleich verschieben: links vorher, rechts nachher">
-  <span class="ba__line" aria-hidden="true"><span class="ba__knob">{icon('drag')}</span></span>
-  <span class="ba__tag ba__tag--before" aria-hidden="true">Vorher</span>
-  <span class="ba__tag ba__tag--after" aria-hidden="true">Nachher</span>
+<div class="impact">
+  <div class="impact__h"><span class="impact__brand">{img(ctx, 'img/logos/rechnungsradar.webp', _LOGO_DIMS['rechnungsradar'][0], _LOGO_DIMS['rechnungsradar'][1], 'RechnungsRadar')}</span><span class="badge">Nach dem Relaunch</span></div>
+  <ul class="impact__rows" role="list">{rows}
+  </ul>
 </div>"""
 
 
 def results(ctx):
     return f"""
 <div class="res">
-  <div data-reveal>{ba_slider(ctx)}</div>
+  <div data-reveal>{impact(ctx)}</div>
   <figure class="quote" data-reveal style="--rd:1">
     <svg class="quote__mark" viewBox="0 0 40 30" aria-hidden="true"><path fill="currentColor" d="M0 30V17.6C0 7.9 5.3 1.6 15.9 0l1.6 4.3C11.6 5.9 8.6 9.1 8.3 14h7.3v16zm22.4 0V17.6c0-9.7 5.3-16 15.9-17.6L40 4.3C34 5.9 31 9.1 30.7 14H38v16z"/></svg>
     <blockquote>
       <p>Dank Medialyte hat meine Website für RechnungsRadar einen echten Qualitätssprung gemacht. Aus einer eher schlichten Seite ist ein professioneller Auftritt geworden, der Vertrauen schafft.</p>
       <p>Seitdem erreichen mich deutlich mehr Anfragen von Steuerberatern. Die Zusammenarbeit war reibungslos, schnell und absolut zuverlässig – sehr empfehlenswert!</p>
     </blockquote>
-    <figcaption>{img(ctx, 'img/logos/avatar-rechnungsradar.webp', 112, 112, 'Logo RechnungsRadar')}<span><b>Hannes Diedrichsen</b><small>Gründer von RechnungsRadar</small></span></figcaption>
+    <figcaption>{img(ctx, 'img/logos/avatar-rechnungsradar.svg', 48, 48, 'Logo RechnungsRadar')}<span><b>Hannes Diedrichsen</b><small>Gründer von RechnungsRadar</small></span></figcaption>
   </figure>
-</div>
-<div class="deltas" data-reveal>
-  <div class="delta"><b>+<span data-count="230">230</span> %</b><small>Kundenanfragen</small></div>
-  <div class="delta"><b>−<span data-count="67">67</span> %</b><small>Absprungrate</small></div>
-  <div class="delta"><b>+<span data-count="73">73</span> %</b><small>Conversionrate</small></div>
-  <div class="delta"><b>−<span data-count="15">15</span> %</b><small>Marketingkosten</small></div>
 </div>
 <p class="deltas__note">Veränderung bei RechnungsRadar nach dem Relaunch, im Vergleich zur vorherigen Website.</p>"""
 
@@ -376,23 +381,23 @@ def compare():
     P = f'<span class="v part">{icon("minus")}'
     N = f'<span class="v no">{icon("x")}'
     rows = [
-        ("Website für Ihre Zielgruppe gemacht", Y + "Ja</span>", Y + "Ja</span>", P + "Vorlage</span>"),
-        ("Kundenmanagement-System aus einer Hand", Y + "Ja</span>", P + "Selten</span>", N + "Nein</span>"),
-        ("Änderungen per WhatsApp oder Dashboard", Y + "Mit KI-Agent</span>", P + "Per Auftrag</span>", N + "Nur selbst</span>"),
+        ("Website auf Ihre Zielgruppe zugeschnitten", Y + "Ja</span>", Y + "Ja</span>", P + "Vorlage</span>"),
+        ("Kunden- und Produktmanagement aus einer Hand", Y + "Ja</span>", P + "Selten</span>", N + "Nein</span>"),
+        ("Änderungen per WhatsApp oder Dashboard", Y + "Mit KI-Agent</span>", P + "Per Auftrag</span>", N + "Selbst machen</span>"),
         ("Website, SEO und Werbung abgestimmt", Y + "Ja</span>", P + "Oft getrennt</span>", N + "Nein</span>"),
-        ("Laufende Pflege", Y + "Im Abo enthalten</span>", P + "Meist extra</span>", N + "Nur selbst</span>"),
-        ("Ansprechpartner", Y + "Fest und persönlich</span>", P + "Wechselnd</span>", N + "Hotline</span>"),
-        ("Angebot", Y + "Innerhalb von 48 h</span>", P + "Unterschiedlich</span>", Y + "Festpreis-Tarif</span>"),
+        ("Laufende Pflege inklusive", Y + "Im Abo enthalten</span>", P + "Meist extra</span>", N + "Selbst machen</span>"),
+        ("Fester Ansprechpartner", Y + "Persönlich</span>", P + "Wechselnd</span>", N + "Support-Hotline</span>"),
+        ("Transparentes Angebot", Y + "Innerhalb von 48 h</span>", P + "Unterschiedlich</span>", Y + "Festpreis-Tarif</span>"),
     ]
     body = "".join(f'<tr><th scope="row">{a}</th><td class="is-us">{b}</td><td>{c}</td><td>{d}</td></tr>' for a, b, c, d in rows)
     return f"""
 <div data-reveal>
   <div class="cmp-tabs chips" role="group" aria-label="Vergleich wählen"><button class="chip" type="button" data-vs="agentur" aria-pressed="true">vs. Agentur</button><button class="chip" type="button" data-vs="baukasten" aria-pressed="false">vs. Baukasten</button></div>
-  <table class="cmp" data-vs="agentur">
+  <div class="cmp-wrap"><table class="cmp" data-vs="agentur">
     <caption class="sr-only">Vergleich: Medialyte, klassische Agentur und Website-Baukasten</caption>
-    <thead><tr><th scope="col"><span class="sr-only">Merkmal</span></th><th scope="col" class="is-us">Medialyte</th><th scope="col">Klassische Agentur</th><th scope="col">Website-Baukasten</th></tr></thead>
+    <thead><tr><th scope="col">Typischer Vergleich</th><th scope="col" class="is-us">Medialyte</th><th scope="col">Klassische Agentur</th><th scope="col">Website-Baukasten</th></tr></thead>
     <tbody>{body}</tbody>
-  </table>
+  </table></div>
   <p class="cmp-note">Typische Merkmale. Im Einzelfall kann das je nach Anbieter abweichen.</p>
 </div>"""
 
@@ -498,18 +503,6 @@ def process(items=None, cls=""):
     return f'<ol class="proc{(" " + cls) if cls else ""}" data-proc style="--n:{len(items)}"><span class="proc__line" aria-hidden="true"><i></i></span>{lis}</ol>'
 
 
-# ======================================================================= Team
-def team():
-    """Team als ruhige Liste: Name, Aufgabe, ein Satz. Fotos folgen (dann als <img> in .member__pic)."""
-    rows = "".join(f"""
-<li class="member" data-reveal style="--rd:{i}">
-  <h3 class="member__name">{e(n)}</h3>
-  <span class="member__role">{e(r)}</span>
-  <p>{e(t)}</p>
-</li>""" for i, (n, ini, r, t) in enumerate(TEAM))
-    return f'<ul class="team" role="list">{rows}</ul>'
-
-
 # ======================================================================= Film (Platzhalter)
 def film():
     """Platzhalter für den Film: Die vier Kapitel laufen als Titelkarten durch, die Liste daneben
@@ -563,9 +556,12 @@ def faq_block(ctx, qas, title="Häufige Fragen", lead="Ihre Frage ist nicht dabe
 def booking_widget(ctx):
     demo = "0" if ctx.mode == "prod" else "1"
 
+    TONES = {"web-neu": "web", "web-besser": "web", "system": "crm", "werbung": "ads", "agent": "ai"}
+
     def opt(name, value, ic, title, sub, typ="checkbox"):
         i = f"bk-{name}-{value}"
-        return f'<div class="opt"><input type="{typ}" name="{name}" value="{value}" id="{i}"><label for="{i}"><span class="ic">{icon(ic)}</span><b>{title}</b><small>{sub}</small></label></div>'
+        tn = f" ic--{TONES[value]}" if name == "anliegen" and value in TONES else ""
+        return f'<div class="opt"><input type="{typ}" name="{name}" value="{value}" id="{i}"><label for="{i}"><span class="ic{tn}">{icon(ic)}</span><b>{title}</b><small>{sub}</small></label></div>'
 
     def simple(name, value, text):
         i = f"bk-{name}-{value}"
@@ -592,7 +588,7 @@ def booking_widget(ctx):
     return f"""
 <div class="bk" id="booking" data-demo="{demo}" data-endpoint="/api/termin.php" data-slots="/api/slots.php">
   <aside class="bk__aside">
-    <div class="bk__host"><span class="ava" aria-hidden="true">D</span><span><b>Daniel</b><small>Inhaber · Ihr Ansprechpartner</small></span></div>
+    <div class="bk__host"><span class="ava" aria-hidden="true">{LOGO}</span><span><b>Medialyte</b><small>Ihr fester Ansprechpartner</small></span></div>
     <h3>Kostenfreies Erstgespräch</h3>
     <ul class="bk__meta">
       <li>{icon('clock')} 30 Minuten</li>
@@ -693,10 +689,14 @@ def page_hero(ctx, crumbs, h1, lead, actions="", visual=""):
 </section>"""
 
 
-def feats(items, cols=3):
+def feats(items, cols=3, tone=None):
+    """Raster mit Symbol, Titel, Text. tone: Farbe der Leistung (web, crm, ai, ads) oder eine Liste, die reihum gilt."""
     cls = "feats" if cols == 3 else "feats feats--2"
+    def tc(i):
+        tn = tone[i % len(tone)] if isinstance(tone, (list, tuple)) else tone
+        return f" ic--{tn}" if tn else ""
     return f'<ul class="{cls}">' + "".join(
-        f'<li data-reveal style="--rd:{i % cols}"><span class="ic">{icon(ic)}</span><h3>{t}</h3><p>{d}</p></li>' for i, (ic, t, d) in enumerate(items)) + "</ul>"
+        f'<li data-reveal style="--rd:{i % cols}"><span class="ic{tc(i)}">{icon(ic)}</span><h3>{t}</h3><p>{d}</p></li>' for i, (ic, t, d) in enumerate(items)) + "</ul>"
 
 
 def frame_img(ctx, src, w, h, host, alt, lazy=True):

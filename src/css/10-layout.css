@@ -2,10 +2,33 @@
 .wrap{width:100%;max-width:calc(var(--max) + 2 * var(--gutter));margin-inline:auto;padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
 .wrap--narrow{max-width:calc(920px + 2 * var(--gutter))}
 .section{position:relative;padding-block:var(--section)}
-.section--deep{background:var(--navy-deep)}
+.section--deep{background-color:var(--navy-deep)}
 .section--flush{padding-top:0}
 .section--tight{padding-block:calc(var(--section) * .62)}
 .section + .section--deep,.section--deep + .section{border-top:1px solid var(--line)}
+
+/* ---------- Lebendiger Hintergrund ----------
+   Ruhige Farbfelder je Abschnitt – Blau als Grundton, ein Hauch Koralle, Violett und Türkis.
+   Nur Hintergrundbilder des Abschnitts: keine zusätzlichen Ebenen, keine Bewegung. Feste Größen,
+   und die Mitte liegt so weit innen, dass jedes Feld vor der Kante des Abschnitts ausläuft (keine Nähte). */
+:root{--f-blue:74,118,210;--f-violet:120,102,238;--f-coral:255,87,87;--f-teal:44,196,172}
+.section{background-image:var(--amb,none);background-repeat:no-repeat}
+.section:nth-of-type(4n+1){--amb:radial-gradient(min(980px,135vw) 520px at 100% 440px,rgba(var(--f-blue),0.17),rgba(var(--f-blue),0.054) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 0% calc(100% - 290px),rgba(var(--f-coral),0.07),transparent 72%)}
+.section:nth-of-type(4n+2){--amb:radial-gradient(min(720px,110vw) 420px at 0% 360px,rgba(var(--f-violet),0.12),rgba(var(--f-violet),0.038) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 100% calc(100% - 290px),rgba(var(--f-teal),0.075),transparent 72%)}
+.section:nth-of-type(4n+3){--amb:radial-gradient(min(980px,135vw) 520px at 50% 440px,rgba(var(--f-blue),0.15),rgba(var(--f-blue),0.048) 46%,transparent 74%)}
+.section:nth-of-type(4n){--amb:radial-gradient(min(520px,90vw) 340px at 0% 290px,rgba(var(--f-coral),0.075),transparent 72%),radial-gradient(min(980px,135vw) 520px at 100% calc(100% - 440px),rgba(var(--f-blue),0.16),rgba(var(--f-blue),0.051) 46%,transparent 74%)}
+/* Startseite: Farbfelder passend zum Inhalt */
+#idee{--amb:radial-gradient(min(980px,135vw) 520px at 100% 440px,rgba(var(--f-blue),0.18),rgba(var(--f-blue),0.058) 46%,transparent 74%),radial-gradient(min(720px,110vw) 420px at 0% calc(100% - 360px),rgba(var(--f-coral),0.075),transparent 72%)}
+/* Kundenreise: Die Felder wiederholen sich in unterschiedlichen Abständen und ziehen hinter der stehenden Bühne vorbei */
+#leistungen{--amb:radial-gradient(min(760px,115vw) min(440px,56vh) at 88% 50%,rgba(var(--f-blue),.17),transparent 72%),radial-gradient(min(640px,105vw) min(400px,52vh) at 8% 50%,rgba(var(--f-violet),.11),transparent 72%);background-size:100% 150vh,100% 230vh;background-position:0 0,0 60vh;background-repeat:repeat-y}
+#referenzen{--amb:radial-gradient(min(720px,110vw) 420px at 0% 360px,rgba(var(--f-coral),0.08),transparent 72%),radial-gradient(min(980px,135vw) 520px at 100% calc(100% - 440px),rgba(var(--f-blue),0.15),rgba(var(--f-blue),0.048) 46%,transparent 74%)}
+#ergebnisse{--amb:radial-gradient(min(720px,110vw) 420px at 16% calc(100% - 360px),rgba(var(--f-teal),0.1),transparent 72%),radial-gradient(min(980px,135vw) 520px at 100% 440px,rgba(var(--f-blue),0.15),rgba(var(--f-blue),0.048) 46%,transparent 74%)}
+#vergleich{--amb:radial-gradient(min(980px,135vw) 520px at 50% 440px,rgba(var(--f-blue),0.16),rgba(var(--f-blue),0.051) 46%,transparent 74%)}
+#pakete{--amb:radial-gradient(min(720px,110vw) 420px at 50% calc(100% - 360px),rgba(var(--f-coral),0.085),transparent 72%),radial-gradient(min(980px,135vw) 520px at 100% 440px,rgba(var(--f-violet),0.12),rgba(var(--f-violet),0.038) 46%,transparent 74%)}
+#ablauf{--amb:radial-gradient(min(980px,135vw) 520px at 0% 50%,rgba(var(--f-blue),0.15),rgba(var(--f-blue),0.048) 46%,transparent 74%)}
+#film{--amb:radial-gradient(min(980px,135vw) 520px at 100% 50%,rgba(var(--f-violet),0.12),rgba(var(--f-violet),0.038) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 0% calc(100% - 290px),rgba(var(--f-teal),0.065),transparent 72%)}
+#faq{--amb:radial-gradient(min(720px,110vw) 420px at 0% 360px,rgba(var(--f-blue),0.14),rgba(var(--f-blue),0.045) 46%,transparent 74%)}
+#termin{--amb:radial-gradient(min(720px,110vw) 420px at 0% 360px,rgba(var(--f-coral),0.085),transparent 72%),radial-gradient(min(980px,135vw) 520px at 100% calc(100% - 440px),rgba(var(--f-blue),0.17),rgba(var(--f-blue),0.054) 46%,transparent 74%)}
 
 /* Kopf eines Abschnitts: links ausgerichtet, Überschrift und Einleitung nebeneinander ab Desktop */
 .sh{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;margin-bottom:clamp(48px,6vw,88px)}

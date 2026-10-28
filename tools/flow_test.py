@@ -73,14 +73,27 @@ async def desktop(b):
     check("Cockpit: angehalten zeigt Endzustand", k)
     await pg.click(".cp-pause")
 
-    # Idee
+    # Idee: Selbstcheck → Ergebnis → Buchung mit Vorauswahl
     await pg.evaluate("document.getElementById('idee').scrollIntoView()")
     await pg.wait_for_timeout(600)
-    await pg.click("#idea-t2")
-    check("Idee: dritter Bereich sichtbar", await pg.evaluate("document.getElementById('idea-p2').classList.contains('is-on')"))
-    await pg.click(".idea__dot >> nth=1")
-    await pg.wait_for_timeout(300)
-    check("Idee: Punkte schalten um", await pg.evaluate("document.getElementById('idea-p1').classList.contains('is-on')"))
+    await pg.click(".pillar[data-pillar=vermehrung] .chip[data-a=gap]")
+    await pg.click(".pillar[data-pillar=verbesserung] .chip[data-a=ok]")
+    await pg.click(".pillar[data-pillar=verwaltung] .chip[data-a=gap]")
+    await pg.wait_for_timeout(250)
+    ask = await pg.get_attribute("[data-po-cta]", "data-ask")
+    check("Idee: Selbstcheck ergibt die Hebel", sorted((ask or "").split(",")) == ["system", "web-besser", "werbung"], ask)
+    txt = await pg.text_content("[data-po-text]")
+    check("Idee: Ergebnis nennt beide Hebel", "Vermehrung und Verwaltung" in txt, txt)
+    check("Idee: Karten zeigen den Stand", await pg.evaluate("document.querySelector('[data-pillar=vermehrung]').classList.contains('is-gap') && document.querySelector('[data-pillar=verbesserung]').classList.contains('is-ok')"))
+    await pg.screenshot(path=str(OUT / "flow-idee.png"))
+    await pg.click(".pillar[data-pillar=verwaltung] .chip[data-a=gap]")
+    await pg.wait_for_timeout(150)
+    check("Idee: zweiter Klick nimmt die Antwort zurück", await pg.get_attribute("[data-po-cta]", "data-ask") == "werbung,web-besser" and "Noch eine Frage" not in (await pg.text_content("[data-po-text]")))
+    await pg.click(".pillar[data-pillar=verwaltung] .chip[data-a=gap]")
+    await pg.click("[data-po-cta]")
+    await pg.wait_for_timeout(1400)
+    pre = await pg.evaluate("['werbung','web-besser','system','agent'].map(function(v){var i=document.getElementById('bk-anliegen-'+v);return i?i.checked:null})")
+    check("Idee: Buchung mit Vorauswahl", pre == [True, True, True, False], str(pre))
 
     # Startbereich: „Zufriedenheitsgarantie“ führt zur aufgeklappten Antwort
     await pg.evaluate("window.scrollTo(0,0)")
@@ -128,11 +141,11 @@ async def desktop(b):
     await pg.wait_for_timeout(1600)
     check("Relaunch: Vorher-Ansicht", await pg.evaluate("document.querySelector('[data-relaunch]').style.getPropertyValue('--p')") == "0%")
 
-    # Vorher/Nachher
+    # Ergebnisse: Wirkungskarte mit aktuellem Logo
     await pg.evaluate("document.getElementById('ergebnisse').scrollIntoView()")
     await pg.wait_for_timeout(2500)
-    await pg.locator(".ba input").first.fill("25")
-    check("Vorher/Nachher-Regler", (await pg.evaluate("getComputedStyle(document.querySelector('.ba')).getPropertyValue('--pos')")).strip() == "25%")
+    imp = await pg.evaluate("(function(){var c=document.querySelector('.impact');if(!c)return 'fehlt';var im=c.querySelector('.impact__h img');return c.querySelectorAll('.impact__row').length+'|'+!!(im&&im.complete&&im.naturalWidth)+'|'+c.querySelector('[data-count]').textContent.trim()})()")
+    check("Ergebnisse: Wirkungskarte mit Logo", imp == "4|true|230", imp)
 
     # Paket-Finder → Buchung
     await pg.evaluate("document.getElementById('pakete').scrollIntoView()")

@@ -201,11 +201,12 @@ class Ctx:
 
 
 # ---------------------------------------------------------------- Layout-Bausteine
+# Jede Leistung hat ihre Farbe (wie in der ersten Version): Website Koralle, System Blau, Agent Grün, Marketing Bernstein
 SERVICES = [
-    ("/leistungen/website-erstellung/", "Website-Erstellung", "Neue Website oder Relaunch, gemacht für Ihre Kunden", "globe"),
-    ("/leistungen/kundenmanagement-system/", "Kundenmanagement-System", "Ihr eigenes Dashboard für Anfragen, Kunden und Aufträge", "db"),
-    ("/leistungen/ki-agent/", "KI-Agent", "Website ändern per WhatsApp oder im Dashboard", "bot"),
-    ("/leistungen/online-marketing/", "Online-Marketing", "Google Ads, Social Media und SEO, die Anfragen bringen", "mega"),
+    ("/leistungen/website-erstellung/", "Website-Erstellung", "Neue Website oder Relaunch, gemacht für Ihre Kunden", "globe", "web"),
+    ("/leistungen/kundenmanagement-system/", "Kundenmanagement-System", "Ihr eigenes Dashboard für Anfragen, Kunden und Aufträge", "db", "crm"),
+    ("/leistungen/ki-agent/", "KI-Agent", "Website ändern per WhatsApp oder im Dashboard", "bot", "ai"),
+    ("/leistungen/online-marketing/", "Online-Marketing", "Google Ads, Social Media und SEO, die Anfragen bringen", "mega", "ads"),
 ]
 
 
@@ -220,11 +221,11 @@ def header(ctx, active=""):
         return ' aria-current="page"' if key == active else ""
 
     drop = "".join(
-        f'<a class="drop__link" href="{ctx.u(p)}"{cur("svc:" + p)}><span class="ic">{icon(i)}</span><b>{e(t)}</b><small>{e(d)}</small></a>'
-        for p, t, d, i in SERVICES)
+        f'<a class="drop__link" href="{ctx.u(p)}"{cur("svc:" + p)}><span class="ic ic--{tn}">{icon(i)}</span><b>{e(t)}</b><small>{e(d)}</small></a>'
+        for p, t, d, i, tn in SERVICES)
     msub = "".join(
-        f'<a href="{ctx.u(p)}"><span class="ic ic--sm">{icon(i)}</span><b>{e(t)}</b><small>{e(d)}</small></a>'
-        for p, t, d, i in SERVICES)
+        f'<a href="{ctx.u(p)}"><span class="ic ic--sm ic--{tn}">{icon(i)}</span><b>{e(t)}</b><small>{e(d)}</small></a>'
+        for p, t, d, i, tn in SERVICES)
     return f"""
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <header class="header" data-header>

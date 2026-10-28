@@ -22,7 +22,7 @@ body{{width:1200px;height:630px;background:#0E192A;font-family:Outfit,sans-serif
 .w{{position:absolute;left:88px;top:80px;right:88px;bottom:76px;display:flex;flex-direction:column;justify-content:space-between}}
 .logo{{display:flex;align-items:center;gap:16px}}
 .logo .mono{{height:62px;width:auto;color:#FF5757}}
-.logo .wordmark{{height:44px;width:auto;color:#F3F5F9;margin-top:9px}}
+.logo .wordmark{{height:45px;width:auto;color:#F3F5F9;margin-top:7px}}
 h1{{font-size:80px;line-height:.98;font-weight:600;letter-spacing:-.048em;max-width:1000px;text-wrap:balance}}
 h1 span{{display:block;color:#8A9BB4}}
 .f{{display:flex;gap:12px;font-size:23px;color:#C3CDDC}}

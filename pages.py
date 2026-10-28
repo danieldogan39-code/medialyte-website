@@ -6,9 +6,9 @@ Texte ändern, dann `python3 build.py` ausführen.
 """
 from build import SITE, breadcrumb_schema, e, faq_schema, icon, org_schema
 import mocks
-from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, ba_slider, book_link, booking_widget, btn_book, btn_wa,
-                   cases, closing, compare, faq_block, feats, film, idea, img, journey, logo_marquee, marquee_rows, page_hero, plans,
-                   process, ref_dialog, results, sh, team, ticks)
+from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, book_link, booking_widget, btn_book, btn_wa,
+                   cases, closing, compare, faq_block, feats, film, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
+                   process, ref_dialog, results, sh, ticks)
 
 
 # ======================================================================= Startseite
@@ -59,7 +59,7 @@ def render_home(ctx):
     ergebnisse = f"""
 <section class="section section--deep" id="ergebnisse">
   <div class="wrap">
-    {sh('Vorher, nachher – <span class="quiet">und was es gebracht hat.</span>', 'Aus einer schlichten Seite wurde für RechnungsRadar ein Auftritt, der verkauft. Ziehen Sie den Regler und sehen Sie selbst.', split=True)}
+    {sh('Vorher, nachher – <span class="quiet">und was es gebracht hat.</span>', 'Aus einer schlichten Seite wurde für RechnungsRadar ein Auftritt, der verkauft. Das zeigen die Zahlen nach dem Relaunch.', split=True)}
     {results(ctx)}
   </div>
 </section>"""
@@ -88,16 +88,8 @@ def render_home(ctx):
   </div>
 </section>"""
 
-    team_s = f"""
-<section class="section section--deep" id="team">
-  <div class="wrap">
-    {sh('Ein festes Team. <span class="quiet">Ein Ansprechpartner.</span>', 'Bei uns landen Sie nicht in einer Warteschleife. Sie kennen die Menschen, die an Ihrem Projekt arbeiten – vom ersten Gespräch bis lange nach dem Livegang.', split=True, more=f'<a class="link" href="{ctx.u("/ueber-uns/")}">Mehr über Medialyte {icon("arrow")}</a>')}
-    {team()}
-  </div>
-</section>"""
-
     film_s = f"""
-<section class="section" id="film">
+<section class="section section--deep" id="film">
   <div class="wrap">
     {sh('Medialyte in 90 Sekunden', 'Wie wir arbeiten, was uns von anderen Agenturen unterscheidet und wie der KI-Agent Ihre Website aktuell hält.', split=True)}
     {film()}
@@ -105,12 +97,12 @@ def render_home(ctx):
 </section>"""
 
     faq = f"""
-<section class="section section--deep" id="faq">
+<section class="section" id="faq">
   <div class="wrap">{faq_block(ctx, FAQ_MAIN)}</div>
 </section>"""
 
     termin = f"""
-<section class="section" id="termin">
+<section class="section section--deep" id="termin">
   <span id="beratung" aria-hidden="true"></span>
   <div class="wrap">
     {sh('Buchen Sie Ihr <span class="nowrap">kostenfreies</span> Erstgespräch.', '30 Minuten, per Video, Telefon oder vor Ort in Hamburg. Wir hören zu, schauen uns Ihre Situation an und sagen Ihnen, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden.', center=True)}
@@ -119,7 +111,7 @@ def render_home(ctx):
 </section>"""
 
     return (hero + logo_marquee(ctx) + idee + reise + referenzen + ergebnisse + vergleich + pakete
-            + ablauf + team_s + film_s + faq + termin)
+            + ablauf + film_s + faq + termin)
 
 
 # ======================================================================= Leistungsseiten
@@ -164,7 +156,7 @@ def render_web(ctx):
 <section class="section">
   <div class="wrap">
     {sh('Eine Website, die für Sie arbeitet.', 'Kein Baukasten, keine Vorlage von der Stange. Ihre Website wird für Ihre Zielgruppe gemacht – und danach gepflegt, ohne dass Sie sich darum kümmern müssen.', split=True)}
-    {feats([
+    {feats(tone="web", items=[
         ('target', 'Gemacht für Ihre Zielgruppe', 'Wir analysieren, wen Sie erreichen wollen, und richten Aufbau, Texte und Gestaltung genau danach aus.'),
         ('mobile', 'Perfekt auf dem Smartphone', 'Die meisten Besucher kommen über das Handy. Dort muss Ihre Seite am besten funktionieren – und das tut sie.'),
         ('zap', 'Schnell geladen', 'Schlanke Technik ohne Plugin-Ballast. Kurze Ladezeiten halten Besucher und helfen bei Google.'),
@@ -182,7 +174,7 @@ def render_web(ctx):
       {ticks(['Analyse Ihrer bisherigen Seite und Ihrer Mitbewerber', 'Übernahme und Überarbeitung Ihrer Inhalte', 'Weiterleitungen, damit Google-Platzierungen erhalten bleiben', 'Pflege danach einfach per WhatsApp'])}
       {btn_book(ctx, 'Erstgespräch buchen', 'web-neu')}
     </div>
-    <div data-reveal="scale">{ba_slider(ctx)}</div>
+    <div data-reveal="scale">{impact(ctx)}<p class="deltas__note">Veränderung bei RechnungsRadar nach dem Relaunch, im Vergleich zur vorherigen Website.</p></div>
   </div>
 </section>
 <section class="section">
@@ -221,7 +213,7 @@ def render_sys(ctx):
 <section class="section">
   <div class="wrap">
     {sh('Kundendaten in Excel, Zetteln <span class="quiet">und E-Mails?</span>', 'Wenn Anfragen in verschiedenen Postfächern landen, Termine im Kopf stehen und Angebote in Ordnern verschwinden, gehen Kunden verloren. Ein eigenes System bringt alles an einen Ort.', split=True)}
-    {feats([
+    {feats(tone="crm", items=[
         ('inbox', 'Alle Anfragen an einem Ort', 'Anfragen von Website, Telefon, E-Mail und WhatsApp landen gesammelt in Ihrem Dashboard.'),
         ('users', 'Kunden im Überblick', 'Kontaktdaten, Verlauf, Notizen und Dokumente zu jedem Kunden – für das ganze Team sichtbar.'),
         ('calendar', 'Termine und Erinnerungen', 'Terminbuchungen von der Website, automatische Erinnerungen und keine vergessenen Rückrufe.'),
@@ -270,11 +262,11 @@ def render_agent(ctx):
 <section class="section section--deep">
   <div class="wrap duo">
     <div class="duo__col" data-reveal>
-      <h3><span class="ic">{icon('bot')}</span>Das übernimmt der Agent</h3>
+      <h3><span class="ic ic--ai">{icon('bot')}</span>Das übernimmt der Agent</h3>
       {ticks(['Öffnungszeiten, Feiertage und Ruhetage', 'Preise, Speisekarten und Preislisten', 'Bilder austauschen und ergänzen', 'Kurze Texte, Termine und Ankündigungen', 'Laufende Pflege Ihrer Seite'])}
     </div>
     <div class="duo__col" data-reveal style="--rd:1">
-      <h3><span class="ic">{icon('users')}</span>Das macht unser Team persönlich</h3>
+      <h3><span class="ic ic--web">{icon('users')}</span>Das macht unser Team persönlich</h3>
       {ticks(['Neue Bereiche und Funktionen', 'Design-Anpassungen', 'Beratung zu Google, Werbung und Marketing', 'Größere Umbauten und Sonderwünsche'])}
     </div>
   </div>
@@ -292,7 +284,7 @@ def render_agent(ctx):
 <section class="section section--deep">
   <div class="wrap">
     {sh('Was Kunden dem Agenten schreiben', 'Typische Nachrichten aus dem Alltag, aus ganz verschiedenen Branchen.', split=True)}
-    {feats([
+    {feats(tone="ai", items=[
         ('food', 'Gastronomie', '<q>Diese Woche gibt es Kürbissuppe als Mittagstisch, bitte auf die Karte setzen.</q>'),
         ('hammer', 'Handwerk', '<q>Wir sind vom 23.12. bis 2.1. im Betriebsurlaub, bitte einen Hinweis einbauen.</q>'),
         ('bag', 'Einzelhandel', '<q>Die Herbstkollektion ist da. Hier sind sechs Fotos für die Startseite.</q>'),
@@ -314,7 +306,7 @@ def render_mkt(ctx):
 <section class="section">
   <div class="wrap">
     {sh('Marketing, das messbar wirkt.', 'Wir erreichen Ihre Zielgruppe dort, wo sie sucht – und machen aus Aufmerksamkeit Anfragen.', split=True)}
-    {feats([
+    {feats(tone="ads", items=[
         ('search', 'Google Ads', 'Anzeigen genau dann, wenn Kunden nach Ihrer Leistung suchen. Mit klarer Zielgruppe und kontrolliertem Budget.'),
         ('camera', 'Social-Media-Werbung', 'Kampagnen auf Instagram und Facebook, die zu Ihrer Marke passen und gezielt neue Kunden ansprechen.'),
         ('trend', 'SEO und lokale Sichtbarkeit', 'Bessere Platzierungen bei Google, gepflegte Unternehmensprofile und Inhalte, die gefunden werden.'),
@@ -338,7 +330,7 @@ def render_mkt(ctx):
 <section class="section">
   <div class="wrap">
     {sh('Reichweite, die organisch wächst.', 'Authentische Inhalte, ein starkes Branding und eine Community, die sich für Ihren Betrieb begeistert.', split=True)}
-    {feats([
+    {feats(tone="ads", items=[
         ('trend', 'Organische Reichweite', 'Strategie, Redaktionsplan und Inhalte, die zu Ihrer Zielgruppe passen.'),
         ('pen', 'Brand-Building', 'Ein einheitlicher Auftritt, an dem man Sie sofort erkennt.'),
         ('users', 'Community-Management', 'Wir betreuen Kommentare und Nachrichten und bauen Beziehungen auf.'),
@@ -366,7 +358,7 @@ def render_refs(ctx):
                       btn_book(ctx) + btn_wa(ctx))
             + f'<section class="section section--flush"><div class="wrap">{cases(ctx)}</div></section>'
             + f'<section class="section section--deep"><div class="wrap">{sh("Mehr aus unserer Arbeit", split=True)}<div class="more">{mcards}</div></div></section>'
-            + f'<section class="section"><div class="wrap">{sh("Vorher, nachher – <span class=quiet>und was es gebracht hat.</span>", "So hat sich der Auftritt von RechnungsRadar verändert.", split=True)}{results(ctx)}</div></section>'
+            + f'<section class="section"><div class="wrap">{sh("Vorher, nachher – <span class=quiet>und was es gebracht hat.</span>", "Was der Relaunch für RechnungsRadar gebracht hat.", split=True)}{results(ctx)}</div></section>'
             + f'<section class="section section--deep section--marquee"><div class="wrap">{sh("Kunden und Partner", "Unternehmen, die mit Medialyte arbeiten – vom Restaurant bis zum Industriekonzern.", split=True)}</div><div data-reveal>{marquee_rows(ctx, 2)}</div></section>'
             + closing(ctx, "Ihr Projekt als nächste Referenz?", "Erzählen Sie uns davon.", "Im kostenfreien Erstgespräch hören wir zu und sagen Ihnen, was sich lohnt. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
 
@@ -377,7 +369,7 @@ def render_about(ctx):
   <div class="delta"><b><span data-count="200">200</span>+</b><small>erfolgreiche Kampagnen</small></div>
   <div class="delta"><b><span data-count="48">48</span> h</b><small>bis zu Ihrem Angebot</small></div>
   <div class="delta"><b>2–4</b><small>Wochen bis zur neuen Website</small></div>
-  <div class="delta"><b><span data-count="5">5</span></b><small>Menschen, die Ihr Projekt kennen</small></div>
+  <div class="delta"><b>1</b><small>fester Ansprechpartner für Ihr Projekt</small></div>
 </div>"""
     values = [
         ("target", "Erst verstehen, dann bauen", "Jede Lösung beginnt mit Ihrer Zielgruppe und Ihren Abläufen, nicht mit einer Vorlage."),
@@ -397,8 +389,7 @@ def render_about(ctx):
     {idea(ctx)}
   </div>
 </section>
-<section class="section"><div class="wrap">{sh('Ein festes Team. <span class="quiet">Ein Ansprechpartner.</span>', 'Ein Team, das Ihr Projekt vom ersten Gespräch bis lange nach dem Livegang begleitet.', split=True)}{team()}</div></section>
-<section class="section section--deep"><div class="wrap">{sh('Wofür wir stehen', split=True)}{feats(values, 2)}{ionos}</div></section>
+<section class="section"><div class="wrap">{sh('Wofür wir stehen', split=True)}{feats(values, 2, tone=["web", "crm", "ads", "ai"])}{ionos}</div></section>
 """ + closing(ctx, "Lernen wir uns kennen.", "Im kostenfreien Erstgespräch.", "30 Minuten per Video, Telefon oder vor Ort in Hamburg. Sie erzählen von Ihrem Betrieb, wir sagen ehrlich, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden."))
 
 

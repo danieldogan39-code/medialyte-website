@@ -44,6 +44,11 @@
 .ic svg{width:21px;height:21px}
 .ic--sm{width:36px;height:36px;border-radius:10px}
 .ic--sm svg{width:18px;height:18px}
+/* Farben der Leistungen: Website Koralle, Kundensystem Blau, KI-Agent Grün, Marketing Bernstein */
+.ic--web{background:rgba(255,87,87,.13);border-color:rgba(255,87,87,.24);color:#FF7A7A}
+.ic--crm{background:rgba(91,140,255,.14);border-color:rgba(91,140,255,.26);color:#8AB0FF}
+.ic--ai{background:rgba(52,209,122,.13);border-color:rgba(52,209,122,.24);color:#4EDC8F}
+.ic--ads{background:rgba(245,185,66,.13);border-color:rgba(245,185,66,.24);color:#F7C65E}
 
 .ticks{list-style:none;display:grid;gap:11px}
 .ticks li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:12px;align-items:start;line-height:1.5;color:var(--text-2)}

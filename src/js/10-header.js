@@ -10,10 +10,14 @@ ML.module("header", function (ML) {
   $$("[data-drop]").forEach(function (item) {
     var btn = $(".nav__link", item);
     if (!btn) return;
+    var openY = 0;
     function set(open) {
       item.classList.toggle("is-open", open);
       btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) openY = window.scrollY || 0;
     }
+    /* Wer weiterscrollt, will das Menü nicht mehr: nach einem Stück Weg schließt es */
+    ML.onScroll(function (y) { if (item.classList.contains("is-open") && Math.abs(y - openY) > 160) set(false); });
     btn.addEventListener("click", function () { set(!item.classList.contains("is-open")); });
     item.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && item.classList.contains("is-open")) { set(false); btn.focus(); }

@@ -412,8 +412,8 @@ def render_impressum(ctx):
   <p>Medialyte – Marketing &amp; Management<br>Inhaber: {e(SITE['owner'])}<br>{e(SITE['street'])}<br>{e(SITE['zip'])} {e(SITE['city'])}</p>
   <h2>Kontakt</h2>
   <p>Telefon: <a href="tel:{SITE['phone_intl']}">{e(SITE['phone'])}</a><br>E-Mail: <a href="mailto:{SITE['email']}">{e(SITE['email'])}</a></p>
-  <h2>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h2>
-  <p>Wir nehmen an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teil. Zuständig ist die Universalschlichtungsstelle des Zentrums für Schlichtung e.V., Straßburger Straße 8, 77694 Kehl am Rhein (<a href="https://www.verbraucher-schlichter.de" target="_blank" rel="noopener">www.verbraucher-schlichter.de</a>).</p>
+  <h2>Verbraucherstreitbeilegung</h2>
+  <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 </div></div></section>"""
 
 

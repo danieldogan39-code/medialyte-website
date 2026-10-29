@@ -196,6 +196,12 @@ function ml_mail(string $to, string $subject, string $text, ?string $ics = null,
 }
 
 /** Buchung signiert an das Dashboard weitergeben. Fehler blockieren die Buchung nicht. */
+/** Versandprotokoll ohne Inhalte und ohne Adressen (nur zur Fehlersuche): Zeit, Anfrage, Empfängerart, Ergebnis. */
+function ml_log_mail(string $id, string $to, bool $ok): void
+{
+    @file_put_contents(ml_data_dir() . '/mail.log', date('c') . "\t" . $id . "\t" . $to . "\t" . ($ok ? 'ok' : 'FEHLER') . "\n", FILE_APPEND | LOCK_EX);
+}
+
 function ml_webhook(array $payload): bool
 {
     $cfg = ml_config();

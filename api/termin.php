@@ -19,10 +19,9 @@ if (!is_array($in)) {
     ml_json(400, ['ok' => false, 'error' => 'Ungültige Anfrage.']);
 }
 
-// Honeypot: Bots füllen das versteckte Feld aus. Wir antworten freundlich und speichern nichts.
-if (ml_clean($in['hp'] ?? '') !== '') {
-    ml_json(200, ['ok' => true]);
-}
+// Verstecktes Feld: Bots füllen es aus. Browser mit automatischem Ausfüllen manchmal auch –
+// deshalb wird nichts verworfen: Die Anfrage geht als „Bitte prüfen“ an Medialyte, nur ohne Bestätigung an den Absender.
+$spam = ml_clean($in['hp'] ?? '') !== '';
 if (ml_rate_limited()) {
     ml_json(429, ['ok' => false, 'error' => 'Zu viele Anfragen. Bitte versuchen Sie es später erneut oder schreiben Sie uns per WhatsApp.']);
 }
@@ -55,6 +54,7 @@ $b = [
     ],
     'termin'   => null,
     'rueckruf' => null,
+    'pruefen'  => $spam,
 ];
 $b['format_text'] = $formats[$b['format']] ?? '';
 
@@ -126,9 +126,10 @@ $lines = [
     'Quelle: ' . $b['quelle']['seite'] . ($b['quelle']['referrer'] ? ' über ' . $b['quelle']['referrer'] : ''),
     'ID: ' . $b['id'],
 ];
-ml_mail(ml_config()['mail_to'], 'Neue Terminanfrage: ' . $b['firma'], implode("\n", $lines), $b['termin'] ? ml_ics($b) : null, $b['email']);
+$sentTeam = ml_mail(ml_config()['mail_to'], ($spam ? '[Bitte prüfen] ' : '') . 'Neue Terminanfrage: ' . $b['firma'], implode("\n", $lines), $b['termin'] ? ml_ics($b) : null, $b['email']);
+ml_log_mail($b['id'], 'Medialyte', $sentTeam);
 
-if (ml_config()['send_confirmation']) {
+if (ml_config()['send_confirmation'] && !$spam) {
     $vorname = explode(' ', $b['name'])[0];
     $confirm = [
         "Hallo $vorname,", '',
@@ -138,7 +139,8 @@ if (ml_config()['send_confirmation']) {
         '', 'Sie möchten etwas ändern? Antworten Sie einfach auf diese E-Mail oder schreiben Sie uns per WhatsApp: https://wa.me/491709647532',
         '', 'Viele Grüße', 'Daniel', 'Medialyte – Marketing & Management', 'medialyte.de',
     ];
-    ml_mail($b['email'], 'Ihr Termin mit Medialyte', implode("\n", $confirm), $b['termin'] ? ml_ics($b) : null, ml_config()['mail_to']);
+    $sentCustomer = ml_mail($b['email'], 'Ihr Termin mit Medialyte', implode("\n", $confirm), $b['termin'] ? ml_ics($b) : null, ml_config()['mail_to']);
+    ml_log_mail($b['id'], 'Bestätigung', $sentCustomer);
 }
 
 ml_webhook($b);

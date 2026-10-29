@@ -282,7 +282,7 @@ ML.module("booking", function (ML) {
         whatsapp_ok: $("#bk-wa", form).checked, nachricht: val("nachricht"),
         einwilligung: $("#bk-consent", form).checked,
         quelle: { seite: location.pathname, referrer: document.referrer || "", utm: utm },
-        hp: val("firma_url")
+        hp: val("ml_zx")
       };
     }
     function send() {
@@ -348,7 +348,7 @@ ML.module("booking", function (ML) {
       if (step === 5) return;
       var o = { step: step, sel: sel, f: {} };
       $$("input, select, textarea", form).forEach(function (el) {
-        if (!el.name || el.name === "firma_url" || el.name === "einwilligung") return;
+        if (!el.name || el.name === "ml_zx" || el.name === "einwilligung") return;
         if (el.type === "checkbox" || el.type === "radio") { if (el.checked) (o.f[el.name] = o.f[el.name] || []).push(el.value); }
         else o.f[el.name] = el.value;
       });

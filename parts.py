@@ -697,7 +697,7 @@ def booking_widget(ctx):
           <div class="field"><label for="bk-tel">Telefon</label><input id="bk-tel" name="telefon" type="tel" autocomplete="tel" placeholder="Für Telefonat, Rückruf oder WhatsApp"></div>
           <div class="field" style="align-content:end"><label class="checkline" style="min-height:52px;align-items:center"><input type="checkbox" id="bk-wa" name="whatsapp" value="1"><span>Bestätigung zusätzlich per WhatsApp</span></label></div>
           <div class="field field--full"><label for="bk-msg">Ihre Nachricht</label><textarea id="bk-msg" name="nachricht" placeholder="Was ist Ihnen wichtig? Gibt es einen Termin, bis wann alles fertig sein soll?"></textarea></div>
-          <div class="field--full hp" aria-hidden="true"><label for="bk-hp">Bitte leer lassen</label><input id="bk-hp" name="firma_url" type="text" tabindex="-1" autocomplete="off"></div>
+          <div class="field--full hp" aria-hidden="true"><label for="bk-hp">Dieses Feld bitte nicht ausfüllen</label><input id="bk-hp" name="ml_zx" type="text" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-form-type="other"></div>
           <label class="checkline field--full"><input type="checkbox" id="bk-consent" name="einwilligung" value="1"><span>Ich bin einverstanden, dass Medialyte meine Angaben zur Bearbeitung meiner Anfrage speichert und mich kontaktiert. Details in der <a href="{ctx.u('/datenschutz/')}">Datenschutzerklärung</a>. (Pflichtfeld)</span></label>
         </div>
       </section>

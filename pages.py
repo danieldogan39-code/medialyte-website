@@ -108,7 +108,7 @@ def render_home(ctx):
 <section class="section section--deep" id="termin">
   <span id="beratung" aria-hidden="true"></span>
   <div class="wrap">
-    {sh('Buchen Sie Ihr <span class="nowrap">kostenfreies</span> Erstgespräch.', '30 Minuten, per Video, Telefon oder bei Ihnen vor Ort. Wir hören zu, schauen uns Ihre Situation an und sagen Ihnen, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden.', center=True)}
+    {sh('Buchen Sie Ihr <span class="nowrap">kostenfreies</span> Erstgespräch.', '30 Minuten, per Video, Telefon oder im Raum Hamburg bei Ihnen vor Ort. Wir hören zu, schauen uns Ihre Situation an und sagen Ihnen, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden.', center=True)}
     <div data-reveal>{booking_widget(ctx)}</div>
   </div>
 </section>"""
@@ -396,7 +396,7 @@ def render_about(ctx):
   </div>
 </section>
 <section class="section"><div class="wrap">{sh('Wofür wir stehen', split=True)}{feats(values, 2, tone=["web", "crm", "ads", "ai"])}{ionos}</div></section>
-""" + closing(ctx, "Lernen wir uns kennen.", "Im kostenfreien Erstgespräch.", "30 Minuten per Video, Telefon oder bei Ihnen vor Ort. Sie erzählen von Ihrem Betrieb, wir sagen ehrlich, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden."))
+""" + closing(ctx, "Lernen wir uns kennen.", "Im kostenfreien Erstgespräch.", "30 Minuten per Video, Telefon oder im Raum Hamburg bei Ihnen vor Ort. Sie erzählen von Ihrem Betrieb, wir sagen ehrlich, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden."))
 
 
 def render_termin(ctx):
@@ -478,13 +478,13 @@ PAGES = [
      "render": render_refs, "after": _after_dialog, "priority": "0.8",
      "schema": [breadcrumb_schema([("Start", "/"), ("Referenzen", "/referenzen/")])]},
     {"path": "/ueber-uns/", "active": "ueber-uns",
-     "title": "Über uns – das Team hinter Medialyte | Digitalagentur Hamburg",
-     "desc": "Medialyte ist eine Digitalagentur aus Hamburg für Websites, Kundenmanagement-Systeme, KI-Agenten und Online-Marketing. Lernen Sie unser Team kennen.",
+     "title": "Über uns – wie Medialyte arbeitet | Digitalagentur Hamburg",
+     "desc": "Medialyte ist eine Digitalagentur aus Hamburg für Websites, Kundenmanagement-Systeme, KI-Agenten und Online-Marketing. Wofür wir stehen und wie wir mit Ihnen arbeiten.",
      "render": render_about, "priority": "0.6",
      "schema": [breadcrumb_schema([("Start", "/"), ("Über uns", "/ueber-uns/")])]},
     {"path": "/termin/",
      "title": "Kostenfreies Erstgespräch buchen | Medialyte",
-     "desc": "Buchen Sie Ihr kostenfreies Erstgespräch mit Medialyte: Anliegen wählen, Termin aussuchen, fertig. Per Video-Call, Telefon oder bei Ihnen vor Ort.",
+     "desc": "Buchen Sie Ihr kostenfreies Erstgespräch mit Medialyte: Anliegen wählen, Termin aussuchen, fertig. Per Video-Call, Telefon oder im Raum Hamburg bei Ihnen vor Ort.",
      "render": render_termin, "priority": "0.9",
      "schema": [breadcrumb_schema([("Start", "/"), ("Erstgespräch buchen", "/termin/")])]},
     {"path": "/impressum/", "title": "Impressum | Medialyte", "desc": "Impressum von Medialyte – Marketing & Management, Hamburg.",

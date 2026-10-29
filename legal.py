@@ -9,7 +9,7 @@ from build import SITE, e
 
 
 def _toc(items):
-    return '<nav class="prose__toc" aria-label="Inhalt"><ol>' + "".join(f'<li><a href="#{i}">{t}</a></li>' for i, t in items) + "</ol></nav>"
+    return '<nav class="prose__toc" aria-label="Inhalt"><p>Inhalt</p><ol>' + "".join(f'<li><a href="#{i}">{t}</a></li>' for i, t in items) + "</ol></nav>"
 
 
 def _num(items):
@@ -30,9 +30,10 @@ def datenschutz(ctx):
         ("aenderungen", "Änderungen dieser Erklärung"),
     ]
     return f"""
-<section class="section section--flush"><div class="wrap"><div class="prose">
-  <p class="prose__meta">Stand: Oktober 2026</p>
+<section class="section section--flush"><div class="wrap legal">
   {_toc(_num(sections))}
+  <div class="prose">
+  <p class="prose__meta">Stand: Oktober 2026</p>
 
   <h2 id="ueberblick">1. Auf einen Blick</h2>
   <p>Auf dieser Website erheben wir so wenige Daten wie möglich. Es gibt keine Analyse- oder Tracking-Werkzeuge, keine Werbe-Cookies und keine eingebetteten Inhalte anderer Anbieter. Schriften, Bilder und Filme liegen auf unserem eigenen Server.</p>
@@ -77,10 +78,10 @@ def datenschutz(ctx):
   </ul>
   <p>Um freie Termine anzuzeigen, fragt das Formular beim Laden die belegten Zeiten von unserem Server ab. Dabei werden keine Angaben über Sie übertragen.</p>
   <h3>Schutz vor Missbrauch</h3>
-  <p>Damit das Formular nicht massenhaft von Programmen genutzt wird, begrenzen wir die Zahl der Anfragen pro Anschluss und Stunde. Dafür speichern wir Ihre IP-Adresse nicht im Klartext, sondern nur als nicht umkehrbare Prüfsumme, und löschen sie nach einer Stunde. Rechtsgrundlage ist unser berechtigtes Interesse an einem funktionierenden, missbrauchsfreien Formular (Art. 6 Abs. 1 lit. f DSGVO).</p>
+  <p>Damit das Formular nicht massenhaft von Programmen genutzt wird, begrenzen wir die Zahl der Anfragen pro Anschluss und Stunde. Dafür speichern wir Ihre IP-Adresse nicht im Klartext, sondern nur als Prüfsumme, die mit einem geheimen Schlüssel gebildet wird und sich ohne diesen nicht zurückrechnen lässt. Nach einer Stunde zählt sie nicht mehr und wird bei der nächsten Anfrage gelöscht. Rechtsgrundlage ist unser berechtigtes Interesse an einem funktionierenden, missbrauchsfreien Formular (Art. 6 Abs. 1 lit. f DSGVO).</p>
   <h3>Wie lange wir die Daten speichern</h3>
-  <p>Kommt kein Auftrag zustande, löschen wir Ihre Anfrage, sobald sie erledigt ist, spätestens zwölf Monate nach unserem letzten Kontakt. Wird aus der Anfrage ein Auftrag, bewahren wir die Unterlagen so lange auf, wie es die gesetzlichen Aufbewahrungsfristen verlangen (bis zu zehn Jahre nach § 147 AO und § 257 HGB).</p>
-  <p>Die Angabe Ihrer Daten ist freiwillig. Ohne Name, E-Mail-Adresse und Wunschtermin können wir den Termin allerdings nicht vereinbaren.</p>
+  <p>Kommt kein Auftrag zustande, löschen wir Ihre Anfrage, sobald sie erledigt ist, spätestens zwölf Monate nach unserem letzten Kontakt. Wird aus der Anfrage ein Auftrag, bewahren wir die Unterlagen so lange auf, wie es die gesetzlichen Aufbewahrungsfristen verlangen (bis zu zehn Jahre nach §&nbsp;147 AO und §&nbsp;257 HGB).</p>
+  <p>Die Angabe Ihrer Daten ist freiwillig. Ohne die im Formular als Pflichtfeld markierten Angaben (Anliegen, Unternehmen, Branche, Gesprächsart, Wunschtermin oder Rückrufwunsch, Name und E-Mail-Adresse) können wir den Termin allerdings nicht vereinbaren.</p>
 
   <h2 id="kontakt">5. Kontakt per E-Mail, Telefon oder WhatsApp</h2>
   <p>Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Angaben, um Ihr Anliegen zu bearbeiten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn es um einen Auftrag oder ein Angebot geht, sonst unser berechtigtes Interesse, Anfragen zu beantworten (Art. 6 Abs. 1 lit. f DSGVO). Für die Speicherdauer gilt dasselbe wie beim Buchungsformular.</p>
@@ -88,7 +89,7 @@ def datenschutz(ctx):
 
   <h2 id="speicher">6. Cookies und Speicher im Browser</h2>
   <p>Diese Website setzt keine Cookies. Deshalb sehen Sie auch kein Cookie-Banner.</p>
-  <p>Zwei kleine Einträge legen wir im Sitzungsspeicher Ihres Browsers (sessionStorage) ab: einen Hinweis, damit eine neue Seite nach einem Klick oben beginnt, und Ihre Eingaben im Buchungsformular, damit beim versehentlichen Neuladen nichts verloren geht. Beide bleiben auf Ihrem Gerät, werden nicht an uns übertragen und beim Schließen des Tabs automatisch gelöscht. Sie sind für die von Ihnen gewünschte Funktion unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG).</p>
+  <p>Zwei kleine Einträge legen wir im Sitzungsspeicher Ihres Browsers (sessionStorage) ab: einen Hinweis, damit eine neue Seite nach einem Klick oben beginnt, und den Stand des Buchungsformulars mit Ihren Eingaben, damit beim versehentlichen Neuladen nichts verloren geht. Beide bleiben auf Ihrem Gerät, werden nicht an uns übertragen und beim Schließen des Tabs automatisch gelöscht. Sie sind für die von Ihnen gewünschte Funktion unbedingt erforderlich (§&nbsp;25 Abs.&nbsp;2 Nr.&nbsp;2 TDDDG).</p>
 
   <h2 id="links">7. Links zu sozialen Netzwerken und anderen Websites</h2>
   <p>Auf unsere Profile bei Instagram, LinkedIn und YouTube verweisen wir mit einfachen Links. Es sind keine Plugins oder Inhalte dieser Netzwerke eingebunden. Daten an die Anbieter fließen erst, wenn Sie einen Link anklicken. Dann gelten die Datenschutzbestimmungen des jeweiligen Anbieters: Meta Platforms Ireland Limited (Instagram), LinkedIn Ireland Unlimited Company (LinkedIn) und Google Ireland Limited (YouTube).</p>
@@ -140,6 +141,7 @@ AGB = [
         "Der Kunde hat 10 Tage Zeit, das Ergebnis zu prüfen.",
         "<b>Abnahmefiktion:</b> Meldet der Kunde innerhalb dieser 10-Tages-Frist keine wesentlichen Mängel in Textform, gilt das Werk als abgenommen. Ebenso gilt das Werk als abgenommen, sobald der Kunde es operativ nutzt (z. B. Live-Schaltung der Website, Nutzung des CRM-Systems für echte Kundendaten).",
         "Unwesentliche Mängel berechtigen nicht zur Verweigerung der Abnahme.",
+        "Unberührt bleibt die im Angebot beschriebene Zufriedenheitsgarantie: Vor der Abnahme legt die Agentur Entwürfe zur Freigabe vor und überarbeitet sie im dort vereinbarten Umfang, bis der Kunde sie freigibt.",
     ]),
     ("Vergütung und Zahlungsbedingungen", [
         "Es gelten die vertraglich vereinbarten Preise. Alle Preise verstehen sich in Euro zuzüglich der gesetzlichen Umsatzsteuer.",
@@ -173,8 +175,9 @@ def agb(ctx):
     body = "".join(f'<h2 id="p{i}">§ {i} {t}</h2>' + "".join(f"<p>{p}</p>" for p in ps) for i, (t, ps) in enumerate(AGB, 1))
     toc = _toc([(f"p{i}", f"§ {i} {t}") for i, (t, _) in enumerate(AGB, 1)])
     return f"""
-<section class="section section--flush"><div class="wrap"><div class="prose">
-  <p class="prose__meta">Stand: 01.01.2026</p>
+<section class="section section--flush"><div class="wrap legal">
   {toc}
+  <div class="prose">
+  <p class="prose__meta">Stand: 29.10.2026</p>
   {body}
 </div></div></section>"""

@@ -395,6 +395,7 @@ html:not(.js) .film__play{display:none}
 @media (hover:hover) and (pointer:fine){.film__ch:not(.is-on):hover b{color:var(--text)}.film__ch:not(.is-on):hover .num{border-color:var(--text)}}
 @media (max-width:900px){.film{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.film__lbl small{font-size:.82rem}}
+@media (max-width:380px){.film:not(.film--v) .film__lbl small{display:none}.film:not(.film--v) .film__play{padding:14px;gap:12px;background:linear-gradient(0deg,rgba(6,11,20,.94),rgba(6,11,20,.62) 55%,rgba(6,11,20,.15))}.film:not(.film--v) .film__btn{width:50px;height:50px}}
 /* Leistungsfilme: hochkant neben dem Text */
 .split.split--film{grid-template-columns:minmax(0,1fr) auto}
 .split--film .film--v{width:min(400px,calc((100svh - 230px) * .5625))}
@@ -447,7 +448,7 @@ html:not(.js) .film__play{display:none}
 .ftile__ic{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:rgba(150,178,224,.1);color:var(--text-2)}
 .ftile__ic svg{width:20px;height:20px}
 .ftile small{display:block;font-size:.8rem;color:var(--steel)}
-.ftile b{display:block;font-weight:500;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ftile b{display:block;font-weight:500;font-size:.98rem;overflow-wrap:anywhere;line-height:1.3}
 .ftile > span:last-child{min-width:0}
 .ftile--wa .ftile__ic{background:rgba(37,211,102,.14);color:#4ADE8B}
 @media (hover:hover) and (pointer:fine){.ftile:hover{border-color:var(--line-3);background:rgba(255,255,255,.06)}}
@@ -468,6 +469,7 @@ html:not(.js) .film__play{display:none}
 .footer__bottom a{color:var(--steel)}
 @media (hover:hover) and (pointer:fine){.footer__bottom a:hover{color:var(--text)}}
 @media (max-width:1080px){.footer__reach{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:980px){.footer .brand--lg .mono{height:44px}.footer .brand--lg .wordmark{height:32px;margin-top:5px}}
 @media (max-width:980px){.footer__grid{grid-template-columns:repeat(3,minmax(0,1fr))}.footer__brand{grid-column:1/-1;max-width:560px}}
 @media (max-width:760px){.footer__tiles{grid-template-columns:minmax(0,1fr)}.ftile{padding:14px 16px}}
 @media (max-width:640px){.footer__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 20px}.footer__col:first-of-type{grid-column:1/-1}.footer ul{gap:0}.footer__col a{min-height:44px}.footer__bottom nav a{display:inline-flex;align-items:center;min-height:44px}.footer__bottom{gap:4px 14px}}

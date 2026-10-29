@@ -276,6 +276,7 @@ def header(ctx, active=""):
 
 
 def footer(ctx):
+    fab = "" if ctx.path in ("/impressum/", "/datenschutz/", "/agb/") else f'''<a class="fab" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}<span class="fab__tip" aria-hidden="true">Per WhatsApp schreiben</span></a>'''
     svc = "".join(f'<li><a href="{ctx.u(p)}"><i class="footer__dot ic--{tn}" aria-hidden="true"></i>{e(t)}</a></li>' for p, t, _, _, tn in SERVICES)
     return f"""
 <footer class="footer">
@@ -330,7 +331,7 @@ def footer(ctx):
     </div>
   </div>
 </footer>
-<a class="fab" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}<span class="fab__tip" aria-hidden="true">Per WhatsApp schreiben</span></a>"""
+{fab}"""
 
 
 def org_schema():

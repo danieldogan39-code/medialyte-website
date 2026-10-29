@@ -76,14 +76,14 @@
 .cp-site__bar svg{width:11px;height:11px}
 .cp-site__bar .badge{margin-left:auto}
 .cp-site__view{position:relative;flex:1;container-type:inline-size;aspect-ratio:16/9.6}
-/* Wechsel des Betriebs: Die neue Website blendet über der alten auf; die alte bleibt voll sichtbar darunter,
-   bis die neue steht, und verschwindet erst dann. So scheint nie der dunkle Grund durch (kein Flackern). */
+/* Wechsel des Betriebs: Die neue Website schiebt sich als klare Kante über die alte (Wischblende). Die alte bleibt
+   darunter voll stehen, bis die neue steht – kein Durchscheinen, keine doppelten Texte, kein dunkler Zwischenmoment.
+   Alle vier Websites bleiben gezeichnet (nach dem Laden, is-warm), damit beim Wechsel nichts stückweise erscheint. */
 .ms{position:absolute;inset:0;z-index:0;opacity:0;visibility:hidden;transition:opacity 0s linear .45s,visibility 0s linear .45s}
-/* Im Cockpit bleiben alle vier Websites gezeichnet (nur unsichtbar und nicht bedienbar), damit beim Wechsel
-   nichts erst aufgebaut werden muss – sonst erscheinen Inhalte stückweise. Das Skript schaltet das nach dem Laden ein (is-warm). */
-.cockpit .ms{pointer-events:none;transition:opacity 0s linear .45s,visibility 0s linear .45s}
-.cockpit.is-warm .ms{visibility:visible}   /* erst nach dem Laden: der Seitenaufbau bleibt schnell */
-.cockpit[data-branch="gastro"] .ms--gastro,.cockpit[data-branch="handwerk"] .ms--handwerk,.cockpit[data-branch="praxis"] .ms--praxis,.cockpit[data-branch="kanzlei"] .ms--kanzlei{z-index:1;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s cubic-bezier(.23,1,.32,1),visibility 0s}
+.cockpit .ms{opacity:1;pointer-events:none;clip-path:inset(0 0 0 100%);transition:clip-path 0s linear .6s,visibility 0s linear .6s}
+.cockpit.is-warm .ms{visibility:visible}
+.cockpit[data-branch="gastro"] .ms--gastro,.cockpit[data-branch="handwerk"] .ms--handwerk,.cockpit[data-branch="praxis"] .ms--praxis,.cockpit[data-branch="kanzlei"] .ms--kanzlei{z-index:1;visibility:visible;pointer-events:auto;clip-path:inset(0 0 0 0);transition:clip-path .6s cubic-bezier(.77,0,.175,1),visibility 0s}
+@media (prefers-reduced-motion:reduce){.cockpit .ms{transition:none!important}}
 
 /* Seitenleiste: Kennzahl, Anfragen, Agent */
 .cp-side{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;min-width:0}
@@ -100,7 +100,7 @@
 
 .cp-feed{position:relative;height:198px;overflow:hidden}
 .cp-feed__item{position:absolute;left:0;right:0;top:0;height:60px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:0 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid var(--line);
-  transform:translateY(calc(var(--slot,0) * 66px));transition:transform .7s var(--ease-out),opacity .5s ease}
+  --step:66px;transform:translateY(calc(var(--slot,0) * var(--step)));transition:transform .7s var(--ease-out),opacity .5s ease}
 .cp-feed__item .ic{grid-column:1;grid-row:1/span 2;width:34px;height:34px;border-radius:9px}
 .cp-feed__item .ic svg{width:16px;height:16px}
 .cp-feed__item b{grid-column:2;grid-row:1;align-self:end;font-size:.86rem;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -108,7 +108,7 @@
 .cp-feed__item time{grid-column:3;grid-row:1/span 2;font-size:.74rem;color:var(--steel);font-variant-numeric:tabular-nums;align-self:center}
 .cp-feed__item.is-new{border-color:var(--line-3);background:rgba(255,255,255,.06)}
 .cp-feed__item.is-new time{color:var(--text)}
-.cp-feed__item.is-enter{opacity:0;transform:translateY(-30px)}
+.cp-feed__item.is-enter{opacity:0;transform:translateY(calc(var(--slot,0) * var(--step) - 18px))}
 .cp-feed__item.is-leave{opacity:0}
 
 .cp-agent{height:224px;overflow:hidden;display:flex;flex-direction:column}
@@ -166,8 +166,9 @@ button.cp-msg__btn:disabled{cursor:default}
 @container cockpit (max-width:400px){
   .cp-agent{height:296px}
   .cp-feed{height:154px}
-  .cp-feed__item{height:72px;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;padding:0 11px;transform:translateY(calc(var(--slot,0) * 80px))}
+  .cp-feed__item{height:72px;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;padding:0 11px;--step:80px}
   .cp-feed__item .ic{display:none}
+  .cp-tab{font-size:.7rem;padding:0 1px;letter-spacing:-.015em}
   .cp-feed__item b,.cp-feed__item small{grid-column:1;white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .cp-feed__item b{font-size:.82rem}
   .cp-feed__item time{grid-column:2}

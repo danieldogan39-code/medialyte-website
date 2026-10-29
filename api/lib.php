@@ -74,11 +74,22 @@ function ml_check_origin(): void
     }
 }
 
-/** Einfache Begrenzung pro IP (gespeichert als Hash, nicht als Klartext). */
+/** Geheimer Schlüssel für die Begrenzung, einmal zufällig erzeugt und nur auf dem Server gespeichert. */
+function ml_secret(): string
+{
+    $file = ml_data_dir() . '/secret.key';
+    if (!is_file($file)) {
+        @file_put_contents($file, bin2hex(random_bytes(32)), LOCK_EX);
+        @chmod($file, 0600);
+    }
+    return (string) @file_get_contents($file);
+}
+
+/** Einfache Begrenzung pro IP: gespeichert nur als HMAC mit geheimem Schlüssel, nie im Klartext. */
 function ml_rate_limited(): bool
 {
     $file = ml_data_dir() . '/ratelimit.json';
-    $key = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . date('Y-m-d'));
+    $key = hash_hmac('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . date('Y-m-d'), ml_secret());
     $now = time();
     $fh = fopen($file, 'c+');
     if (!$fh) {

@@ -64,7 +64,7 @@ FAQ_MAIN = [
     ("Lohnt sich ein Neustart, wenn ich schon eine Website habe?",
      "<p>Oft ja – besonders, wenn die Seite langsam lädt, auf dem Smartphone schlecht aussieht oder kaum Anfragen bringt. Im Erstgespräch schauen wir sie uns an und sagen Ihnen ehrlich, ob sich eine Überarbeitung oder ein Neustart mehr lohnt.</p>"),
     ("Kann ich Inhalte auch selbst bearbeiten?",
-     "<p>Ja. Texte, Bilder oder Speisekarten können Sie jederzeit selbst ändern, ganz ohne Technikkenntnisse. Wenn Sie lieber nichts anfassen möchten, übernimmt das der KI-Agent.</p>"),
+     "<p>Ja. Am einfachsten schreiben Sie dem KI-Agenten per WhatsApp, was sich ändern soll – das geht meist schneller, als es selbst zu machen. Haben Sie ein eigenes Dashboard, ändern Sie Texte, Bilder und Preise dort auch direkt selbst, ganz ohne Technikkenntnisse.</p>"),
     ("Was bedeutet die Zufriedenheitsgarantie?",
      "<p>Sie sehen jeden Entwurf, bevor wir ihn umsetzen, und geben jede Seite frei, bevor sie online geht. Passt etwas nicht, überarbeiten wir es – so lange, bis Sie zufrieden sind.</p><p>Was genau dazugehört, steht schriftlich in Ihrem Angebot.</p>"),
 ]
@@ -530,7 +530,7 @@ def film(ctx):
       aria-label="Film: Medialyte in {FILM_LENGTH} Minuten, mit Untertiteln">
       <source src="{ctx.a('video/medialyte-film.mp4')}" type="video/mp4">
       <source src="{ctx.a('video/medialyte-film.webm')}" type="video/webm">
-      <track kind="captions" srclang="de" label="Deutsch" src="{ctx.a('video/medialyte-film.de.vtt')}">
+      <track kind="captions" srclang="de" label="Deutsch" default src="{ctx.a('video/medialyte-film.de.vtt')}">
     </video>
     <button class="film__play" type="button">
       <span class="film__btn">{icon('play')}</span><span class="film__lbl"><b>Film abspielen</b><small>{FILM_LENGTH} Min. · mit Ton und Untertiteln</small></span>
@@ -631,7 +631,7 @@ def booking_widget(ctx):
     formate = "".join([
         opt("format", "video", "video", "Video-Call", "Bequem von überall", typ="radio"),
         opt("format", "telefon", "phone", "Telefon", "Wir rufen Sie an", typ="radio"),
-        opt("format", "vor-ort", "pin", "Vor Ort", "Bei Ihnen im Betrieb", typ="radio"),
+        opt("format", "vor-ort", "pin", "Vor Ort", "Bei Ihnen, im Raum Hamburg", typ="radio"),
     ])
     branchen = ["Gastronomie & Hotellerie", "Handwerk & Bau", "Einzelhandel & E-Commerce", "Kanzlei & Beratung",
                 "Praxis & Gesundheit", "Industrie & Technik", "Dienstleistung", "Immobilien", "Verein & Organisation", "Andere Branche"]
@@ -645,7 +645,7 @@ def booking_widget(ctx):
     <h3>Kostenfreies Erstgespräch</h3>
     <ul class="bk__meta">
       <li>{icon('clock')} 30 Minuten</li>
-      <li>{icon('video')} Video-Call, Telefon oder bei Ihnen vor Ort</li>
+      <li>{icon('video')} Video-Call, Telefon oder im Raum Hamburg bei Ihnen vor Ort</li>
       <li>{icon('shield')} Unverbindlich und kostenfrei</li>
     </ul>
     <div class="bk__get"><b>Das erwartet Sie</b>{ticks(['Wir schauen uns Ihre Situation an', 'Sie bekommen konkrete Empfehlungen', 'Danach ein Angebot, das genau passt'])}</div>

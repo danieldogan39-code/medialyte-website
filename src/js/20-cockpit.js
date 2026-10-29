@@ -319,8 +319,8 @@ ML.module("cockpit", function (ML) {
 
   /* Nach dem Laden in einer ruhigen Sekunde alle Beispiel-Websites vorzeichnen, damit der erste Wechsel nicht stockt */
   function warm() { root.classList.add("is-warm"); }
-  window.addEventListener("load", function () { setTimeout(warm, 4000); });
-  if (tabsEl) ["pointerenter", "touchstart", "focusin"].forEach(function (ev) { tabsEl.addEventListener(ev, warm, { once: true, passive: true }); });
+  window.addEventListener("load", function () { setTimeout(warm, 1500); });
+  ["pointerenter", "touchstart", "focusin"].forEach(function (ev) { root.addEventListener(ev, warm, { once: true, passive: true }); });
 
   if (ML.reduce) { finalState(cur); return; }
   reset(cur);

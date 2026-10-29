@@ -16,6 +16,9 @@ ErrorDocument 404 /404.html
   RewriteRule ^datenschutzerklaerung/?$ /datenschutz/ [L,R=301]
   RewriteRule ^kontakt/?$ /termin/ [L,R=301]
   RewriteRule ^beratung/?$ /termin/ [L,R=301]
+  RewriteRule ^(kostenlose-erstberatung|kostenfreie-beratung|erstberatung)/?$ /termin/ [L,R=301]
+  RewriteRule ^(dashboard|home|startseite)/?$ / [L,R=301]
+  RewriteRule ^leistungen/?$ /#leistungen [L,R=301,NE]
   RewriteRule ^(wp-admin|wp-login\.php|wp-content|wp-includes|xmlrpc\.php|feed)(/.*)?$ / [L,R=301]
 </IfModule>
 

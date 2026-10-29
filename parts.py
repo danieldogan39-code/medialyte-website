@@ -250,7 +250,7 @@ def journey(ctx):
     out = ""
     for i, (name, h, text, items, link, link_t, v, cap) in enumerate(STATIONS):
         out += f"""
-<article class="st{" is-active" if i == 0 else ""}" id="st-{i}" data-station="{i}" aria-labelledby="st-h{i}">
+<div class="st{" is-active" if i == 0 else ""}" id="st-{i}" role="group" data-station="{i}" aria-labelledby="st-h{i}">
   <div class="st__text">
     <span class="st__name"><span class="jr__n" aria-hidden="true">{i + 1}</span>{name}</span>
     <h3 id="st-h{i}">{h}</h3>
@@ -259,7 +259,7 @@ def journey(ctx):
     <a class="link" href="{ctx.u(link)}">{link_t} {icon('arrow')}</a>
   </div>
   <div class="st__vis"><div class="st__fit">{vis[v]()}<p class="st__cap">{cap}</p></div></div>
-</article>"""
+</div>"""
     return f"""<div class="journey" data-journey style="--n:{n}">
   <div class="jr__stage">
     <div class="jr__rail" hidden aria-label="Stationen der Kundenreise">{rail}<span class="jr__bar" aria-hidden="true"><i></i></span></div>
@@ -278,7 +278,7 @@ def cases(ctx, keys=("rechnungsradar", "rubin", "ritz")):
         facts = "".join(f"<div><b>{e(v)}</b><small>{e(l)}</small></div>" for v, l in r["nums"])
         out += f"""
 <article class="case" data-reveal>
-  <button class="case__media" type="button" data-ref="{k}" aria-haspopup="dialog" aria-label="Vorschau von {e(r['title'])} öffnen">
+  <button class="case__media" type="button" data-ref="{k}" aria-haspopup="dialog" aria-label="Vorschau öffnen: {e(r['title'])}">
     <span class="frame case__browser"><span class="frame__bar"><i></i><i></i><i></i><span class="frame__url">{icon('lock')}{e(r['host'])}</span></span>
       <span class="case__shot" data-scrub><img src="{ctx.a('img/refs/' + k + '-long.webp')}" srcset="{ctx.a('img/refs/' + k + '-long-sm.webp')} 640w, {ctx.a('img/refs/' + k + '-long.webp')} 1200w" sizes="(max-width: 900px) 92vw, 760px" width="1200" height="{lh}" alt="Website {e(r['title'])}" loading="lazy" decoding="async"></span></span>
     <span class="phone case__phone"><span class="phone__screen">{img(ctx, 'img/refs/' + k + '-mobile.webp', 600, 1299, '')}</span></span>
@@ -325,11 +325,11 @@ def ref_dialog(ctx):
     </div>
     <div class="rd__info">
       <span class="rd__cat" data-rd="cat"></span>
-      <h2 id="rd-title" data-rd="title"></h2>
+      <h2 id="rd-title" data-rd="title">Projekt</h2>
       <p data-rd="text"></p>
       <div class="rd__nums" data-rd="nums"></div>
       <div class="rd__actions">
-        <a class="btn btn--light" href="#" target="_blank" rel="noopener" data-rd="link"><span></span> {icon('out')}</a>
+        <a class="btn btn--light" href="#" target="_blank" rel="noopener" data-rd="link"><span>Website besuchen</span> {icon('out')}</a>
         <a class="btn btn--ghost" href="{book_link(ctx)}" data-close-dialog>Ähnliches Projekt anfragen</a>
       </div>
       <dl class="rd__facts" data-rd="facts"></dl>
@@ -500,7 +500,7 @@ def process(items=None, cls=""):
         f'<li class="proc__item" data-reveal style="--rd:{i}"><span class="num">{i + 1}</span><h3>{t}</h3><p>{d}</p>'
         + (f'<ul class="tags">{"".join(f"<li>{x}</li>" for x in tags)}</ul>' if tags else "") + "</li>"
         for i, (t, d, tags) in enumerate(items))
-    return f'<ol class="proc{(" " + cls) if cls else ""}" data-proc style="--n:{len(items)}"><span class="proc__line" aria-hidden="true"><i></i></span>{lis}</ol>'
+    return f'<ol class="proc{(" " + cls) if cls else ""}" data-proc style="--n:{len(items)}"><li class="proc__line" aria-hidden="true"><i></i></li>{lis}</ol>'
 
 
 # ======================================================================= Film (Platzhalter)
@@ -526,13 +526,13 @@ def film(ctx):
     return f"""
 <div class="film" data-film>
   <div class="film__frame" data-reveal="scale">
-    <video class="film__video" controls preload="none" playsinline poster="{ctx.a('video/medialyte-film.jpg')}" width="1920" height="1080"
+    <video class="film__video" controls preload="none" playsinline poster="{ctx.a('video/medialyte-film.webp')}" width="1920" height="1080"
       aria-label="Film: Medialyte in {FILM_LENGTH} Minuten, mit Untertiteln">
       <source src="{ctx.a('video/medialyte-film.mp4')}" type="video/mp4">
       <source src="{ctx.a('video/medialyte-film.webm')}" type="video/webm">
       <track kind="captions" srclang="de" label="Deutsch" src="{ctx.a('video/medialyte-film.de.vtt')}">
     </video>
-    <button class="film__play" type="button" aria-label="Film abspielen, {FILM_LENGTH} Minuten, mit Ton">
+    <button class="film__play" type="button">
       <span class="film__btn">{icon('play')}</span><span class="film__lbl"><b>Film abspielen</b><small>{FILM_LENGTH} Min. · mit Ton und Untertiteln</small></span>
     </button>
   </div>
@@ -571,11 +571,11 @@ def svc_film(ctx, key):
     </div>
     <div class="film film--v" data-film>
       <div class="film__frame film__frame--v" data-reveal="scale">
-        <video class="film__video" controls preload="none" playsinline poster="{ctx.a(f'video/{f}.jpg')}" width="720" height="1280"
+        <video class="film__video" controls preload="none" playsinline poster="{ctx.a(f'video/{f}.webp')}" width="720" height="1280"
           aria-label="Film, {length} Minuten, mit Ton und eingeblendeten Untertiteln">
           <source src="{ctx.a(f'video/{f}.mp4')}" type="video/mp4">
         </video>
-        <button class="film__play" type="button" aria-label="Film abspielen, {length} Minuten, mit Ton">
+        <button class="film__play" type="button">
           <span class="film__btn">{icon('play')}</span><span class="film__lbl"><b>Film abspielen</b><small>{length} Min. · mit Ton und Untertiteln</small></span>
         </button>
       </div>
@@ -631,7 +631,7 @@ def booking_widget(ctx):
     formate = "".join([
         opt("format", "video", "video", "Video-Call", "Bequem von überall", typ="radio"),
         opt("format", "telefon", "phone", "Telefon", "Wir rufen Sie an", typ="radio"),
-        opt("format", "vor-ort", "pin", "Vor Ort", "In Hamburg", typ="radio"),
+        opt("format", "vor-ort", "pin", "Vor Ort", "Bei Ihnen im Betrieb", typ="radio"),
     ])
     branchen = ["Gastronomie & Hotellerie", "Handwerk & Bau", "Einzelhandel & E-Commerce", "Kanzlei & Beratung",
                 "Praxis & Gesundheit", "Industrie & Technik", "Dienstleistung", "Immobilien", "Verein & Organisation", "Andere Branche"]
@@ -645,13 +645,14 @@ def booking_widget(ctx):
     <h3>Kostenfreies Erstgespräch</h3>
     <ul class="bk__meta">
       <li>{icon('clock')} 30 Minuten</li>
-      <li>{icon('video')} Video-Call, Telefon oder vor Ort in Hamburg</li>
+      <li>{icon('video')} Video-Call, Telefon oder bei Ihnen vor Ort</li>
       <li>{icon('shield')} Unverbindlich und kostenfrei</li>
     </ul>
     <div class="bk__get"><b>Das erwartet Sie</b>{ticks(['Wir schauen uns Ihre Situation an', 'Sie bekommen konkrete Empfehlungen', 'Danach ein Angebot, das genau passt'])}</div>
     <div class="bk__alt"><span>Lieber direkt sprechen?</span><a class="link" href="{SITE['wa']}" target="_blank" rel="noopener">{icon('wa')} WhatsApp schreiben</a><a class="link" href="tel:{SITE['phone_intl']}">{icon('phone')} {e(SITE['phone'])}</a></div>
   </aside>
-  <form class="bk__main" novalidate>
+  <form class="bk__main" novalidate aria-labelledby="bk-title">
+    <h2 class="sr-only" id="bk-title">Erstgespräch buchen</h2>
     <ol class="bk__progress" aria-label="Fortschritt">
       <li data-p="1"><span>Anliegen</span></li><li data-p="2"><span>Unternehmen</span></li><li data-p="3"><span>Termin</span></li><li data-p="4"><span>Kontakt</span></li>
     </ol>
@@ -665,10 +666,10 @@ def booking_widget(ctx):
         <h3 id="bk-h2">Ihr Unternehmen</h3>
         <p>Ein paar Eckdaten, damit wir uns Ihre Situation vorher ansehen können.</p>
         <div class="fields">
-          <div class="field"><label for="bk-firma">Unternehmen <i>(Pflichtfeld)</i></label><input id="bk-firma" name="firma" autocomplete="organization" placeholder="z. B. Café Elbblick"></div>
+          <div class="field"><label for="bk-firma">Unternehmen <i>(Pflichtfeld)</i></label><input id="bk-firma" name="firma" type="text" autocomplete="organization" placeholder="z. B. Café Elbblick"></div>
           <div class="field"><label for="bk-branche">Branche <i>(Pflichtfeld)</i></label><select id="bk-branche" name="branche">{bopts}</select></div>
-          <div class="field"><label for="bk-website">Aktuelle Website</label><input id="bk-website" name="website" inputmode="url" autocomplete="url" placeholder="falls vorhanden, z. B. beispiel.de"></div>
-          <div class="field"><label for="bk-ort">Ort oder PLZ</label><input id="bk-ort" name="ort" autocomplete="address-level2" placeholder="z. B. Hamburg"></div>
+          <div class="field"><label for="bk-website">Aktuelle Website</label><input id="bk-website" name="website" type="text" inputmode="url" autocomplete="url" placeholder="falls vorhanden, z. B. beispiel.de"></div>
+          <div class="field"><label for="bk-ort">Ort oder PLZ</label><input id="bk-ort" name="ort" type="text" autocomplete="address-level2" placeholder="z. B. Hamburg"></div>
           <div class="field field--full"><span class="bk__sub">Mitarbeitende</span><div class="opts opts--4">{groesse}</div></div>
         </div>
       </section>
@@ -691,12 +692,12 @@ def booking_widget(ctx):
         <p>Fast geschafft. Wir bestätigen Ihren Termin per E-Mail.</p>
         <div class="bk__pick"></div>
         <div class="fields">
-          <div class="field"><label for="bk-name">Vor- und Nachname <i>(Pflichtfeld)</i></label><input id="bk-name" name="name" autocomplete="name" placeholder="Max Mustermann"></div>
+          <div class="field"><label for="bk-name">Vor- und Nachname <i>(Pflichtfeld)</i></label><input id="bk-name" name="name" type="text" autocomplete="name" placeholder="Max Mustermann"></div>
           <div class="field"><label for="bk-email">E-Mail <i>(Pflichtfeld)</i></label><input id="bk-email" name="email" type="email" autocomplete="email" placeholder="name@firma.de"></div>
           <div class="field"><label for="bk-tel">Telefon</label><input id="bk-tel" name="telefon" type="tel" autocomplete="tel" placeholder="Für Telefonat, Rückruf oder WhatsApp"></div>
           <div class="field" style="align-content:end"><label class="checkline" style="min-height:52px;align-items:center"><input type="checkbox" id="bk-wa" name="whatsapp" value="1"><span>Bestätigung zusätzlich per WhatsApp</span></label></div>
           <div class="field field--full"><label for="bk-msg">Ihre Nachricht</label><textarea id="bk-msg" name="nachricht" placeholder="Was ist Ihnen wichtig? Gibt es einen Termin, bis wann alles fertig sein soll?"></textarea></div>
-          <div class="field--full hp" aria-hidden="true"><label for="bk-hp">Bitte leer lassen</label><input id="bk-hp" name="firma_url" tabindex="-1" autocomplete="off"></div>
+          <div class="field--full hp" aria-hidden="true"><label for="bk-hp">Bitte leer lassen</label><input id="bk-hp" name="firma_url" type="text" tabindex="-1" autocomplete="off"></div>
           <label class="checkline field--full"><input type="checkbox" id="bk-consent" name="einwilligung" value="1"><span>Ich bin einverstanden, dass Medialyte meine Angaben zur Bearbeitung meiner Anfrage speichert und mich kontaktiert. Details in der <a href="{ctx.u('/datenschutz/')}">Datenschutzerklärung</a>. (Pflichtfeld)</span></label>
         </div>
       </section>
@@ -732,7 +733,7 @@ def page_hero(ctx, crumbs, h1, lead, actions="", visual=""):
   <div class="hero__bg" aria-hidden="true"><span class="hero__glow"></span><span class="hero__grid"></span></div>
   <div class="wrap phero__grid{'' if visual else ' phero__grid--single'}">
     <div class="phero__copy">
-      <ol class="crumbs" aria-label="Brotkrümelnavigation" data-intro style="--i:0">{cr}</ol>
+      <nav aria-label="Brotkrümelnavigation" data-intro style="--i:0"><ol class="crumbs">{cr}</ol></nav>
       <h1 data-intro style="--i:1">{h1}</h1>
       <p class="lead" data-intro style="--i:2">{lead}</p>
       {f'<div class="phero__actions" data-intro style="--i:3">{actions}</div>' if actions else ''}

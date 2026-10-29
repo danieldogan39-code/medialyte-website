@@ -224,7 +224,7 @@ function ml_ics(array $b): string
     $end = (clone $start)->modify('+' . (int) $cfg['duration'] . ' minutes');
     $utc = new DateTimeZone('UTC');
     $f = fn(DateTime $d) => (clone $d)->setTimezone($utc)->format('Ymd\THis\Z');
-    $loc = $b['format'] === 'vor-ort' ? 'Medialyte, Schaaphusen 3, 21147 Hamburg' : $b['format_text'];
+    $loc = $b['format'] === 'vor-ort' ? 'Bei Ihnen vor Ort (Adresse stimmen wir vorher ab)' : $b['format_text'];
     return implode("\r\n", [
         'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Medialyte//Termin//DE', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
         'UID:' . $b['id'] . '@medialyte.de', 'DTSTAMP:' . $f(new DateTime('now', $tz)),

@@ -1,5 +1,5 @@
 """Web-Fassungen der Leistungsfilme: 720 × 1280, 60 Bilder/s, H.264 in zwei Durchgängen mit Zielgröße, Titelbild als JPG.
-python3 web.py <n> [MB]  ->  web/leistung-<name>.mp4, .jpg"""
+python3 web.py <n> [MB]  ->  web/leistung-<name>.mp4, .webp"""
 import json, subprocess, sys
 from PIL import Image
 n = sys.argv[1]; MB = float(sys.argv[2]) if len(sys.argv) > 2 else 6.5
@@ -13,5 +13,5 @@ enc = ["-vf", "scale=720:1280:flags=lanczos", "-c:v", "libx264", "-preset", "slo
 def run(a): subprocess.run(["ffmpeg", "-v", "error", "-y"] + a, check=True)
 run(["-i", SRC, "-map", "0:v"] + enc + ["-pass", "1", "-passlogfile", f"web/x{n}", "-an", "-f", "mp4", "/dev/null"])
 run(["-i", SRC, "-map", "0:v", "-map", "0:a"] + enc + ["-pass", "2", "-passlogfile", f"web/x{n}", "-c:a", "aac", "-b:a", "112k", "-ar", "48000", "-movflags", "+faststart", OUT + ".mp4"])
-Image.open(f"f{n}/out/cover.png").convert("RGB").resize((720, 1280), Image.LANCZOS).save(OUT + ".jpg", quality=86, optimize=True, progressive=True)
+Image.open(f"f{n}/out/cover.png").convert("RGB").resize((720, 1280), Image.LANCZOS).save(OUT + ".webp", quality=80, method=6)
 print(OUT, round(dur, 1), "s", kbps, "kbit/s")

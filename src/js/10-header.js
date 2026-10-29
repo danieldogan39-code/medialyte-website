@@ -20,8 +20,9 @@ ML.module("page-top", function (ML) {
   var type = nav ? nav.type : "navigate";
   if (!flag && type !== "navigate") return;
   function top() { if ((window.scrollY || 0) > 0) window.scrollTo({ top: 0, left: 0, behavior: "instant" }); }
-  top();
-  window.addEventListener("load", function () { top(); requestAnimationFrame(top); });
+  /* erst im nächsten Bild: scrollY würde hier sonst das erste Layout der ganzen Seite erzwingen */
+  requestAnimationFrame(top);
+  window.addEventListener("load", function () { requestAnimationFrame(top); });
 });
 
 /* Kopfzeile, Leistungen-Menü, mobiles Menü, WhatsApp-Knopf */

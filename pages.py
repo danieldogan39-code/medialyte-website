@@ -4,7 +4,10 @@ Jede Seite ist ein Eintrag in PAGES mit Pfad, Titel, Beschreibung und einer rend
 Gemeinsame Bausteine und Texte stehen in parts.py, die gezeichneten Oberflächen in mocks.py.
 Texte ändern, dann `python3 build.py` ausführen.
 """
+import re
+
 from build import SITE, breadcrumb_schema, e, faq_schema, icon, org_schema
+import legal
 import mocks
 from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, book_link, booking_widget, btn_book, btn_wa,
                    cases, closing, compare, faq_block, feats, film, svc_film, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
@@ -105,13 +108,16 @@ def render_home(ctx):
 <section class="section section--deep" id="termin">
   <span id="beratung" aria-hidden="true"></span>
   <div class="wrap">
-    {sh('Buchen Sie Ihr <span class="nowrap">kostenfreies</span> Erstgespräch.', '30 Minuten, per Video, Telefon oder vor Ort in Hamburg. Wir hören zu, schauen uns Ihre Situation an und sagen Ihnen, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden.', center=True)}
+    {sh('Buchen Sie Ihr <span class="nowrap">kostenfreies</span> Erstgespräch.', '30 Minuten, per Video, Telefon oder bei Ihnen vor Ort. Wir hören zu, schauen uns Ihre Situation an und sagen Ihnen, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden.', center=True)}
     <div data-reveal>{booking_widget(ctx)}</div>
   </div>
 </section>"""
 
-    return (hero + logo_marquee(ctx) + idee + reise + referenzen + ergebnisse + vergleich + pakete
-            + ablauf + film_s + faq + termin)
+    # Der Film steht direkt nach den Leistungen; die Abschnitte wechseln sich danach hell und dunkel ab
+    blocks = [idee, reise, film_s, referenzen, ergebnisse, vergleich, pakete, ablauf, faq, termin]
+    blocks = [re.sub(r'<section class="section( section--deep)?"', '<section class="section' + (' section--deep' if i % 2 else '') + '"', b, count=1)
+              for i, b in enumerate(blocks)]
+    return hero + logo_marquee(ctx) + "".join(blocks)
 
 
 # ======================================================================= Leistungsseiten
@@ -205,7 +211,7 @@ def _flow():
              ("calendar", "Termin und Erinnerung", "Für Sie und Ihren Kunden"),
              ("brief", "Angebot und Auftrag", "Jederzeit nachvollziehbar")]
     lis = "".join(f'<li class="proc__item" data-reveal style="--rd:{i}"><span class="num">{i + 1}</span><h3>{t}</h3><p>{d}</p></li>' for i, (ic, t, d) in enumerate(steps))
-    return f'<ol class="proc proc--n proc--stack" data-proc style="--n:4"><span class="proc__line" aria-hidden="true"><i></i></span>{lis}</ol>'
+    return f'<ol class="proc proc--n proc--stack" data-proc style="--n:4"><li class="proc__line" aria-hidden="true"><i></i></li>{lis}</ol>'
 
 
 def render_sys(ctx):
@@ -358,7 +364,7 @@ def render_refs(ctx):
                       btn_book(ctx) + btn_wa(ctx))
             + f'<section class="section section--flush"><div class="wrap">{cases(ctx)}</div></section>'
             + f'<section class="section section--deep"><div class="wrap">{sh("Mehr aus unserer Arbeit", split=True)}<div class="more">{mcards}</div></div></section>'
-            + f'<section class="section"><div class="wrap">{sh("Vorher, nachher – <span class=quiet>und was es gebracht hat.</span>", "Was der Relaunch für RechnungsRadar gebracht hat.", split=True)}{results(ctx)}</div></section>'
+            + f'<section class="section"><div class="wrap">{sh('Vorher, nachher – <span class="quiet">und was es gebracht hat.</span>', 'Was der Relaunch für RechnungsRadar gebracht hat.', split=True)}{results(ctx)}</div></section>'
             + f'<section class="section section--deep section--marquee"><div class="wrap">{sh("Kunden und Partner", "Unternehmen, die mit Medialyte arbeiten – vom Restaurant bis zum Industriekonzern.", split=True)}</div><div data-reveal>{marquee_rows(ctx, 2)}</div></section>'
             + closing(ctx, "Ihr Projekt als nächste Referenz?", "Erzählen Sie uns davon.", "Im kostenfreien Erstgespräch hören wir zu und sagen Ihnen, was sich lohnt. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
 
@@ -390,7 +396,7 @@ def render_about(ctx):
   </div>
 </section>
 <section class="section"><div class="wrap">{sh('Wofür wir stehen', split=True)}{feats(values, 2, tone=["web", "crm", "ads", "ai"])}{ionos}</div></section>
-""" + closing(ctx, "Lernen wir uns kennen.", "Im kostenfreien Erstgespräch.", "30 Minuten per Video, Telefon oder vor Ort in Hamburg. Sie erzählen von Ihrem Betrieb, wir sagen ehrlich, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden."))
+""" + closing(ctx, "Lernen wir uns kennen.", "Im kostenfreien Erstgespräch.", "30 Minuten per Video, Telefon oder bei Ihnen vor Ort. Sie erzählen von Ihrem Betrieb, wir sagen ehrlich, was sich lohnt. Ihr Angebot folgt innerhalb von 48 Stunden."))
 
 
 def render_termin(ctx):
@@ -411,12 +417,9 @@ def render_impressum(ctx):
 </div></div></section>"""
 
 
-def render_legal_placeholder(title, what):
+def render_legal(title, what, body):
     def r(ctx):
-        return page_hero(ctx, [("Start", "/"), (title, "")], title, what) + """
-<section class="section section--flush"><div class="wrap"><div class="prose">
-  <p class="todo">Dieser Text wird vor dem Livegang eingefügt.</p>
-</div></div></section>"""
+        return page_hero(ctx, [("Start", "/"), (title, "")], title, what) + body(ctx)
     return r
 
 
@@ -481,15 +484,15 @@ PAGES = [
      "schema": [breadcrumb_schema([("Start", "/"), ("Über uns", "/ueber-uns/")])]},
     {"path": "/termin/",
      "title": "Kostenfreies Erstgespräch buchen | Medialyte",
-     "desc": "Buchen Sie Ihr kostenfreies Erstgespräch mit Medialyte: Anliegen wählen, Termin aussuchen, fertig. Per Video-Call, Telefon oder vor Ort in Hamburg.",
+     "desc": "Buchen Sie Ihr kostenfreies Erstgespräch mit Medialyte: Anliegen wählen, Termin aussuchen, fertig. Per Video-Call, Telefon oder bei Ihnen vor Ort.",
      "render": render_termin, "priority": "0.9",
      "schema": [breadcrumb_schema([("Start", "/"), ("Erstgespräch buchen", "/termin/")])]},
     {"path": "/impressum/", "title": "Impressum | Medialyte", "desc": "Impressum von Medialyte – Marketing & Management, Hamburg.",
      "render": render_impressum, "priority": "0.2", "robots": "noindex, follow"},
-    {"path": "/datenschutz/", "title": "Datenschutzerklärung | Medialyte", "desc": "Datenschutzerklärung von Medialyte.",
-     "render": render_legal_placeholder("Datenschutzerklärung", "Informationen zum Umgang mit Ihren Daten."), "priority": "0.2", "robots": "noindex, follow"},
-    {"path": "/agb/", "title": "AGB | Medialyte", "desc": "Allgemeine Geschäftsbedingungen von Medialyte.",
-     "render": render_legal_placeholder("Allgemeine Geschäftsbedingungen", "Unsere Allgemeinen Geschäftsbedingungen."), "priority": "0.2", "robots": "noindex, follow"},
+    {"path": "/datenschutz/", "title": "Datenschutzerklärung | Medialyte", "desc": "Datenschutzerklärung von Medialyte: kein Tracking, keine Cookies. Welche Daten wir beim Buchen eines Erstgesprächs und bei Kontakt per E-Mail, Telefon oder WhatsApp verarbeiten.",
+     "render": render_legal("Datenschutzerklärung", "Welche Daten diese Website verarbeitet, wofür und welche Rechte Sie haben. Kurz gesagt: kein Tracking, keine Cookies.", legal.datenschutz), "priority": "0.2", "robots": "noindex, follow"},
+    {"path": "/agb/", "title": "AGB | Medialyte", "desc": "Allgemeine Geschäftsbedingungen von Medialyte – Marketing & Management für Websites, Kundenmanagement-Systeme, KI-Agent und Online-Marketing.",
+     "render": render_legal("Allgemeine Geschäftsbedingungen", "Die Bedingungen für alle Aufträge an Medialyte. Was genau Sie bekommen, steht zusätzlich in Ihrem persönlichen Angebot.", legal.agb), "priority": "0.2", "robots": "noindex, follow"},
     {"path": "/404.html", "title": "Seite nicht gefunden | Medialyte", "desc": "Diese Seite existiert nicht.",
      "render": render_404, "sitemap": False, "robots": "noindex, follow"},
 ]

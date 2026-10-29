@@ -28,7 +28,7 @@ if (ml_rate_limited()) {
 }
 
 $allowedAnliegen = ['web-neu', 'web-besser', 'system', 'werbung', 'agent', 'brief'];
-$formats = ['video' => 'Video-Call', 'telefon' => 'Telefon', 'vor-ort' => 'Vor Ort in Hamburg'];
+$formats = ['video' => 'Video-Call', 'telefon' => 'Telefon', 'vor-ort' => 'Vor Ort bei Ihnen'];
 
 $b = [
     'id'            => date('Ymd-His') . '-' . bin2hex(random_bytes(3)),
@@ -136,7 +136,7 @@ if (ml_config()['send_confirmation']) {
         $wann, 'Anliegen: ' . implode(', ', $b['anliegen_text'] ?: $b['anliegen']), '',
         $b['termin'] ? 'Den Termin finden Sie im Anhang zum Eintragen in Ihren Kalender. Wir melden uns vorher, falls sich etwas ändert.' : 'Wir rufen Sie im gewünschten Zeitfenster an.',
         '', 'Sie möchten etwas ändern? Antworten Sie einfach auf diese E-Mail oder schreiben Sie uns per WhatsApp: https://wa.me/491709647532',
-        '', 'Viele Grüße', 'Daniel', 'Medialyte – Marketing & Management', 'Schaaphusen 3, 21147 Hamburg', 'medialyte.de',
+        '', 'Viele Grüße', 'Daniel', 'Medialyte – Marketing & Management', 'medialyte.de',
     ];
     ml_mail($b['email'], 'Ihr Termin mit Medialyte', implode("\n", $confirm), $b['termin'] ? ml_ics($b) : null, ml_config()['mail_to']);
 }

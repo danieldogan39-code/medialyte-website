@@ -34,7 +34,7 @@ ML.module("journey", function (ML) {
       jr.classList.toggle("journey--pin", on);
       if (rail) { rail.hidden = !on; if (on) rail.setAttribute("role", "tablist"); else rail.removeAttribute("role"); }
       steps.forEach(function (b) { if (on) b.setAttribute("role", "tab"); else b.removeAttribute("role"); });
-      sts.forEach(function (s) { if (on) s.setAttribute("role", "tabpanel"); else s.removeAttribute("role"); });
+      sts.forEach(function (s) { s.setAttribute("role", on ? "tabpanel" : "group"); });
       activate(cur, true);
       ML.tick();
     }

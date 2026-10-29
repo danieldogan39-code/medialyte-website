@@ -38,7 +38,7 @@ SITE = {
     "instagram": "https://www.instagram.com/medialyte.de/",
     "linkedin": "https://www.linkedin.com/company/medialyte/",
     "youtube": "https://www.youtube.com/@medialyte.deutschland",
-    "today": date(2026, 10, 27).isoformat(),
+    "today": date(2026, 10, 29).isoformat(),
 }
 
 # Verfügbarkeit fürs Buchungsformular (Wochentag 1 = Montag)
@@ -276,27 +276,33 @@ def header(ctx, active=""):
 
 
 def footer(ctx):
-    svc = "".join(f'<li><a href="{ctx.u(p)}">{e(t)}</a></li>' for p, t, *_ in SERVICES)
+    svc = "".join(f'<li><a href="{ctx.u(p)}"><i class="footer__dot ic--{tn}" aria-hidden="true"></i>{e(t)}</a></li>' for p, t, _, _, tn in SERVICES)
     return f"""
 <footer class="footer">
   <div class="wrap">
+    <div class="footer__reach">
+      <div class="footer__reach-text">
+        <h2 class="footer__title">Fragen? <span class="quiet">Schreiben Sie uns einfach.</span></h2>
+        <p class="footer__status" data-reach><span class="footer__live" aria-hidden="true"></span><span data-reach-text>Erreichbar {e(SITE['hours'])}</span></p>
+      </div>
+      <ul class="footer__tiles">
+        <li><a class="ftile ftile--wa" href="{SITE['wa']}" target="_blank" rel="noopener"><span class="ftile__ic">{icon('wa')}</span><span><small>WhatsApp</small><b>Nachricht schreiben</b></span></a></li>
+        <li><a class="ftile" href="tel:{SITE['phone_intl']}"><span class="ftile__ic">{icon('phone')}</span><span><small>Telefon</small><b>{e(SITE['phone'])}</b></span></a></li>
+        <li><a class="ftile" href="mailto:{SITE['email']}"><span class="ftile__ic">{icon('mail')}</span><span><small>E-Mail</small><b>{e(SITE['email'])}</b></span></a></li>
+      </ul>
+    </div>
     <div class="footer__grid">
       <div class="footer__brand">
         <a class="brand brand--lg" href="{ctx.u('/')}" aria-label="Medialyte – zur Startseite">{BRAND}</a>
         <p>Individuelle Lösungen zur Vermehrung, Verbesserung und Verwaltung von Kundenbeziehungen. Aus Hamburg, für Betriebe in ganz Deutschland.</p>
-        <div class="footer__social">
-          <a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {icon('out')}</a>
-          <a href="{SITE['linkedin']}" target="_blank" rel="noopener">LinkedIn {icon('out')}</a>
-          <a href="{SITE['youtube']}" target="_blank" rel="noopener">YouTube {icon('out')}</a>
-        </div>
         <div class="footer__partner"><img src="{ctx.a('img/logos/ionos-agency-partner.webp')}" width="185" height="100" alt="IONOS Agency Partner Official" loading="lazy" decoding="async"></div>
       </div>
-      <div>
-        <h4>Leistungen</h4>
+      <nav class="footer__col" aria-label="Leistungen">
+        <h3>Leistungen</h3>
         <ul>{svc}</ul>
-      </div>
-      <div>
-        <h4>Medialyte</h4>
+      </nav>
+      <nav class="footer__col" aria-label="Medialyte">
+        <h3>Medialyte</h3>
         <ul>
           <li><a href="{ctx.u('/referenzen/')}">Referenzen</a></li>
           <li><a href="{ctx.u('/ueber-uns/')}">Über uns</a></li>
@@ -304,20 +310,18 @@ def footer(ctx):
           <li><a href="{ctx.u('/#faq')}">Häufige Fragen</a></li>
           <li><a href="{ctx.u('/termin/')}">Erstgespräch buchen</a></li>
         </ul>
-      </div>
-      <div>
-        <h4>Kontakt</h4>
-        <ul class="footer__contact">
-          <li>{icon('pin')}<span>{e(SITE['street'])}<br>{e(SITE['zip'])} {e(SITE['city'])}</span></li>
-          <li>{icon('phone')}<a href="tel:{SITE['phone_intl']}">{e(SITE['phone'])}</a></li>
-          <li>{icon('wa')}<a href="{SITE['wa']}" target="_blank" rel="noopener">WhatsApp</a></li>
-          <li>{icon('mail')}<a href="mailto:{SITE['email']}">{e(SITE['email'])}</a></li>
-          <li>{icon('clock')}<span>{e(SITE['hours'])}</span></li>
+      </nav>
+      <nav class="footer__col" aria-label="Folgen Sie uns">
+        <h3>Folgen</h3>
+        <ul>
+          <li><a href="{SITE['instagram']}" target="_blank" rel="noopener">Instagram {icon('out')}</a></li>
+          <li><a href="{SITE['linkedin']}" target="_blank" rel="noopener">LinkedIn {icon('out')}</a></li>
+          <li><a href="{SITE['youtube']}" target="_blank" rel="noopener">YouTube {icon('out')}</a></li>
         </ul>
-      </div>
+      </nav>
     </div>
     <div class="footer__bottom">
-      <span>© 2026 Medialyte – Marketing &amp; Management</span>
+      <span>© {SITE['today'][:4]} Medialyte – Marketing &amp; Management</span>
       <nav aria-label="Rechtliches">
         <a href="{ctx.u('/impressum/')}">Impressum</a>
         <a href="{ctx.u('/datenschutz/')}">Datenschutz</a>
@@ -342,8 +346,7 @@ def org_schema():
         "description": "Digitalagentur für individuelle Lösungen zur Vermehrung, Verbesserung und Verwaltung von Kundenbeziehungen: Websites, Kundenmanagement-Systeme, KI-Agent und Online-Marketing für Betriebe in ganz Deutschland.",
         "telephone": SITE["phone_intl"],
         "email": SITE["email"],
-        "address": {"@type": "PostalAddress", "streetAddress": SITE["street"], "postalCode": SITE["zip"],
-                    "addressLocality": SITE["city"], "addressCountry": "DE"},
+        "address": {"@type": "PostalAddress", "addressLocality": SITE["city"], "addressCountry": "DE"},   # keine Besuchsadresse
         "openingHoursSpecification": [
             {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "18:00"},
             {"@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "09:00", "closes": "16:00"},
@@ -448,7 +451,7 @@ def build(mode="prod", out=None, cname=None):
     if mode == "prod":
         urls = "".join(
             f"<url><loc>{SITE['url']}{p['path']}</loc><lastmod>{SITE['today']}</lastmod><priority>{p.get('priority', '0.6')}</priority></url>"
-            for p in built if p.get("sitemap", True))
+            for p in built if p.get("sitemap", True) and "noindex" not in p.get("robots", ""))
         (out / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n', encoding="utf-8")
         (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: {SITE['url']}/sitemap.xml\n", encoding="utf-8")
         shutil.copy(ROOT / "deploy/.htaccess", out / ".htaccess")

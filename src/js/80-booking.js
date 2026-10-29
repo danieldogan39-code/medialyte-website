@@ -65,10 +65,18 @@ ML.module("booking", function (ML) {
     /* ---------- Zeit-Helfer (Europe/Berlin) ---------- */
     function pad(n) { return (n < 10 ? "0" : "") + n; }
     function ymd(y, m, d) { return y + "-" + pad(m) + "-" + pad(d); }
+    /* Ein Formatierer für alle Abfragen und ein Merkzettel je Tag und Stunde: Intl neu anzulegen kostet auf dem Handy spürbar Zeit */
+    var offFmt = null, offCache = {};
     function berlinOffsetMin(y, m, d, hh, mm) {
+      var key = y + "-" + m + "-" + d + "-" + hh;
+      if (offCache[key] != null) return offCache[key];
+      return (offCache[key] = offsetNow(y, m, d, hh, mm));
+    }
+    function offsetNow(y, m, d, hh, mm) {
       try {
         var dt = new Date(Date.UTC(y, m - 1, d, hh, mm));
-        var parts = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", timeZoneName: "shortOffset" }).formatToParts(dt);
+        offFmt = offFmt || new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", timeZoneName: "shortOffset" });
+        var parts = offFmt.formatToParts(dt);
         var tz = (parts.find(function (p) { return p.type === "timeZoneName"; }) || {}).value || "GMT+1";
         var mt = tz.match(/GMT([+-]\d+)(?::(\d+))?/);
         return mt ? (parseInt(mt[1], 10) * 60 + (mt[2] ? parseInt(mt[2], 10) : 0)) : 60;
@@ -329,7 +337,7 @@ ML.module("booking", function (ML) {
       var ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Medialyte//Termin//DE", "BEGIN:VEVENT",
         "UID:" + Date.now() + "@medialyte.de", "DTSTAMP:" + f(new Date()), "DTSTART:" + f(start), "DTEND:" + f(end),
         "SUMMARY:Erstgespräch mit Medialyte", "DESCRIPTION:" + d.format_text + " – Medialyte meldet sich zur Bestätigung.",
-        "LOCATION:" + (d.format === "vor-ort" ? "Medialyte, Schaaphusen 3, 21147 Hamburg" : d.format_text), "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+        "LOCATION:" + (d.format === "vor-ort" ? "Bei Ihnen vor Ort (Adresse stimmen wir vorher ab)" : d.format_text), "END:VEVENT", "END:VCALENDAR"].join("\r\n");
       var a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
       a.download = "medialyte-termin.ics"; document.body.appendChild(a); a.click(); a.remove();

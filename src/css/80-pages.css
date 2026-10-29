@@ -10,6 +10,7 @@
 .phero__visual{min-width:0}
 .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.9rem;color:var(--steel);list-style:none}
 .crumbs li{display:inline-flex;align-items:center;gap:8px}
+.crumbs a{display:inline-block;padding-block:10px;margin-block:-10px}
 .crumbs li+li::before{content:"";width:5px;height:5px;border-right:1.5px solid var(--steel-2);border-top:1.5px solid var(--steel-2);transform:rotate(45deg);margin-right:2px}
 .crumbs a{transition:color .2s ease}
 @media (hover:hover) and (pointer:fine){.crumbs a:hover{color:var(--text)}}
@@ -47,6 +48,18 @@
 .prose h3{font-size:1.2rem;margin:28px 0 10px}
 .prose p,.prose ul{margin:0 0 14px}
 .prose a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.prose ul{padding-left:1.2em}
+.prose li{margin-bottom:6px}
+.prose li::marker{color:var(--steel)}
+.prose b{color:var(--text);font-weight:600}
+
+.prose__meta{font-size:.9rem;color:var(--steel)}
+.prose__toc{margin:22px 0 8px;padding:20px 24px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.prose__toc ol{margin:0;padding:0;list-style:none;columns:2;column-gap:32px}
+.prose__toc li{break-inside:avoid;margin-bottom:6px}
+.prose__toc a{color:var(--text-2);text-decoration:none}
+@media (hover:hover) and (pointer:fine){.prose__toc a:hover{color:var(--text);text-decoration:underline}}
+@media (max-width:640px){.prose__toc ol{columns:1}}
 .prose .todo{padding:16px 18px;border-radius:14px;border:1px dashed var(--line-3);color:var(--text-2)}
 
 

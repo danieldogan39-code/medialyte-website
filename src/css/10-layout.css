@@ -3,6 +3,9 @@
 .wrap--narrow{max-width:calc(920px + 2 * var(--gutter))}
 .section{position:relative;padding-block:var(--section)}
 .section--deep{background-color:rgba(7,13,25,.74)}
+/* Abschnitte außerhalb des Bildschirms werden erst gezeichnet, wenn sie in die Nähe kommen (spart auf dem Handy viel Rechenzeit beim Laden).
+   Die Kundenreise bleibt ausgenommen: Sie misst ihre Bühne beim Scrollen. */
+@supports (content-visibility:auto){.section:not(#leistungen){content-visibility:auto;contain-intrinsic-size:auto 1100px}}
 .section--flush{padding-top:0}
 .section--tight{padding-block:calc(var(--section) * .62)}
 .section + .section--deep,.section--deep + .section{border-top:1px solid var(--line)}

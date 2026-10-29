@@ -93,6 +93,7 @@ ML.module("cockpit", function (ML) {
       c.setAttribute("aria-selected", on ? "true" : "false");
       c.tabIndex = on ? 0 : -1;
     });
+    $$(".cp-site__view > .ms", root).forEach(function (m) { m.inert = !m.classList.contains("ms--" + key); });
     if (panel) panel.setAttribute("aria-labelledby", "cpt-" + key);
     placeInd(changed && !ML.reduce);
   }
@@ -135,7 +136,7 @@ ML.module("cockpit", function (ML) {
     cur = key;
     reset(key);
     played = true;
-    tl.at(350, function () { $$(".cp-feed__item", feed).forEach(function (el, i) { setTimeout(function () { el.classList.remove("is-enter"); }, i * 120); }); });
+    tl.at(120, function () { $$(".cp-feed__item", feed).forEach(function (el, i) { setTimeout(function () { el.classList.remove("is-enter"); }, i * 90); }); });
     if (b.channel === "wa") {
       tl.at(1300, function () { msg("cp-msg--me", ML.esc(b.me), "09:38"); });
       tl.at(2300, function () { var t = document.createElement("div"); t.className = "cp-typing is-pop"; t.innerHTML = "<i></i><i></i><i></i>"; msgs.appendChild(t); });
@@ -315,6 +316,11 @@ ML.module("cockpit", function (ML) {
   if ("ResizeObserver" in window && tabsEl) new ResizeObserver(function () { placeInd(false); }).observe(tabsEl);
   else window.addEventListener("resize", function () { placeInd(false); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placeInd(false); });
+
+  /* Nach dem Laden in einer ruhigen Sekunde alle Beispiel-Websites vorzeichnen, damit der erste Wechsel nicht stockt */
+  function warm() { root.classList.add("is-warm"); }
+  window.addEventListener("load", function () { setTimeout(warm, 4000); });
+  if (tabsEl) ["pointerenter", "touchstart", "focusin"].forEach(function (ev) { tabsEl.addEventListener(ev, warm, { once: true, passive: true }); });
 
   if (ML.reduce) { finalState(cur); return; }
   reset(cur);

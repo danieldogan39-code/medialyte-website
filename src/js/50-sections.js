@@ -176,3 +176,28 @@ ML.module("film", function (ML) {
     ML.watch(root, function (vis) { if (!vis && !v.paused) v.pause(); }, { threshold: 0.15 });
   });
 });
+
+/* Fußzeile: Erreichbarkeit nach Hamburger Zeit („Jetzt erreichbar“ oder wann wir wieder da sind) */
+ML.module("reach", function (ML) {
+  var el = ML.$("[data-reach]"); if (!el) return;
+  var out = ML.$("[data-reach-text]", el);
+  var H = { 1: [9, 18], 2: [9, 18], 3: [9, 18], 4: [9, 18], 5: [9, 16] };
+  var NAMES = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+  function now() {
+    var p = {}; new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", weekday: "short", hour: "numeric", minute: "numeric", hourCycle: "h23" })
+      .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+    return { d: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday), h: +p.hour + (+p.minute) / 60 };
+  }
+  function update() {
+    var n = now(), t = H[n.d], open = !!t && n.h >= t[0] && n.h < t[1];
+    el.classList.toggle("is-open", open);
+    if (open) { out.textContent = "Jetzt erreichbar – heute bis " + t[1] + " Uhr"; return; }
+    for (var i = 0; i < 8; i++) {
+      var d = (n.d + i) % 7, w = H[d];
+      if (!w || (i === 0 && n.h >= w[0])) continue;
+      out.textContent = "Wieder erreichbar " + (i === 0 ? "heute" : i === 1 ? "morgen" : "am " + NAMES[d]) + " ab " + w[0] + " Uhr · WhatsApp jederzeit";
+      return;
+    }
+  }
+  try { update(); setInterval(update, 60000); } catch (e) { /* Text mit den Zeiten bleibt stehen */ }
+});

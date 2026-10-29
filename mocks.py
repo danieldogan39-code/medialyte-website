@@ -226,7 +226,7 @@ def mini_site(key, extra_cls="", live=False, event=False):
                 f'<span class="ms__avatars"><i>KL</i><i>JM</i><i>AB</i><i>TS</i><i class="is-add">SY</i></span>')
     eyebrow, title, sub, cta, btn = copy
     h = ' aria-hidden="true"'
-    root_h = "" if live else h
+    root_h = ("" if key == "gastro" else " inert") if live else h   # Cockpit: nur der gewählte Betrieb ist bedienbar (JS schaltet um)
     part_h = h if live else ""
     cta_el = (f'<button type="button" class="ms__cta" data-mscta>{cta}</button>' if live else f'<span class="ms__cta">{cta}</span>')
     nav_btn = (f'<button type="button" class="ms__btn" data-mscta tabindex="-1">{btn}</button>' if live else f'<span class="ms__btn">{btn}</span>')
@@ -293,8 +293,8 @@ def cockpit(ctx):
     </div>
   </div>
   <p class="sr-only" aria-live="polite" data-cp-live></p>
-  <figcaption class="cp-note">Beispiel mit erfundenen Betrieben. Probieren Sie es aus: Schicken Sie auf der Beispiel-Website eine Reservierung oder Anfrage ab – sie landet sofort im Dashboard. Oben wechseln Sie die Branche.</figcaption>
   <script type="application/json" id="cockpit-data">{json.dumps({"b": data, "order": ORDER, "icons": icons, "check": _CHECK}, ensure_ascii=False)}</script>
+  <figcaption class="cp-note">Beispiel mit erfundenen Betrieben. Probieren Sie es aus: Schicken Sie auf der Beispiel-Website eine Reservierung oder Anfrage ab – sie landet sofort im Dashboard. Oben wechseln Sie die Branche.</figcaption>
 </figure>"""
 
 
@@ -342,7 +342,7 @@ def pipeline():
     colhtml = ""
     for k, name in cols:
         inner = "".join(
-            f'<button type="button" class="pl__card" data-card="{cid}" data-st="{k}" aria-label="{e(n)}: in den nächsten Schritt schieben"><b>{e(n)}</b><small>{e(s)}</small><span class="pl__tag">{e(t)}</span><span class="pl__st">{names[k]}</span></button>'
+            f'<button type="button" class="pl__card" data-card="{cid}" data-st="{k}" ><b>{e(n)}</b><small>{e(s)}</small><span class="pl__tag">{e(t)}</span><span class="pl__st">{names[k]}</span><span class="sr-only">, in den nächsten Schritt schieben</span></button>'
             for cid, _, n, s, t in by[k])
         colhtml += f'<div class="pl__col" data-col="{k}"><h5>{name}<span data-colcount>{len(by[k])}</span></h5>{inner}</div>'
     return f"""

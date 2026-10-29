@@ -27,6 +27,6 @@ Jeder Film folgt dem Muster Hook → Problem → Lösung. Durch alle vier Filme 
 2. `build.py <n>` baut die Bühne. `stills.py <n> <t…>` erzeugt Standbilder zur Kontrolle.
 3. Gerendert wird mit Bewegungsunschärfe über `../render.py` im Ordner `f<n>`: `cues --v`, `probe 60 --v`, `video out/film.mkv 60 2 --v`. Danach mischt `mix.py <n>` den Ton auf −14 LUFS.
 4. `captions.py` (mit `FD=f<n>`) brennt die Untertitel ein, `encode.py <n>` erzeugt die MP4s für Social Media, `cover.py <n> <t>` das Titelbild.
-5. `web.py <n>` erzeugt die Website-Fassung: 720 × 1280, 60 Bilder/s, etwa 6,6 MB. Sie liegt in `src/assets/video/leistung-*.mp4` und `.jpg`.
+5. `web.py <n>` erzeugt die Website-Fassung: 720 × 1280, 60 Bilder/s, etwa 6,6 MB. Sie liegt in `src/assets/video/leistung-*.mp4` und als Standbild `.webp`.
 
 `mix.py` nutzt die Geräusch-Bausteine aus der Arbeitsumgebung der Social-Clips. Für einen Neubau den Pfad in `mix.py` anpassen.

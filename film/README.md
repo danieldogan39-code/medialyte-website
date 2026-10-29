@@ -53,7 +53,7 @@ python3 encode.py                  # MP4 (Web), Master-MP4 und WebM nach out/
 python3 chapters.py                # Kapitelmarken und Länge für FILM_CHAPTERS in parts.py
 ```
 
-Danach `out/medialyte-film.mp4`, `.webm`, `.de.vtt` und ein Standbild als `medialyte-film.jpg` nach `src/assets/video/` kopieren.
+Danach `out/medialyte-film.mp4`, `.webm`, `.de.vtt` und ein Standbild als `medialyte-film.webp` nach `src/assets/video/` kopieren.
 
 ### Hochkant-Fassung
 

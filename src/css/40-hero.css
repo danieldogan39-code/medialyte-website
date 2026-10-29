@@ -76,8 +76,14 @@
 .cp-site__bar svg{width:11px;height:11px}
 .cp-site__bar .badge{margin-left:auto}
 .cp-site__view{position:relative;flex:1;container-type:inline-size;aspect-ratio:16/9.6}
-.ms{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
-.cockpit[data-branch="gastro"] .ms--gastro,.cockpit[data-branch="handwerk"] .ms--handwerk,.cockpit[data-branch="praxis"] .ms--praxis,.cockpit[data-branch="kanzlei"] .ms--kanzlei{opacity:1;visibility:visible;transition:opacity .6s ease,visibility 0s}
+/* Wechsel des Betriebs: Die neue Website blendet über der alten auf; die alte bleibt voll sichtbar darunter,
+   bis die neue steht, und verschwindet erst dann. So scheint nie der dunkle Grund durch (kein Flackern). */
+.ms{position:absolute;inset:0;z-index:0;opacity:0;visibility:hidden;transition:opacity 0s linear .45s,visibility 0s linear .45s}
+/* Im Cockpit bleiben alle vier Websites gezeichnet (nur unsichtbar und nicht bedienbar), damit beim Wechsel
+   nichts erst aufgebaut werden muss – sonst erscheinen Inhalte stückweise. Das Skript schaltet das nach dem Laden ein (is-warm). */
+.cockpit .ms{pointer-events:none;transition:opacity 0s linear .45s,visibility 0s linear .45s}
+.cockpit.is-warm .ms{visibility:visible}   /* erst nach dem Laden: der Seitenaufbau bleibt schnell */
+.cockpit[data-branch="gastro"] .ms--gastro,.cockpit[data-branch="handwerk"] .ms--handwerk,.cockpit[data-branch="praxis"] .ms--praxis,.cockpit[data-branch="kanzlei"] .ms--kanzlei{z-index:1;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .45s cubic-bezier(.23,1,.32,1),visibility 0s}
 
 /* Seitenleiste: Kennzahl, Anfragen, Agent */
 .cp-side{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;min-width:0}
@@ -109,7 +115,7 @@
 .cp-agent__h svg{width:14px;height:14px}
 .cp-msgs{display:grid;gap:8px;align-content:start}
 .cp-msg{max-width:88%;padding:9px 12px 8px;border-radius:14px;font-size:.84rem;line-height:1.42;color:#E9EDEF;transform-origin:0 100%}
-.cp-msg time{display:block;margin-top:3px;font-size:.68rem;color:rgba(233,237,239,.72);text-align:right}
+.cp-msg time{display:block;margin-top:3px;font-size:.68rem;color:rgba(233,237,239,.82);text-align:right}
 .cp-msg--me{justify-self:end;align-self:flex-end;background:#005C4B;border-bottom-right-radius:4px;transform-origin:100% 100%}
 .cp-msg--agent{justify-self:start;align-self:flex-start;background:#202C33;border-bottom-left-radius:4px}
 .cp-msg--task{justify-self:stretch;align-self:stretch;max-width:none;background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--text-2)}

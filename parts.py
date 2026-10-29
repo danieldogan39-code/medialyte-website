@@ -540,6 +540,50 @@ def film(ctx):
 </div>"""
 
 
+# Leistungsfilme (hochkant, eingebrannte Untertitel): Datei, Länge, Überschrift, Text, Punkte, Anliegen fürs Erstgespräch
+SVC_FILMS = {
+    "web": ("leistung-website-erstellung", "0:56", 'Erst Ihr Unternehmen, <span class="quiet">dann das Design.</span>',
+            "Bevor wir gestalten, lernen wir Ihren Betrieb und Ihre Kunden kennen. Der Film zeigt am Beispiel einer Tischlerei, was daraus entsteht: eine Website, die genau die richtigen Kunden anspricht.",
+            ["Wir arbeiten uns in Ihr Unternehmen ein", "Wir analysieren Ihre Zielgruppe ganz genau", "Ihre Website spricht die Sprache Ihrer Kunden"], "web-neu"),
+    "sys": ("leistung-kundenmanagement", "0:54", 'Fünf Probleme, <span class="quiet">ein System.</span>',
+            "Verstreute Anfragen, Angebote am Abend, Termine auf Zetteln: Der Film zeigt am Beispiel einer Tischlerei, wie ein eigenes System den Alltag ordnet.",
+            ["Alle Anfragen an einem Ort", "Angebote mit wenigen Klicks", "Termine mit automatischer Bestätigung", "Erinnerungen und Briefe ganz von selbst", "Alle Zahlen auf einen Blick"], "system"),
+    "agent": ("leistung-ki-agent", "0:45", 'Früher ein Auftrag, <span class="quiet">heute eine Nachricht.</span>',
+              "Selbst im System einarbeiten oder die Agentur jede Änderung einzeln abrechnen lassen? Der Film zeigt, wie es mit dem KI-Agenten geht: per WhatsApp, in eigenen Worten.",
+              ["Keine Fachbegriffe", "Kein Warten", "Keine Extrakosten: im Abo enthalten"], "agent"),
+    "mkt": ("leistung-online-marketing", "0:53", 'Werbung, die nicht <span class="quiet">bei null beginnt.</span>',
+            "Ihre Zielgruppe kennen wir schon aus der Analyse für Ihre Website. Der Film zeigt, warum Ihre Anzeigen deshalb die richtigen Menschen erreichen und Anfragen statt nur Klicks bringen.",
+            ["Anzeigen bei Google und in den sozialen Medien", "Seiten, die für Ihre Zielgruppe gebaut sind", "Sie sehen, welche Anzeige wirklich Kunden bringt"], "werbung"),
+}
+
+
+def svc_film(ctx, key):
+    """Leistungsfilm als eigener Abschnitt: Text links, hochkant abspielbarer Film rechts (gleicher Spieler wie der Erklärfilm)."""
+    f, length, title, text, points, ask = SVC_FILMS[key]
+    return f"""
+<section class="section section--deep" id="film">
+  <div class="wrap split split--film">
+    <div class="split__text" data-reveal>
+      <h2 class="h2">{title}</h2>
+      <p>{text}</p>
+      {ticks(points)}
+      {btn_book(ctx, 'Erstgespräch buchen', ask)}
+    </div>
+    <div class="film film--v" data-film>
+      <div class="film__frame film__frame--v" data-reveal="scale">
+        <video class="film__video" controls preload="none" playsinline poster="{ctx.a(f'video/{f}.jpg')}" width="720" height="1280"
+          aria-label="Film, {length} Minuten, mit Ton und eingeblendeten Untertiteln">
+          <source src="{ctx.a(f'video/{f}.mp4')}" type="video/mp4">
+        </video>
+        <button class="film__play" type="button" aria-label="Film abspielen, {length} Minuten, mit Ton">
+          <span class="film__btn">{icon('play')}</span><span class="film__lbl"><b>Film abspielen</b><small>{length} Min. · mit Ton und Untertiteln</small></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>"""
+
+
 # ======================================================================= Häufige Fragen
 # Antworten, auf die an anderer Stelle verlinkt wird (z. B. „Zufriedenheitsgarantie“ im Startbereich)
 FAQ_IDS = {"Was kostet eine Website bei Medialyte?": "faq-kosten", "Was bedeutet die Zufriedenheitsgarantie?": "faq-garantie"}

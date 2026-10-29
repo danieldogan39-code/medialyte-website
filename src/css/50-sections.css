@@ -395,6 +395,15 @@ html:not(.js) .film__play{display:none}
 @media (hover:hover) and (pointer:fine){.film__ch:not(.is-on):hover b{color:var(--text)}.film__ch:not(.is-on):hover .num{border-color:var(--text)}}
 @media (max-width:900px){.film{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.film__lbl small{font-size:.82rem}}
+/* Leistungsfilme: hochkant neben dem Text */
+.split.split--film{grid-template-columns:minmax(0,1fr) auto}
+.split--film .film--v{width:min(400px,calc((100svh - 230px) * .5625))}
+.film--v{display:block;min-width:0}
+.film__frame--v{aspect-ratio:9/16;width:100%;max-width:min(400px,calc((100svh - 230px) * .5625));margin-inline:auto}
+.film__frame--v .film__play{padding:clamp(16px,2.4vw,24px);background:linear-gradient(0deg,rgba(6,11,20,.82),rgba(6,11,20,.2) 30%,rgba(6,11,20,0) 48%)}
+.film__frame--v .film__btn{width:64px;height:64px}
+@media (max-width:900px){.split.split--film{grid-template-columns:minmax(0,1fr)}.split--film .film--v{width:100%}.film__frame--v{max-width:380px}}
+
 
 /* ---------- Häufige Fragen ---------- */
 .faq{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(36px,6vw,110px);align-items:start}

@@ -17,6 +17,7 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 | `deploy/.htaccess` | HTTPS, Weiterleitungen alter WordPress-Adressen, Caching, Sicherheits-Header |
 | `tools/` | Hilfsskripte (Screenshots, Funktionstest, Referenzbilder, Wortmarke, Vorschaubild) |
 | `film/` | Erklärfilm „Medialyte in 100 Sekunden“: Szenen, Zeitplan, Sprecher, Musik und Skripte zum Neu-Bauen (siehe `film/README.md`) |
+| `film/leistungen/` | Vier Leistungsfilme (hochkant, je etwa 50 s) für die Leistungsseiten und Social Media (siehe `film/leistungen/README.md`) |
 
 CSS- und JS-Teile werden beim Bauen zu `assets/css/site.css` und `assets/js/site.js` zusammengefügt (mit Prüfsumme gegen alte Browser-Caches).
 

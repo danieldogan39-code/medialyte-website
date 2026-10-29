@@ -1,0 +1,244 @@
+{
+ "sfx": [
+  {
+   "name": "impact",
+   "at": 0,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 1.6,
+   "gain": -21,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 2.13,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 2.56,
+   "gain": -17,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 4.05,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 5.27,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 5.57,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 6.99,
+   "gain": -17,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 7.52,
+   "gain": -22,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 8.35,
+   "gain": -18,
+   "v": 3,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 10.22,
+   "gain": -20,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 11.75,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 12.15,
+   "gain": -24,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "click",
+   "at": 13.17,
+   "gain": -14,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 13.95,
+   "gain": -23,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "paper",
+   "at": 14.4,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 16.33,
+   "gain": -18,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "riser",
+   "at": 17.62,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 17.63,
+   "gain": -11,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 18.04,
+   "gain": -23,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 19.54,
+   "gain": -24,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 22.71,
+   "gain": -20,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 23.03,
+   "gain": -20,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 23.75,
+   "gain": -15,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 25.25,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 26.16,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 27.44,
+   "gain": -18,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 28.54,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 29.96,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 32.1,
+   "gain": -17,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 32.52,
+   "gain": -18,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 34.74,
+   "gain": -19,
+   "v": 3,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 37.63,
+   "gain": -15,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 41.73,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  }
+ ],
+ "B": {},
+ "dur": 44.52
+}

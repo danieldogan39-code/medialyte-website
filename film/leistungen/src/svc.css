@@ -1,0 +1,69 @@
+/* Medialyte Leistungsfilme – Hochkant 1080 × 1920. Ergänzt film.css (Farben, Hintergrund, Telefon, alte Website, Chat, Abschluss).
+   Sichere Fläche für Inhalte: x 72–1008, y 330–1300. Darunter (y 1320–1560) liegen die Untertitel, oben und unten die Bedienelemente der Apps. */
+html,body{width:1080px;height:1920px}
+#stage{width:1080px;height:1920px}
+.lt1{left:-760px;top:-520px;width:1800px;height:1800px}
+.lt2{left:-80px;top:1040px;width:1800px;height:1800px}
+.lt3{left:40px;top:250px;width:1000px;height:1000px}
+.grid{width:2040px;height:2880px;-webkit-mask-image:radial-gradient(ellipse 46% 40% at 50% 48%,#000 30%,transparent 96%);mask-image:radial-gradient(ellipse 46% 40% at 50% 48%,#000 30%,transparent 96%)}
+.vig{background:radial-gradient(ellipse 92% 70% at 50% 42%,transparent 60%,rgba(3,7,14,.34) 100%)}
+.chap{left:72px;top:262px}
+.chap__t{white-space:nowrap}
+
+/* Abschluss (Hochkant) */
+.endglow{left:-10px;top:360px;width:1100px;height:1000px}
+.end{top:560px}
+.lock{gap:30px}
+.lock__mk{width:150px}
+.lock__wm{width:470px}
+.end__tag{margin:60px auto 0;max-width:900px;font-size:70px;line-height:1.08}
+.end__cta{margin-top:56px;font-size:31px}
+.end__url{margin-top:30px}
+
+/* ---------- Gemeinsame Bausteine ---------- */
+.hk{position:absolute;left:72px;right:72px;top:400px;font-size:104px}
+.hk--c{text-align:center}
+.lede{font-size:38px;line-height:1.32;font-weight:450;color:var(--text-2);letter-spacing:-.01em}
+.panel{position:absolute;border-radius:32px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow)}
+.ic{display:grid;place-items:center;flex:none}
+.ic svg{width:55%;height:55%}
+
+/* Person: Foto mit Namensschild */
+.person{position:absolute;width:600px;height:750px;border-radius:44px;overflow:hidden;box-shadow:var(--shadow);background:#1A2436}
+.person > i{position:absolute;inset:0;background-size:cover;background-position:center}
+.person__eve{opacity:0}
+.person::after{content:"";position:absolute;inset:0;border-radius:44px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.12);pointer-events:none}
+.person__tag{position:absolute;left:0;right:0;bottom:0;padding:120px 40px 36px;background:linear-gradient(180deg,transparent,rgba(6,12,22,.86) 62%)}
+.person__tag b{display:block;font-size:52px;font-weight:620;letter-spacing:-.03em;line-height:1}
+.person__tag small{display:block;margin-top:12px;font-size:27px;color:var(--text-2)}
+
+/* Kleines Personen-Abzeichen (Sophia wird später nur noch angedeutet) */
+.who{position:absolute;display:flex;align-items:center;gap:18px;padding:12px 26px 12px 12px;border-radius:99px;background:rgba(19,34,58,.92);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
+.who i{width:64px;height:64px;border-radius:50%;background:url(img/sophia.jpg) center 22%/cover;flex:none}
+.who b{display:block;font-size:25px;font-weight:600}
+.who small{display:block;font-size:19px;color:var(--text-3);margin-top:2px}
+
+/* Problem- und Lösungsmarken */
+.mk{display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;flex:none}
+.mk svg{width:24px;height:24px}
+.mk--bad{background:var(--coral-soft);color:var(--coral);box-shadow:inset 0 0 0 1.5px rgba(255,87,87,.45)}
+.mk--good{background:var(--ok-soft);color:var(--ok);box-shadow:inset 0 0 0 1.5px rgba(61,214,140,.45)}
+
+/* Hinweis-Etiketten (Problem / Lösung) */
+.tag{display:inline-flex;align-items:center;gap:12px;padding:10px 20px 10px 12px;border-radius:99px;font-size:24px;font-weight:600;letter-spacing:.005em}
+.tag .mk{width:34px;height:34px}.tag .mk svg{width:18px;height:18px}
+.tag--bad{background:rgba(255,87,87,.12);color:#FF8A80}
+.tag--good{background:rgba(61,214,140,.12);color:#7BE8B2}
+
+/* Sprechblase einer Kundenfrage */
+.qb{position:absolute;max-width:430px;padding:20px 26px;border-radius:26px 26px 26px 8px;background:#F4F6FA;color:#16202F;font-size:27px;font-weight:500;line-height:1.3;box-shadow:var(--shadow-s)}
+.qb small{display:block;font-size:18px;color:#6B7689;margin-bottom:6px;font-weight:500}
+
+/* Benachrichtigung */
+.note{display:flex;align-items:center;gap:20px;padding:22px 26px;border-radius:26px;background:rgba(244,246,250,.96);color:#141B27;box-shadow:var(--shadow-s)}
+.note .ic{width:60px;height:60px;border-radius:16px;background:var(--coral);color:#fff}
+.note b{display:block;font-size:26px;font-weight:620}
+.note small{display:block;font-size:21px;color:#5A6577;margin-top:3px}
+.note em{margin-left:auto;align-self:flex-start;font-style:normal;font-size:18px;color:#7A8597}
+
+.cursor{z-index:40}

@@ -1,0 +1,109 @@
+  <!-- A · Einstieg: Was kostet eine kleine Änderung? -->
+  <section class="sc" id="scA">
+    <div class="kt hk" id="hkA"><div class="ln" data-kt>Was kostet Sie eine</div><div class="ln" data-kt>kleine Änderung?</div></div>
+    <div class="hrs" id="hrs"><span class="ic">{{I:clock}}</span><div><small>Öffnungszeiten</small><b>Mo–Fr 7–<span class="hrs__v"><s id="h16">16</s><em id="h18">18</em></span> Uhr</b></div></div>
+    <div class="price" id="price"><span>?</span><b>€</b></div>
+  </section>
+
+  <!-- B · Zwei Möglichkeiten -->
+  <section class="sc" id="scB">
+    <div class="person perB" id="perB"><i style="background-image:url(img/sophia_eve.jpg)"></i>
+      <div class="person__tag"><b>Sophia Brandt</b><small>Tischlerei Brandt, Lüneburg</small></div></div>
+    <div class="opt" id="o1"><span class="opt__n">1</span><b>Selbst machen</b></div>
+    <div class="opt" id="o2"><span class="opt__n">2</span><b>Agentur fragen</b></div>
+  </section>
+
+  <!-- C · Möglichkeit 1: selbst einarbeiten -->
+  <section class="sc" id="scC">
+    <div class="olbl" id="ol1"><span class="opt__n">1</span>Selbst machen</div>
+    <div class="cms" id="cms">
+      <div class="cms__bar"><b>Website-Verwaltung</b><span>Abmelden</span></div>
+      <div class="cms__body">
+        <div class="cms__side"><i class="on">Seiten</i><i>Beiträge</i><i>Medien</i><i>Erweiterungen <u>3</u></i><i>Einstellungen</i><i>Werkzeuge</i></div>
+        <div class="cms__main">
+          <div class="cms__warn" id="cmsW">{{I:x}}Drei Erweiterungen brauchen ein Update.</div>
+          <h6>Seite bearbeiten: Startseite</h6>
+          <div class="blk"></div><div class="blk blk--s"></div>
+          <div class="blk blk--hi" id="blkHi">Öffnungszeiten · Block 14 von 31</div>
+          <div class="blk"></div><div class="blk blk--s"></div>
+          <div class="cms__err" id="cmsE">Speichern fehlgeschlagen. Bitte erneut versuchen.</div>
+        </div>
+      </div>
+    </div>
+    <div class="clk" id="clk"><span class="ic">{{I:clock}}</span><div><small>Uhrzeit</small><b id="clkT">19:00</b></div></div>
+    <div class="tag tag--bad loss" id="loss"><span class="mk mk--bad">{{I:x}}</span>Ein Abend verloren</div>
+  </section>
+
+  <!-- D · Möglichkeit 2: Agentur -->
+  <section class="sc" id="scD">
+    <div class="olbl" id="ol2"><span class="opt__n">2</span>Agentur fragen</div>
+    <div class="mail" id="mail">
+      <div class="mail__h"><span>An</span>support@ihre-agentur.de</div>
+      <div class="mail__h"><span>Betreff</span>Öffnungszeiten ändern</div>
+      <p id="mailTx"></p>
+      <div class="mail__send" id="mailSend">{{I:send}}Senden</div>
+    </div>
+    <div class="wait" id="wait"><span class="ic">{{I:clock}}</span><div><small>Warten auf Antwort</small><b id="waitD">Tag 1</b></div></div>
+    <div class="inv" id="inv">
+      <div class="inv__h"><b>Rechnung</b><small>Nr. 2026-0412</small></div>
+      <div class="inv__r"><span>Änderung Öffnungszeiten<small>1 Stunde Pflegeaufwand</small></span><b>95,00 €</b></div>
+      <div class="inv__r inv__sum"><span>Gesamt</span><b>95,00 €</b></div>
+      <span class="inv__st" id="invSt">Pro Änderung</span>
+    </div>
+  </section>
+
+  <!-- E · Heute: per WhatsApp -->
+  <section class="sc" id="scE">
+    <div class="phone phE" id="phE">
+      <div class="ph__screen">
+        <div class="wa">
+          <div class="ph__status ph__status--dark"><span>09:41</span><i></i></div>
+          <div class="wa__h"><span class="av">{{LOGO:}}</span><div><b>Medialyte KI-Agent</b><small><span id="waOn">online</span><span id="waTy">schreibt …</span></small></div></div>
+          <div class="wa__body">
+            <div class="wa__day">Heute</div>
+            <div class="bub bub--me" id="bMe">Ab Montag haben wir bis 18 Uhr geöffnet. Und bitte das neue Küchenfoto in die Galerie.<time>09:41</time></div>
+            <div class="bub bub--me bub--img" id="bImg"><div class="ph" style="background-image:url(img/kitchen.webp)"></div><time>09:41</time></div>
+            <div class="bub bub--in" id="bIn"><span class="bub__dots" id="dots"><i></i><i></i><i></i></span><span class="bub__txt" id="bInTx"><b>Erledigt.</b> Öffnungszeiten und Foto sind online.<time>09:42</time></span></div>
+          </div>
+          <div class="wa__in"><div id="waTx"></div><i>{{I:send}}</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="ws" id="ws">
+      <div class="ws__bar"><i></i><i></i><i></i><span>{{I:lock}}tischlerei-brandt.de</span></div>
+      <div class="ws__nav">Tischlerei <i>Brandt</i></div>
+      <div class="ws__img"></div>
+      <div class="ws__info" id="wsInfo"><i class="flash" id="flash"></i>{{I:clock}}<div><small>Öffnungszeiten</small><span class="v"><span id="wOld">Mo–Fr 7–16 Uhr</span><span id="wNew">Mo–Fr 7–18 Uhr</span></span></div><em id="upd">Aktualisiert</em></div>
+      <div class="ws__galh">Aus der Werkstatt</div>
+      <div class="ws__gal" id="wsGal"><i class="new" id="gNew" style="background-image:url(img/kitchen.webp)"></i><i style="background-image:url(img/stairs.webp)"></i><i style="background-image:url(img/wardrobe2.webp)"></i></div>
+    </div>
+  </section>
+
+  <!-- F · Vorteile -->
+  <section class="sc" id="scF">
+    <div class="ben" id="b1"><span class="mk mk--good">{{I:check}}</span><b>Keine Fachbegriffe</b><small>Schreiben Sie, wie Sie sprechen.</small></div>
+    <div class="ben" id="b2"><span class="mk mk--good">{{I:check}}</span><b>Kein Warten</b><small>Umgesetzt, während Sie arbeiten.</small></div>
+    <div class="ben" id="b3"><span class="mk mk--good">{{I:check}}</span><b>Keine Extrakosten</b><small>Keine Rechnung pro Änderung.</small></div>
+    <div class="abo" id="abo"><small>Ihr Abo bei Medialyte</small>
+      <div class="abo__r"><span>{{I:globe}}Website und Hosting</span><i>{{I:check}}</i></div>
+      <div class="abo__r"><span>{{I:refresh}}Laufende Pflege</span><i>{{I:check}}</i></div>
+      <div class="abo__r abo__ki" id="aboKi"><span>{{I:bot}}KI-Agent per WhatsApp</span><em>inklusive</em></div>
+    </div>
+  </section>
+
+  <!-- G · Team -->
+  <section class="sc" id="scG">
+    <div class="team teamG" id="team"><b>Persönlich<br>für Sie da.</b><small>Für alles, was mehr braucht <span class="nw">als eine Nachricht.</span></small>
+      <ul><li><span class="ic ic--wa">{{I:wa}}</span>Per WhatsApp</li><li><span class="ic ic--mail">{{I:phone}}</span>Am Telefon</li><li><span class="ic ic--tel">{{I:pin}}</span>Vor Ort in Hamburg</li></ul></div>
+  </section>
+
+  <!-- L · Abschluss -->
+  <section class="sc" id="scL">
+    <i class="endglow" id="endGlow"></i>
+    <div class="end">
+      <div class="lock" id="lock"><span class="lock__mk" id="endMk">{{LOGO:}}</span><span class="lock__wm" id="endWm">{{WM}}</span></div>
+      <div class="end__tag" id="endTag"><div class="ln" data-kt>Ihre Website ändern –</div><div class="ln" data-kt>so einfach wie eine Nachricht.</div></div>
+      <div class="end__cta" id="endCta">{{I:calendar}}Kostenfreies Erstgespräch buchen</div>
+      <div class="end__url" id="endUrl">medialyte.de</div>
+    </div>
+  </section>

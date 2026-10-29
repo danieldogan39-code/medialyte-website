@@ -1,0 +1,286 @@
+{
+ "sfx": [
+  {
+   "name": "impact",
+   "at": 0,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 1.57,
+   "gain": -22,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 3.38,
+   "gain": -20,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 4.92,
+   "gain": -17,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 6.7,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 8.26,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 10.15,
+   "gain": -22,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 10.43,
+   "gain": -22,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 10.71,
+   "gain": -22,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 13.25,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 13.67,
+   "gain": -19,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 14.09,
+   "gain": -19,
+   "v": 3,
+   "dir": "c"
+  },
+  {
+   "name": "riser",
+   "at": 15.56,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 15.57,
+   "gain": -11,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 17.5,
+   "gain": -21,
+   "v": 3,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 19.28,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 22.73,
+   "gain": -24,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 23.87,
+   "gain": -24,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 25.6,
+   "gain": -24,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 21.75,
+   "gain": -20,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 23.39,
+   "gain": -20,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 24.27,
+   "gain": -20,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 27.02,
+   "gain": -17,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 31.02,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 32.1,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 33.12,
+   "gain": -19,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 34.22,
+   "gain": -19,
+   "v": 3,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 33.47,
+   "gain": -23,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 36.34,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 38.92,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 40.94,
+   "gain": -18,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 44.42,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "tap",
+   "at": 45.03,
+   "gain": -12,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 45.7,
+   "gain": -18,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 47.81,
+   "gain": -20,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 48.19,
+   "gain": -20,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 48.57,
+   "gain": -20,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 48.94,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 50.57,
+   "gain": -15,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 53.65,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  }
+ ],
+ "B": {},
+ "dur": 56.42
+}

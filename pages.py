@@ -7,7 +7,7 @@ Texte ändern, dann `python3 build.py` ausführen.
 from build import SITE, breadcrumb_schema, e, faq_schema, icon, org_schema
 import mocks
 from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, book_link, booking_widget, btn_book, btn_wa,
-                   cases, closing, compare, faq_block, feats, film, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
+                   cases, closing, compare, faq_block, feats, film, svc_film, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
                    process, ref_dialog, results, sh, ticks)
 
 
@@ -152,7 +152,7 @@ def _svc_page(ctx, crumb, h1, lead, visual, sections, faqs, ask, close=None):
 
 
 def render_web(ctx):
-    sections = f"""
+    sections = svc_film(ctx, "web") + f"""
 <section class="section">
   <div class="wrap">
     {sh('Eine Website, die für Sie arbeitet.', 'Kein Baukasten, keine Vorlage von der Stange. Ihre Website wird für Ihre Zielgruppe gemacht – und danach gepflegt, ohne dass Sie sich darum kümmern müssen.', split=True)}
@@ -209,7 +209,7 @@ def _flow():
 
 
 def render_sys(ctx):
-    sections = f"""
+    sections = svc_film(ctx, "sys") + f"""
 <section class="section">
   <div class="wrap">
     {sh('Kundendaten in Excel, Zetteln <span class="quiet">und E-Mails?</span>', 'Wenn Anfragen in verschiedenen Postfächern landen, Termine im Kopf stehen und Angebote in Ordnern verschwinden, gehen Kunden verloren. Ein eigenes System bringt alles an einen Ort.', split=True)}
@@ -248,7 +248,7 @@ def render_sys(ctx):
 
 
 def render_agent(ctx):
-    sections = f"""
+    sections = svc_film(ctx, "agent") + f"""
 <section class="section">
   <div class="wrap">
     {sh('Änderungen in einer Nachricht.', 'Ihre Website soll aktuell sein, aber im Alltag fehlt die Zeit. Genau dafür gibt es den KI-Agenten.', split=True)}
@@ -302,7 +302,7 @@ def render_agent(ctx):
 
 
 def render_mkt(ctx):
-    sections = f"""
+    sections = svc_film(ctx, "mkt") + f"""
 <section class="section">
   <div class="wrap">
     {sh('Marketing, das messbar wirkt.', 'Wir erreichen Ihre Zielgruppe dort, wo sie sucht – und machen aus Aufmerksamkeit Anfragen.', split=True)}

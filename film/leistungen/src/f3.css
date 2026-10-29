@@ -1,0 +1,114 @@
+/* Film 3 · KI-Agent – Lage der Szenen */
+
+/* A · Einstieg */
+#hkA{top:396px}
+.hrs{position:absolute;left:72px;top:800px;width:640px;display:flex;align-items:center;gap:24px;padding:30px 34px;border-radius:30px;background:var(--b-paper);color:var(--b-ink);box-shadow:var(--shadow)}
+.hrs .ic{width:72px;height:72px;border-radius:20px;background:#EFE8DD;color:var(--b-wood)}
+.hrs small{display:block;font-size:24px;color:var(--b-soft)}
+.hrs b{display:block;margin-top:4px;font-size:46px;font-weight:650;letter-spacing:-.02em;white-space:nowrap}
+.hrs__v{position:relative;display:inline-block;width:1.1em;height:1.1em;vertical-align:bottom}
+.hrs__v s,.hrs__v em{position:absolute;left:0;top:0;font-style:normal;text-decoration:none;font-size:1em;line-height:1.1em;font-weight:650}
+.hrs__v s::after{content:"";position:absolute;left:-4px;right:-4px;top:52%;height:5px;border-radius:3px;background:var(--coral);transform:scaleX(var(--k,0));transform-origin:0 50%}
+.hrs__v em{color:#178A52}
+.price{position:absolute;left:740px;top:1000px;width:220px;height:220px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;box-shadow:0 30px 70px -14px rgba(255,87,87,.6)}
+.price span{position:absolute;left:52px;top:34px;font-size:120px;font-weight:700;line-height:1}
+.price b{position:absolute;right:46px;bottom:40px;font-size:64px;font-weight:650}
+
+/* B · Zwei Möglichkeiten */
+.perB{left:300px;top:380px;width:480px;height:600px}
+.perB .person__tag b{font-size:44px}.perB .person__tag small{font-size:24px}
+.opt{position:absolute;top:1040px;width:440px;display:flex;align-items:center;gap:20px;padding:28px 30px;border-radius:28px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
+#o1{left:72px}#o2{left:568px}
+.opt b{font-size:36px;font-weight:620;letter-spacing:-.02em}
+.opt__n{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;flex:none;background:rgba(150,178,224,.14);color:var(--text);font-size:28px;font-weight:650}
+.olbl{position:absolute;left:72px;top:372px;display:flex;align-items:center;gap:18px;font-size:44px;font-weight:620;letter-spacing:-.02em}
+
+/* C · Selbst machen */
+.cms{position:absolute;left:72px;top:480px;width:936px;height:560px;border-radius:24px;overflow:hidden;background:#F1F1F1;color:#1D2327;box-shadow:var(--shadow);font-family:-apple-system,"Segoe UI",Arial,sans-serif}
+.cms__bar{display:flex;justify-content:space-between;align-items:center;height:56px;padding:0 24px;background:#1D2327;color:#F0F0F1;font-size:19px}
+.cms__bar span{color:#A7AAAD;font-size:16px}
+.cms__body{display:flex;height:calc(100% - 56px)}
+.cms__side{width:230px;background:#2C3338;padding:14px 0}
+.cms__side i{display:block;padding:12px 22px;font-style:normal;font-size:18px;color:#C3C4C7}
+.cms__side i.on{background:#2271B1;color:#fff}
+.cms__side u{text-decoration:none;display:inline-block;margin-left:6px;padding:0 8px;border-radius:9px;background:#D63638;color:#fff;font-size:14px}
+.cms__main{flex:1;padding:18px 24px}
+.cms__main h6{font-size:22px;font-weight:600;margin:14px 0 14px}
+.cms__warn{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#FCF0F1;border-left:4px solid #D63638;font-size:16px;color:#50575E}
+.cms__warn svg{width:18px;height:18px;color:#D63638}
+.blk{height:40px;margin-bottom:10px;border-radius:4px;background:#fff;border:1px solid #DCDCDE}
+.blk--s{width:62%}
+.blk--hi{display:flex;align-items:center;padding:0 14px;border:2px solid #2271B1;font-size:16px;color:#2271B1;height:46px}
+.cms__err{margin-top:12px;padding:12px 14px;border-radius:4px;background:#D63638;color:#fff;font-size:16px}
+.clk{position:absolute;left:72px;top:1080px;display:flex;align-items:center;gap:20px;padding:22px 30px;border-radius:26px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
+.clk .ic{width:60px;height:60px;border-radius:18px;background:rgba(245,184,75,.16);color:#F5C46B}
+.clk small{display:block;font-size:20px;color:var(--text-3)}
+.clk b{display:block;font-size:46px;font-weight:620;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.loss{position:absolute;left:500px;top:1118px;font-size:28px}
+
+/* D · Agentur fragen */
+.mail{position:absolute;left:72px;top:480px;width:936px;padding:26px 30px 28px;border-radius:26px;background:#fff;color:#16202F;box-shadow:var(--shadow)}
+.mail__h{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid #E6E9EF;font-size:24px}
+.mail__h span{width:110px;color:#7A8597}
+.mail p{min-height:96px;margin-top:16px;font-size:25px;line-height:1.4;color:#2A3442}
+.mail__send{display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:12px 22px;border-radius:99px;background:#2F6BFF;color:#fff;font-size:21px;font-weight:600}
+.mail__send svg{width:20px;height:20px}
+.wait{position:absolute;left:72px;top:900px;display:flex;align-items:center;gap:20px;padding:22px 30px;border-radius:26px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
+.wait .ic{width:60px;height:60px;border-radius:18px;background:rgba(245,184,75,.16);color:#F5C46B}
+.wait small{display:block;font-size:20px;color:var(--text-3)}
+.wait b{display:block;font-size:42px;font-weight:620}
+.inv{position:absolute;left:452px;top:870px;width:556px;padding:28px 30px;border-radius:26px;background:#FBFAF6;color:#16202F;box-shadow:var(--shadow);rotate:2deg}
+.inv__h{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:16px;border-bottom:2px solid #16202F}
+.inv__h b{font-size:34px;font-weight:650}.inv__h small{font-size:18px;color:#7A8597}
+.inv__r{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid #E6E2D8;font-size:23px}
+.inv__r small{display:block;font-size:18px;color:#7A8597;margin-top:4px}
+.inv__r b{white-space:nowrap}
+.inv__sum{border-bottom:0;font-weight:650}.inv__sum b{font-size:30px;color:#C0392B}
+.inv__st{position:absolute;right:-18px;top:-22px;padding:10px 18px;border-radius:12px;border:3px solid #FF5757;color:#FF5757;font-size:22px;font-weight:700;rotate:8deg;background:rgba(255,255,255,.9)}
+
+/* E · Heute: per WhatsApp */
+.phE{left:90px;top:475px;zoom:.8}
+.ws{position:absolute;left:470px;top:470px;width:538px;border-radius:24px;overflow:hidden;background:var(--b-bg);color:var(--b-ink);box-shadow:var(--shadow);border:1px solid var(--line-2)}
+.ws__bar{display:flex;align-items:center;gap:7px;height:48px;padding:0 16px;background:#E9E3D8}
+.ws__bar i{width:11px;height:11px;border-radius:50%;background:#CFC6B7}
+.ws__bar span{display:flex;align-items:center;gap:6px;margin-left:14px;padding:6px 14px;border-radius:9px;background:#F7F2EA;font-size:15px;color:#6E6458}
+.ws__bar svg{width:13px;height:13px}
+.ws__nav{padding:18px 24px 10px;font-size:22px;font-weight:650}
+.ws__nav i{font-style:normal;color:var(--b-wood)}
+.ws__img{margin:0 24px;height:170px;border-radius:16px;background:url(img/hero.webp) center/cover}
+.ws__info{position:relative;margin:18px 24px 0;padding:16px 18px;border-radius:16px;background:#EFE8DD;display:flex;align-items:center;gap:14px;overflow:hidden}
+.ws__info svg{width:26px;height:26px;color:var(--b-wood);flex:none}
+.ws__info small{display:block;font-size:17px;color:var(--b-soft)}
+.ws__info .v{position:relative;display:block;height:32px;width:220px;overflow:hidden;margin-top:2px}
+.ws__info .v span{position:absolute;left:0;top:0;line-height:32px;white-space:nowrap;font-size:24px;font-weight:650}
+.ws__info em{margin-left:auto;font-style:normal;padding:6px 12px;border-radius:99px;background:#178A52;color:#fff;font-size:15px;font-weight:600}
+.flash{position:absolute;inset:0;background:rgba(23,138,82,.22);opacity:0}
+.ws__galh{margin:20px 24px 0;font-size:19px;font-weight:650}
+.ws__gal{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 24px 26px}
+.ws__gal i{height:120px;border-radius:12px;background-size:cover;background-position:center}
+
+/* F · Vorteile */
+.ben{position:absolute;left:72px;right:72px;display:grid;grid-template-columns:58px 1fr;column-gap:22px;align-items:center;padding:24px 30px;border-radius:26px;background:var(--card);border:1px solid var(--line-2);box-shadow:var(--shadow-s)}
+.ben .mk{grid-row:1/3;width:58px;height:58px}.ben .mk svg{width:28px;height:28px}
+.ben b{font-size:40px;font-weight:620;letter-spacing:-.02em}
+.ben small{font-size:25px;color:var(--text-2);margin-top:4px}
+#b1{top:390px}#b2{top:570px}#b3{top:750px}
+.abo{position:absolute;left:72px;right:72px;top:950px;padding:26px 30px;border-radius:28px;background:linear-gradient(180deg,#1C2F4F,#122038);border:1px solid var(--line-3);box-shadow:var(--shadow)}
+.abo > small{display:block;font-size:22px;color:var(--text-3);margin-bottom:8px}
+.abo__r{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);font-size:28px}
+.abo__r:last-child{border-bottom:0}
+.abo__r span{display:flex;align-items:center;gap:14px}
+.abo__r span svg{width:26px;height:26px;color:var(--text-2)}
+.abo__r i{color:var(--ok)}.abo__r i svg{width:26px;height:26px}
+.abo__ki span{font-weight:600}
+.abo__ki em{font-style:normal;padding:8px 18px;border-radius:99px;background:var(--coral);color:#fff;font-size:22px;font-weight:650}
+
+/* G · Team */
+.teamG{left:120px;top:440px;width:840px;padding:48px 50px 50px}
+.teamG > b{font-size:76px}
+.teamG > small{font-size:32px}
+.teamG ul{margin-top:40px;gap:16px}
+.teamG li{padding:22px 26px;font-size:32px;gap:22px}
+.teamG li .ic{width:64px;height:64px}
+.teamG li .ic svg{width:30px;height:30px}
+.end__tag .ln{display:block}

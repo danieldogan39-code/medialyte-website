@@ -1,0 +1,356 @@
+{
+ "sfx": [
+  {
+   "name": "pop",
+   "at": 0.07,
+   "gain": -20,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 0.29,
+   "gain": -20,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 0.51,
+   "gain": -20,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 0,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 1.3,
+   "gain": -22,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 3.49,
+   "gain": -17,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 4.54,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "paper",
+   "at": 7.29,
+   "gain": -17,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 8.86,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 9.02,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 9.18,
+   "gain": -19,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 9.93,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 10.98,
+   "gain": -21,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 12.19,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 12.83,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 13.13,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 13.43,
+   "gain": -19,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 14.27,
+   "gain": -17,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "riser",
+   "at": 15.73,
+   "gain": -16,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 15.74,
+   "gain": -11,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "swoosh",
+   "at": 17.53,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 18.39,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 20.41,
+   "gain": -17,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 22.43,
+   "gain": -21,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 23.41,
+   "gain": -21,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 24.63,
+   "gain": -21,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 26.02,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "typing",
+   "at": 26.4,
+   "gain": -23,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 28.1,
+   "gain": -18,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 29.09,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 30.42,
+   "gain": -20,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 30.62,
+   "gain": -21,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 30.82,
+   "gain": -22,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 32.37,
+   "gain": -18,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 33.04,
+   "gain": -21,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 33.32,
+   "gain": -21,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 33.6,
+   "gain": -21,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 34.04,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "ping",
+   "at": 35.45,
+   "gain": -15,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 37.01,
+   "gain": -19,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 39.14,
+   "gain": -21,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "success",
+   "at": 40.34,
+   "gain": -16,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "whoosh",
+   "at": 42.57,
+   "gain": -19,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "blips",
+   "at": 42.69,
+   "gain": -22,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 43.59,
+   "gain": -15,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 43.95,
+   "gain": -21,
+   "v": 0,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 44.1,
+   "gain": -21,
+   "v": 1,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 44.25,
+   "gain": -21,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "impact",
+   "at": 46.99,
+   "gain": -15,
+   "v": 2,
+   "dir": "c"
+  },
+  {
+   "name": "pop",
+   "at": 50.08,
+   "gain": -18,
+   "v": 2,
+   "dir": "c"
+  }
+ ],
+ "B": {},
+ "dur": 52.67
+}

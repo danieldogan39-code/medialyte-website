@@ -13,15 +13,13 @@
    und die Mitte liegt so weit innen, dass jedes Feld vor der Kante des Abschnitts ausläuft (keine Nähte). */
 :root{--f-blue:74,118,210;--f-violet:120,102,238;--f-coral:255,87,87;--f-teal:44,196,172}
 .section{background-image:var(--amb,none);background-repeat:no-repeat}
-/* Zwei weiche Lichtfelder auf einer festen Ebene hinter allem – sie wandern sehr langsam
-   (nur transform, eine Ebene von Bildschirmgröße) und scheinen durch alle Abschnitte. */
+/* Zwei weiche Lichtfelder auf einer festen Ebene hinter allem, die durch alle Abschnitte scheinen.
+   Sie stehen bewusst still: Eine Endlos-Bewegung dieser bildschirmgroßen Ebenen ließ den Rechner dauerhaft
+   neu zeichnen (und unter der Glas-Kopfzeile neu weichzeichnen) – der Lüfter lief, solange die Seite offen war. */
 body{background:transparent}
-body::before,body::after{content:"";position:fixed;z-index:-1;pointer-events:none;width:min(980px,115vmax);aspect-ratio:1;border-radius:50%;will-change:transform}
-body::before{left:-22vmax;top:-30vmax;background:radial-gradient(closest-side,rgba(var(--f-blue),.18),rgba(var(--f-blue),.06) 52%,transparent);animation:amb-a 34s ease-in-out infinite alternate}
-body::after{right:-26vmax;bottom:-34vmax;background:radial-gradient(closest-side,rgba(var(--f-violet),.11),rgba(var(--f-coral),.035) 56%,transparent);animation:amb-b 43s ease-in-out infinite alternate}
-@keyframes amb-a{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(22vw,18vh,0) scale(1.08)}100%{transform:translate3d(8vw,46vh,0) scale(.96)}}
-@keyframes amb-b{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-26vw,-14vh,0) scale(.94)}100%{transform:translate3d(-10vw,-40vh,0) scale(1.06)}}
-@media (prefers-reduced-motion:reduce){body::before,body::after{animation:none}}
+body::before,body::after{content:"";position:fixed;z-index:-1;pointer-events:none;width:min(980px,115vmax);aspect-ratio:1;border-radius:50%}
+body::before{left:-10vmax;top:-18vmax;background:radial-gradient(closest-side,rgba(var(--f-blue),.18),rgba(var(--f-blue),.06) 52%,transparent)}
+body::after{right:-18vmax;bottom:-24vmax;background:radial-gradient(closest-side,rgba(var(--f-violet),.11),rgba(var(--f-coral),.035) 56%,transparent)}
 @media print{body::before,body::after{display:none}}
 .section:nth-of-type(4n+1){--amb:radial-gradient(min(980px,135vw) 520px at 100% 440px,rgba(var(--f-blue),0.17),rgba(var(--f-blue),0.054) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 0% calc(100% - 290px),rgba(var(--f-coral),0.07),transparent 72%)}
 .section:nth-of-type(4n+2){--amb:radial-gradient(min(720px,110vw) 420px at 0% 360px,rgba(var(--f-violet),0.12),rgba(var(--f-violet),0.038) 46%,transparent 74%),radial-gradient(min(520px,90vw) 340px at 100% calc(100% - 290px),rgba(var(--f-teal),0.075),transparent 72%)}

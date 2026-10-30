@@ -12,7 +12,7 @@ ML.module("cockpit", function (ML) {
   var tl = ML.timeline();
   var cur = root.getAttribute("data-branch") || D.order[0];
   var auto = !ML.reduce, paused = false, inView = false, played = false;
-  var SCENE = 9200;
+  var SCENE = 9200, rounds = 0;
 
   function text(key, v) { var el = $("[data-cp=" + key + "]", root); if (el) el.textContent = v; }
   function feedItem(it, slot, isNew) {
@@ -160,13 +160,15 @@ ML.module("cockpit", function (ML) {
     });
     tl.at(SCENE, function () {
       if (!auto || paused || !inView || document.hidden) return;
+      /* Nach zwei Runden durch alle Betriebe hält die Vorführung an – eine offene Seite soll den Rechner nicht dauerhaft beschäftigen */
+      if (++rounds >= D.order.length * 2) return;
       var i = D.order.indexOf(cur);
       play(D.order[(i + 1) % D.order.length]);
     });
   }
 
   function select(key, user) {
-    if (user) { auto = false; }
+    if (user) { auto = false; rounds = 0; }
     if (ML.reduce || paused) { tl.clear(); finalState(key); cur = key; return; }
     play(key);
   }
@@ -331,7 +333,7 @@ ML.module("cockpit", function (ML) {
     if (paused) return;
     if (!played) { play(cur); return; }
     /* Zurück im Bild: Die Vorführung läuft wieder von selbst weiter – auch nach einem Klick */
-    if (left) { left = false; auto = true; }
+    if (left) { left = false; auto = true; rounds = 0; }
     if (auto) { tl.clear(); tl.at(1800, function () { if (inView && !paused) { var i = D.order.indexOf(cur); play(D.order[(i + 1) % D.order.length]); } }); }
   }, { threshold: 0.25 });
   document.addEventListener("visibilitychange", function () {

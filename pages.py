@@ -10,7 +10,7 @@ from build import SITE, breadcrumb_schema, e, faq_schema, icon, org_schema
 import legal
 import mocks
 from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, book_link, booking_widget, btn_book, btn_wa,
-                   cases, closing, compare, faq_block, feats, film, svc_film, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
+                   cases, closing, compare, faq_block, feats, film, film_link, svc_film, SVC_FILMS, FILM_LENGTH, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
                    process, ref_dialog, results, sh, ticks)
 
 
@@ -23,7 +23,7 @@ def render_home(ctx):
     <p class="kicker hero__kicker" data-intro style="--i:0"><span class="kicker__dot" aria-hidden="true"></span>Digitalagentur aus Hamburg für Betriebe in ganz Deutschland</p>
     <h1 class="display hero__title"><span class="line"><span style="--i:1">Ihre Website soll Kunden bringen.</span></span><span class="line"><span style="--i:2">Nicht Arbeit machen.</span></span></h1>
     <p class="lead hero__lead" data-intro style="--i:3">Wir bauen die Website, die Ihre Zielgruppe überzeugt, und das System dahinter, in dem jede Anfrage landet. Änderungen schicken Sie einfach per WhatsApp – unser KI-Agent setzt sie um.</p>
-    <div class="hero__actions" data-intro style="--i:4">{btn_book(ctx, cls='btn--primary btn--lg')}{btn_wa(ctx, cls='btn--ghost btn--lg')}</div>
+    <div class="hero__actions" data-intro style="--i:4">{btn_book(ctx, cls='btn--primary btn--lg')}{btn_wa(ctx, cls='btn--ghost btn--lg')}{film_link(ctx, FILM_LENGTH)}</div>
     <ul class="hero__proof" data-intro style="--i:5">
       <li>{icon('trend')}<span><b>200+</b> erfolgreiche Kampagnen</span></li>
       <li><a href="#faq-kosten" data-faq-link>{icon('clock')}<span>Angebot in <b>48 Stunden</b></span></a></li>
@@ -148,7 +148,9 @@ FAQ_MKT = [
 
 
 def _svc_page(ctx, crumb, h1, lead, visual, sections, faqs, ask, close=None):
-    actions = btn_book(ctx, "Erstgespräch buchen", ask) + btn_wa(ctx)
+    # Der Leistungsfilm der Seite ist schon im Kopfbereich erreichbar
+    film = next((k for k, f in SVC_FILMS.items() if f[5] == ask), None)
+    actions = btn_book(ctx, "Erstgespräch buchen", ask) + btn_wa(ctx) + (film_link(ctx, SVC_FILMS[film][1]) if film else "")
     out = page_hero(ctx, [("Start", "/"), ("Leistungen", "/#leistungen"), (crumb, "")], h1, lead, actions, visual)
     out += sections
     title = {"Website-Erstellung": "Fragen zur Website-Erstellung", "KI-Agent": "Fragen zum KI-Agenten", "Kundenmanagement-System": "Fragen zum System"}.get(crumb, "Fragen zum " + e(crumb))

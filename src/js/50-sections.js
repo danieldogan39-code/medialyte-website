@@ -174,6 +174,29 @@ ML.module("film", function (ML) {
       if (lbl) lbl.textContent = "Noch einmal ansehen";
     });
     ML.watch(root, function (vis) { if (!vis && !v.paused) v.pause(); }, { threshold: 0.15 });
+    /* Start aus dem Kopfbereich: kommt synchron aus dem Klick, damit der Ton erlaubt bleibt */
+    root.addEventListener("ml:play", function () { if (v.paused) start(v.ended ? 0 : null); });
+  });
+
+  /* „Film ansehen“ oben: zum Film scrollen (mittig, unter der Kopfleiste) und abspielen */
+  ML.$$("[data-film-jump]").forEach(function (a) {
+    a.addEventListener("click", function (ev) {
+      var sec = document.getElementById("film"), root = sec && ML.$("[data-film]", sec);
+      if (!root) return;
+      ev.preventDefault();
+      /* Einblendungen im Ziel sofort fertig zeigen, damit die Maße stimmen (sie wären sonst noch verkleinert) */
+      var rv = ML.$$("[data-reveal]", sec);
+      rv.forEach(function (el) { el.style.transition = "none"; el.classList.add("is-in"); });
+      var fr = ML.$(".film__frame", root) || root, r = fr.getBoundingClientRect();
+      rv.forEach(function (el) { el.style.transition = ""; });
+      var head = (ML.$(".header") || {}).offsetHeight || 0;
+      /* Passt die Überschrift mit aufs Bild, beginnt die Ansicht bei ihr; sonst steht der Film mittig */
+      var h = ML.$("h2", sec), top = Math.min(r.top, h ? h.getBoundingClientRect().top : r.top);
+      var y = r.bottom - top + head + 40 <= window.innerHeight ? top - head - 24 : r.top - Math.max(head + 16, (window.innerHeight - r.height) / 2);
+      var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: Math.max(0, y + window.scrollY), behavior: reduce ? "auto" : "smooth" });
+      root.dispatchEvent(new CustomEvent("ml:play"));
+    });
   });
 });
 

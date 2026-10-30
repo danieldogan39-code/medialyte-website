@@ -1,30 +1,43 @@
 /* ---------- Schaltflächen ----------
    Ruhig und präzise: Text optisch mittig, Symbole etwas kleiner als die Schrift, Koralle nur für die eine wichtigste Aktion.
-   Rückmeldung beim Drücken (leicht kleiner), beim Zeigen hebt sich der Hauptknopf minimal an. */
-.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:54px;padding:0 26px;border-radius:999px;border:1px solid transparent;font-weight:600;font-size:1rem;line-height:1;letter-spacing:-.01em;text-align:center;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;
+   Kompakt und klar: kein weicher Leuchtschein, nur eine feine Kante; Rückmeldung beim Drücken (leicht kleiner). */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:0 24px;border-radius:999px;border:1px solid transparent;font-weight:600;font-size:1rem;line-height:1;letter-spacing:-.01em;text-align:center;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;
   transition:transform .16s var(--ease-out),background-color .2s ease,border-color .2s ease,color .2s ease,opacity .2s ease,box-shadow .25s ease}
 .btn:active{transform:scale(.97)}
 .btn svg{width:17px;height:17px;flex:none}
 .btn > svg:first-child{margin-left:-3px}
 .btn > svg:last-child{margin-right:-3px}
 .btn:focus-visible{outline:2px solid var(--text);outline-offset:3px;border-radius:999px}
-.btn--primary{background:linear-gradient(180deg,#FF6060,#EE4747);color:var(--coral-ink);font-weight:620;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(120,10,10,.18),0 10px 26px -12px rgba(255,87,87,.75)}
+.btn--primary{background:#F24A4A;color:var(--coral-ink);font-weight:600;border-color:#F65656;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.28),0 6px 16px -10px rgba(255,87,87,.7)}
 .btn--light{background:var(--text);color:var(--navy);box-shadow:inset 0 -1px 0 rgba(14,25,42,.08)}
 .btn--ghost{border-color:rgba(203,215,235,.2);color:var(--text);background:rgba(255,255,255,.04)}
 .btn--wa{background:var(--wa);color:#04210E}
-.btn--sm{min-height:44px;padding:0 18px;font-size:.94rem;gap:8px}
+.btn--sm{min-height:42px;padding:0 18px;font-size:.94rem;gap:8px}
+@media (pointer:coarse){.btn--sm{min-height:44px}}
 .btn--sm svg{width:15px;height:15px}
-.btn--sm.btn--primary{box-shadow:inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(120,10,10,.18),0 8px 20px -12px rgba(255,87,87,.7)}
-.btn--lg{min-height:58px;padding:0 30px;font-size:1.05rem}
+.btn--sm.btn--primary{box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.28)}
+.btn--lg{min-height:52px;padding:0 28px;font-size:1.04rem}
 .btn--block{width:100%}
 .btn[disabled],.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;transform:none}
 @media (hover:hover) and (pointer:fine){
-  .btn--primary:hover{background:linear-gradient(180deg,#FF6868,#F04C4C);transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(120,10,10,.18),0 16px 34px -14px rgba(255,87,87,.85)}
-  .btn--primary:active{transform:translateY(0) scale(.97)}
+  .btn--primary:hover{background:#F85252;border-color:#FB6060;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 1px 2px rgba(0,0,0,.28),0 10px 22px -12px rgba(255,87,87,.8)}
   .btn--light:hover{background:#fff}
   .btn--ghost:hover{border-color:rgba(203,215,235,.42);background:rgba(255,255,255,.07)}
   .btn--wa:hover{background:#2EE072}
+}
+/* Film-Sprung im Kopfbereich: dritte, ruhige Aktion neben den Knöpfen (gleiche Höhe, kein Rahmen) */
+.filmlink{display:inline-flex;align-items:center;gap:11px;min-height:48px;padding:0 6px 0 4px;color:var(--text);border-radius:999px;-webkit-tap-highlight-color:transparent;transition:transform .16s var(--ease-out)}
+.filmlink:active{transform:scale(.97)}
+.filmlink__ic{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--text);color:var(--navy);flex:none;transition:transform .2s var(--ease-out)}
+.filmlink__ic svg{width:14px;height:14px;margin-left:2px}
+.filmlink__t{display:flex;align-items:baseline;gap:8px;line-height:1;white-space:nowrap}
+.filmlink__t b{font-weight:600;font-size:1rem;letter-spacing:-.01em}
+.filmlink__t small{font-size:.86rem;color:var(--text-2);font-variant-numeric:tabular-nums}
+.hero__actions .filmlink{min-height:52px;margin-left:6px}
+@media (hover:hover) and (pointer:fine){
+  .filmlink:hover .filmlink__ic{transform:scale(1.06)}
+  .filmlink:hover .filmlink__t b{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 }
 /* Knopfgruppen auf dem Handy: untereinander, gleich breit, mittig wo der Abschnitt mittig ist */
 @media (max-width:560px){
@@ -32,6 +45,7 @@
   .closing__actions,.done__actions{max-width:420px;margin-inline:auto}
   .phero__actions .btn,.closing__actions .btn,.case__actions .btn,.done__actions .btn{width:100%}
   .split__text > .btn{width:100%}
+  .phero__actions .filmlink{justify-self:center;margin-top:2px}
 }
 }
 

@@ -178,6 +178,7 @@ button.cp-msg__btn:disabled{cursor:default}
   .hero__title{max-width:none;font-size:min(2.4rem,9.6vw)}
   .hero__actions{justify-content:flex-start;width:100%}
   .hero__actions .btn{flex:1 1 100%}
+  .hero__actions .filmlink{margin:2px auto 0}
   .hero__proof{justify-content:flex-start;flex-direction:column;gap:10px}
   .cp-note{text-align:left}
 }

@@ -557,6 +557,12 @@ SVC_FILMS = {
 }
 
 
+def film_link(ctx, length, label="Film ansehen"):
+    """Dritte, ruhige Aktion im Kopfbereich: springt zum Film und startet ihn (ohne JavaScript nur der Sprung)."""
+    return (f'<a class="filmlink" href="#film" data-film-jump><span class="filmlink__ic" aria-hidden="true">{icon("play")}</span>'
+            f'<span class="filmlink__t"><b>{label}</b><small>{length} Min.</small></span></a>')
+
+
 def svc_film(ctx, key):
     """Leistungsfilm als eigener Abschnitt: Text links, hochkant abspielbarer Film rechts (gleicher Spieler wie der Erklärfilm)."""
     f, length, title, text, points, ask = SVC_FILMS[key]

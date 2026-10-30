@@ -188,7 +188,7 @@ html:not(.js) .po{justify-content:center}
 .case:nth-child(even) .case__phone{right:auto;left:0}
 .case__phone .phone__screen{display:block;border-radius:18px;aspect-ratio:390/844}
 .case__phone img{width:100%;height:100%;object-fit:cover;object-position:top}
-.case__open{position:absolute;left:18px;top:56px;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:99px;background:rgba(10,18,32,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line-2);color:var(--text);font-size:.86rem;font-weight:600;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .3s var(--ease-out)}
+.case__open{position:absolute;left:18px;top:56px;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:99px;background:rgba(10,18,32,.9);border:1px solid var(--line-2);color:var(--text);font-size:.86rem;font-weight:600;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .3s var(--ease-out)}
 .case__open svg{width:16px;height:16px}
 .case__media:focus-visible .case__open{opacity:1;transform:none}
 @media (hover:hover) and (pointer:fine){.case__media:hover .case__open{opacity:1;transform:none}}

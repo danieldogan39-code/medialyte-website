@@ -17,7 +17,7 @@
    Sie stehen bewusst still: Eine Endlos-Bewegung dieser bildschirmgroßen Ebenen ließ den Rechner dauerhaft
    neu zeichnen (und unter der Glas-Kopfzeile neu weichzeichnen) – der Lüfter lief, solange die Seite offen war. */
 body{background:transparent}
-body::before,body::after{content:"";position:fixed;z-index:-1;pointer-events:none;width:min(980px,115vmax);aspect-ratio:1;border-radius:50%}
+body::before,body::after{content:"";position:fixed;z-index:-1;pointer-events:none;width:min(980px,115vmax);aspect-ratio:1;border-radius:50%;will-change:transform}   /* eigene Ebene: sonst muss beim Scrollen die ganze Seite neu gezeichnet werden */
 body::before{left:-10vmax;top:-18vmax;background:radial-gradient(closest-side,rgba(var(--f-blue),.18),rgba(var(--f-blue),.06) 52%,transparent)}
 body::after{right:-18vmax;bottom:-24vmax;background:radial-gradient(closest-side,rgba(var(--f-violet),.11),rgba(var(--f-coral),.035) 56%,transparent)}
 @media print{body::before,body::after{display:none}}

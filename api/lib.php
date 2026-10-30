@@ -15,6 +15,10 @@ function ml_config(): array
         'mail_to'           => 'info@medialyte.de',
         'mail_from'         => 'termine@medialyte.de',
         'mail_from_name'    => 'Medialyte',
+        'smtp_host'         => 'smtp.ionos.de',
+        'smtp_port'         => 587,
+        'smtp_user'         => '',   // leer = Absenderadresse (termine@medialyte.de)
+        'smtp_pass'         => '',   // gesetzt = Versand über SMTP statt mail()
         'send_confirmation' => true,
         'webhook_url'       => '',   // Endpunkt des Medialyte-Dashboards
         'webhook_secret'    => '',   // gemeinsamer Schlüssel für die HMAC-Signatur
@@ -173,9 +177,17 @@ function ml_slot_valid(string $date, string $time): bool
     return $time >= $from && $end <= $to;
 }
 
+/** Letzter Versandfehler (ohne Adressen), für das Protokoll. */
+$GLOBALS['ml_mail_error'] = '';
+
+/**
+ * E-Mail versenden. Ist in config.php ein SMTP-Passwort hinterlegt, geht die Mail angemeldet über den
+ * IONOS-Mailserver (zuverlässig, mit SPF/DKIM des Postfachs). Sonst über PHP mail() des Webspace.
+ */
 function ml_mail(string $to, string $subject, string $text, ?string $ics = null, ?string $replyTo = null): bool
 {
     $cfg = ml_config();
+    $GLOBALS['ml_mail_error'] = '';
     $from = sprintf('%s <%s>', mb_encode_mimeheader($cfg['mail_from_name'], 'UTF-8'), $cfg['mail_from']);
     $headers = ['From: ' . $from, 'MIME-Version: 1.0'];
     if ($replyTo) {
@@ -192,16 +204,84 @@ function ml_mail(string $to, string $subject, string $text, ?string $ics = null,
         $headers[] = 'Content-Transfer-Encoding: 8bit';
         $body = $text;
     }
-    return @mail($to, mb_encode_mimeheader($subject, 'UTF-8'), $body, implode("\r\n", $headers), '-f' . $cfg['mail_from']);
+    $subj = mb_encode_mimeheader($subject, 'UTF-8');
+    if (!empty($cfg['smtp_pass'])) {
+        return ml_smtp($to, $subj, $headers, $body);
+    }
+    $ok = @mail($to, $subj, $body, implode("\r\n", $headers), '-f' . $cfg['mail_from']);
+    if (!$ok) {
+        $GLOBALS['ml_mail_error'] = 'mail() abgelehnt';
+    }
+    return $ok;
+}
+
+/** Schlanker SMTP-Versand mit STARTTLS und Anmeldung (IONOS: smtp.ionos.de, Port 587). */
+function ml_smtp(string $to, string $subject, array $headers, string $body): bool
+{
+    $cfg = ml_config();
+    $fail = function (string $why) use (&$fp): bool {
+        $GLOBALS['ml_mail_error'] = 'SMTP: ' . $why;
+        if (is_resource($fp)) {
+            @fwrite($fp, "QUIT\r\n");
+            @fclose($fp);
+        }
+        return false;
+    };
+    $fp = @stream_socket_client('tcp://' . $cfg['smtp_host'] . ':' . (int) $cfg['smtp_port'], $errno, $errstr, 15);
+    if (!$fp) {
+        return $fail("keine Verbindung ($errno)");
+    }
+    stream_set_timeout($fp, 15);
+    $read = function () use ($fp): string {
+        $all = '';
+        while (($line = fgets($fp, 1024)) !== false) {
+            $all .= $line;
+            if (strlen($line) < 4 || $line[3] !== '-') {
+                break;
+            }
+        }
+        return $all;
+    };
+    $cmd = function (string $c, string $expect) use ($fp, $read): bool {
+        if ($c !== '') {
+            fwrite($fp, $c . "\r\n");
+        }
+        return strncmp($read(), $expect, 3) === 0;
+    };
+    $host = parse_url($cfg['allowed_origins'][0] ?? 'https://medialyte.de', PHP_URL_HOST) ?: 'medialyte.de';
+    if (!$cmd('', '220')) return $fail('Begrüßung');
+    if (!$cmd('EHLO ' . $host, '250')) return $fail('EHLO');
+    if (!$cmd('STARTTLS', '220')) return $fail('STARTTLS');
+    if (!@stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT | (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') ? STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT : 0))) return $fail('TLS');
+    if (!$cmd('EHLO ' . $host, '250')) return $fail('EHLO nach TLS');
+    if (!$cmd('AUTH LOGIN', '334')) return $fail('AUTH');
+    if (!$cmd(base64_encode($cfg['smtp_user'] ?: $cfg['mail_from']), '334')) return $fail('Benutzer');
+    if (!$cmd(base64_encode($cfg['smtp_pass']), '235')) return $fail('Anmeldung abgelehnt (Passwort prüfen)');
+    if (!$cmd('MAIL FROM:<' . $cfg['mail_from'] . '>', '250')) return $fail('Absender abgelehnt');
+    if (!$cmd('RCPT TO:<' . $to . '>', '250')) return $fail('Empfänger abgelehnt');
+    if (!$cmd('DATA', '354')) return $fail('DATA');
+    $all = array_merge([
+        'Date: ' . date('r'),
+        'Message-ID: <' . bin2hex(random_bytes(12)) . '@' . $host . '>',
+        'To: ' . $to,
+        'Subject: ' . $subject,
+    ], $headers);
+    $msg = implode("\r\n", $all) . "\r\n\r\n" . preg_replace("/\r?\n/", "\r\n", $body);
+    $msg = preg_replace('/^\./m', '..', $msg);   // Punkt am Zeilenanfang verdoppeln (SMTP)
+    if (!$cmd($msg . "\r\n.", '250')) return $fail('Nachricht abgelehnt');
+    @fwrite($fp, "QUIT\r\n");
+    @fclose($fp);
+    return true;
+}
+
+/** Versandprotokoll ohne Inhalte und ohne Adressen (nur zur Fehlersuche): Zeit, Anfrage, Empfängerart, Ergebnis, Grund. */
+function ml_log_mail(string $id, string $to, bool $ok): void
+{
+    $why = $ok ? '' : "\t" . ($GLOBALS['ml_mail_error'] ?? '');
+    @file_put_contents(ml_data_dir() . '/mail.log', date('c') . "\t" . $id . "\t" . $to . "\t" . ($ok ? 'ok' : 'FEHLER') . $why . "\n", FILE_APPEND | LOCK_EX);
 }
 
 /** Buchung signiert an das Dashboard weitergeben. Fehler blockieren die Buchung nicht. */
-/** Versandprotokoll ohne Inhalte und ohne Adressen (nur zur Fehlersuche): Zeit, Anfrage, Empfängerart, Ergebnis. */
-function ml_log_mail(string $id, string $to, bool $ok): void
-{
-    @file_put_contents(ml_data_dir() . '/mail.log', date('c') . "\t" . $id . "\t" . $to . "\t" . ($ok ? 'ok' : 'FEHLER') . "\n", FILE_APPEND | LOCK_EX);
-}
-
 function ml_webhook(array $payload): bool
 {
     $cfg = ml_config();

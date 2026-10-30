@@ -4,6 +4,8 @@
 #   IONOS_SFTP_USER   SFTP-Benutzer aus dem IONOS-Kundenbereich
 #   IONOS_SFTP_PASS   Passwort des SFTP-Benutzers
 #   IONOS_SFTP_PATH   Zielordner, z. B. /medialyte  (der Ordner, auf den die Domain zeigt)
+#   IONOS_SMTP_PASS   (optional) Passwort des Postfachs termine@medialyte.de – dann gehen die Buchungs-E-Mails
+#                     angemeldet über smtp.ionos.de statt über PHP mail(). Wird nur auf dem Server in api/config.php abgelegt.
 name: Deploy medialyte.de
 
 on:
@@ -29,6 +31,7 @@ jobs:
           USER: ${{ secrets.IONOS_SFTP_USER }}
           PASS: ${{ secrets.IONOS_SFTP_PASS }}
           TARGET: ${{ secrets.IONOS_SFTP_PATH }}
+          SMTP_PASS: ${{ secrets.IONOS_SMTP_PASS }}
         run: |
           if [ -z "$HOST" ]; then echo "Noch keine IONOS-Zugangsdaten hinterlegt – Upload übersprungen."; exit 0; fi
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
@@ -40,3 +43,10 @@ jobs:
               --exclude-glob api/config.php --exclude-glob api/data/ \
               dist/ $TARGET/;
             bye"
+          # Zugangsdaten für den E-Mail-Versand nur auf den Server legen (nie ins Repository)
+          if [ -n "$SMTP_PASS" ]; then
+            python3 -c "import os; p=os.environ['SMTP_PASS'].replace(chr(92), chr(92)*2).replace(chr(39), chr(92)+chr(39)); open('/tmp/config.php','w').write(\"<?php\nreturn ['smtp_pass' => '\" + p + \"'];\n\")"
+            lftp -u "$USER","$PASS" "sftp://$HOST" -e "set sftp:auto-confirm yes; put /tmp/config.php -o $TARGET/api/config.php; bye"
+            rm -f /tmp/config.php
+            echo "E-Mail-Zugang auf dem Server hinterlegt."
+          fi

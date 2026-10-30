@@ -1,5 +1,5 @@
 # Nur die beiden Endpunkte sind von außen erreichbar
-<FilesMatch "^(lib|config|config\.example)\.php$">
+<FilesMatch "^(lib|config|config-app|config\.example)\.php$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

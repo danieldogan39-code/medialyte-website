@@ -30,8 +30,13 @@ function ml_config(): array
         'rate_limit'        => 5,    // Buchungen pro IP und Stunde
         'timezone'          => 'Europe/Berlin',
     ];
-    $file = __DIR__ . '/config.php';
-    $cfg = is_file($file) ? array_replace($defaults, (array) require $file) : $defaults;
+    $cfg = $defaults;
+    // config.php: Mail-Zugang (vom Website-Deploy), config-app.php: Verbindung zur Medialyte-App (vom App-Deploy)
+    foreach (['config.php', 'config-app.php'] as $name) {
+        if (is_file(__DIR__ . '/' . $name)) {
+            $cfg = array_replace($cfg, (array) require __DIR__ . '/' . $name);
+        }
+    }
     date_default_timezone_set($cfg['timezone']);
     return $cfg;
 }

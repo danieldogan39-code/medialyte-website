@@ -40,7 +40,7 @@ jobs:
             set sftp:auto-confirm yes;
             set net:max-retries 2;
             mirror --reverse --delete --verbose --parallel=4 \
-              --exclude-glob api/config.php --exclude-glob api/data/ \
+              --exclude-glob api/config.php --exclude-glob api/config-app.php --exclude-glob api/data/ \
               dist/ $TARGET/;
             bye"
           # Zugangsdaten für den E-Mail-Versand nur auf den Server legen (nie ins Repository)

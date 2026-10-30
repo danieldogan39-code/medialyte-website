@@ -60,7 +60,7 @@
 .cp-bar__right{justify-self:end;display:flex;align-items:center;gap:14px;font-size:.84rem;color:var(--steel)}
 /* Umschalter der Beispiel-Betriebe: Segment-Steuerung in der Titelleiste */
 .cp-tabs{position:relative;display:flex;gap:2px;padding:3px;border-radius:12px;background:rgba(0,0,0,.24);border:1px solid var(--line)}
-.cp-tab{position:relative;z-index:1;min-height:34px;padding:0 15px;border:0;border-radius:9px;background:transparent;color:var(--steel);font-size:.86rem;font-weight:500;white-space:nowrap;transition:color .25s ease,background-color .25s ease,transform .16s var(--ease-out)}
+.cp-tab{position:relative;z-index:1;-webkit-tap-highlight-color:transparent;min-height:34px;padding:0 15px;border:0;border-radius:9px;background:transparent;color:var(--steel);font-size:.86rem;font-weight:500;white-space:nowrap;transition:color .25s ease,background-color .25s ease,transform .16s var(--ease-out)}
 .cp-tab:active{transform:scale(.97)}
 .cp-tab[aria-selected="true"]{color:var(--text);background:rgba(255,255,255,.1)}
 .cp-tabs.has-ind .cp-tab[aria-selected="true"]{background:transparent}
@@ -79,9 +79,9 @@
    darunter voll stehen, bis die neue steht – kein Durchscheinen, keine doppelten Texte, kein dunkler Zwischenmoment.
    Alle vier Websites bleiben gezeichnet (nach dem Laden, is-warm), damit beim Wechsel nichts stückweise erscheint. */
 .ms{position:absolute;inset:0;z-index:0;opacity:0;visibility:hidden;transition:opacity 0s linear .45s,visibility 0s linear .45s}
-.cockpit .ms{opacity:1;pointer-events:none;clip-path:inset(0 0 0 100%);transition:clip-path 0s linear .6s,visibility 0s linear .6s}
+.cockpit .ms{opacity:1;pointer-events:none;clip-path:inset(0 0 0 100%);transition:clip-path 0s linear .5s,visibility 0s linear .5s}
 .cockpit.is-warm .ms{visibility:visible}
-.cockpit[data-branch="gastro"] .ms--gastro,.cockpit[data-branch="handwerk"] .ms--handwerk,.cockpit[data-branch="praxis"] .ms--praxis,.cockpit[data-branch="kanzlei"] .ms--kanzlei{z-index:1;visibility:visible;pointer-events:auto;clip-path:inset(0 0 0 0);transition:clip-path .6s cubic-bezier(.77,0,.175,1),visibility 0s}
+.cockpit[data-branch="gastro"] .ms--gastro,.cockpit[data-branch="handwerk"] .ms--handwerk,.cockpit[data-branch="praxis"] .ms--praxis,.cockpit[data-branch="kanzlei"] .ms--kanzlei{z-index:1;visibility:visible;pointer-events:auto;clip-path:inset(0 0 0 0);transition:clip-path .5s cubic-bezier(.65,0,.35,1),visibility 0s}
 @media (prefers-reduced-motion:reduce){.cockpit .ms{transition:none!important}}
 
 /* Seitenleiste: Kennzahl, Anfragen, Agent */

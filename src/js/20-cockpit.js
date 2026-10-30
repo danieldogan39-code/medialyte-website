@@ -78,7 +78,9 @@ ML.module("cockpit", function (ML) {
     text("time", "09:41"); minute = 9 * 60 + 42;
     setKpi(b.kpi[1], false);
     feed.innerHTML = "";
-    b.feed.forEach(function (it, i) { var el = feedItem(it, i, false); el.classList.add("is-enter"); feed.appendChild(el); });
+    /* Beim Wechsel zwischen Betrieben stehen die Einträge sofort da (kein Leeren und Einblenden, das wirkt wie Flackern);
+       nur beim ersten Abspielen gleiten sie herein */
+    b.feed.forEach(function (it, i) { var el = feedItem(it, i, false); if (!played) el.classList.add("is-enter"); feed.appendChild(el); });
     msgs.innerHTML = "";
     var s = site(key);
     if (s) {

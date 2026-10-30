@@ -372,13 +372,14 @@ html:not(.js) .po{justify-content:center}
 .film__video{display:block;width:100%;height:100%;object-fit:cover;background:#0A1220}
 /* Großer Abspiel-Knopf über dem Vorschaubild; verschwindet, sobald der Film läuft */
 .film__play{position:absolute;inset:0;display:flex;align-items:flex-end;gap:18px;padding:clamp(18px,3vw,34px);border:0;background:linear-gradient(0deg,rgba(6,11,20,.78),rgba(6,11,20,.18) 46%,rgba(6,11,20,0) 70%);color:#fff;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .3s ease,visibility 0s linear 0s}
-.film__btn{flex:none;width:clamp(58px,6.4vw,84px);height:clamp(58px,6.4vw,84px);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#FB5353,var(--coral-btn-2));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 18px 40px -16px rgba(255,87,87,.8);transition:transform .16s var(--ease-out)}
-.film__btn svg{width:42%;height:42%;margin-left:7%}
+.film__btn{flex:none;width:clamp(52px,4.4vw,62px);height:clamp(52px,4.4vw,62px);border-radius:50%;display:grid;place-items:center;background:var(--text);color:var(--navy);box-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 24px -12px rgba(0,0,0,.7);transition:transform .16s var(--ease-out)}
+.film__btn svg{width:32%;height:32%;margin-left:7%}
+.film__btn svg path,.filmlink__ic svg path{stroke:currentColor;stroke-width:2.2;stroke-linejoin:round}
 .film__lbl{display:grid;gap:3px}
 .film__lbl b{font-size:clamp(1.02rem,.9rem + .5vw,1.28rem);font-weight:600;letter-spacing:-.01em}
 .film__lbl small{font-size:.9rem;color:rgba(243,245,249,.78)}
 .film__play:active .film__btn{transform:scale(.95)}
-@media (hover:hover) and (pointer:fine){.film__play:hover .film__btn{transform:scale(1.06)}}
+@media (hover:hover) and (pointer:fine){.film__play:hover .film__btn{transform:scale(1.05)}}
 .film.is-started .film__play{opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
 html:not(.js) .film__play{display:none}
 /* Kapitel: ein Klick springt an die Stelle */
@@ -395,14 +396,14 @@ html:not(.js) .film__play{display:none}
 @media (hover:hover) and (pointer:fine){.film__ch:not(.is-on):hover b{color:var(--text)}.film__ch:not(.is-on):hover .num{border-color:var(--text)}}
 @media (max-width:900px){.film{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.film__lbl small{font-size:.82rem}}
-@media (max-width:380px){.film:not(.film--v) .film__lbl small{display:none}.film:not(.film--v) .film__play{padding:14px;gap:12px;background:linear-gradient(0deg,rgba(6,11,20,.94),rgba(6,11,20,.62) 55%,rgba(6,11,20,.15))}.film:not(.film--v) .film__btn{width:50px;height:50px}}
+@media (max-width:380px){.film:not(.film--v) .film__lbl small{display:none}.film:not(.film--v) .film__play{padding:14px;gap:12px;background:linear-gradient(0deg,rgba(6,11,20,.94),rgba(6,11,20,.62) 55%,rgba(6,11,20,.15))}.film:not(.film--v) .film__btn{width:46px;height:46px}}
 /* Leistungsfilme: hochkant neben dem Text */
 .split.split--film{grid-template-columns:minmax(0,1fr) auto}
 .split--film .film--v{width:min(400px,calc((100svh - 230px) * .5625))}
 .film--v{display:block;min-width:0}
 .film__frame--v{aspect-ratio:9/16;width:100%;max-width:min(400px,calc((100svh - 230px) * .5625));margin-inline:auto}
 .film__frame--v .film__play{padding:clamp(16px,2.4vw,24px);background:linear-gradient(0deg,rgba(6,11,20,.82),rgba(6,11,20,.2) 30%,rgba(6,11,20,0) 48%)}
-.film__frame--v .film__btn{width:64px;height:64px}
+.film__frame--v .film__btn{width:56px;height:56px}
 @media (max-width:900px){.split.split--film{grid-template-columns:minmax(0,1fr)}.split--film .film--v{width:100%}.film__frame--v{max-width:380px}}
 
 

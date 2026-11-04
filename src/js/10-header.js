@@ -90,14 +90,23 @@ ML.module("header", function (ML) {
         else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
       }
     });
-    var sub = $("[data-msub]", mnav), subBox = $("#mnav-sub");
-    if (sub && subBox) {
+    /* Untermenüs (Leistungen, Branchen): je eins offen */
+    var subs = $$("[data-msub]", mnav);
+    subs.forEach(function (sub) {
+      var box = document.getElementById(sub.getAttribute("aria-controls"));
+      if (!box) return;
       sub.addEventListener("click", function () {
         var open = sub.getAttribute("aria-expanded") !== "true";
+        subs.forEach(function (o) {
+          if (o === sub) return;
+          var b = document.getElementById(o.getAttribute("aria-controls"));
+          o.setAttribute("aria-expanded", "false");
+          if (b) b.classList.remove("is-open");
+        });
         sub.setAttribute("aria-expanded", open ? "true" : "false");
-        subBox.classList.toggle("is-open", open);
+        box.classList.toggle("is-open", open);
       });
-    }
+    });
     var mq = window.matchMedia("(min-width: 1081px)");
     var onMq = function (m) { if (m.matches) setMenu(false); };
     if (mq.addEventListener) mq.addEventListener("change", onMq); else if (mq.addListener) mq.addListener(onMq);

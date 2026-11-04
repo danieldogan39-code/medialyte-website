@@ -38,7 +38,7 @@ SITE = {
     "instagram": "https://www.instagram.com/medialyte.de/",
     "linkedin": "https://www.linkedin.com/company/medialyte/",
     "youtube": "https://www.youtube.com/@medialyte.deutschland",
-    "today": date(2026, 10, 29).isoformat(),
+    "today": date(2026, 11, 4).isoformat(),
 }
 
 # Verfügbarkeit fürs Buchungsformular (Wochentag 1 = Montag)
@@ -213,6 +213,28 @@ SERVICES = [
     ("/leistungen/online-marketing/", "Online-Marketing", "Google Ads, Social Media und SEO, die Anfragen bringen", "mega", "ads"),
 ]
 
+# Weitere Leistungen mit eigener Seite (im Menü als kurze Links unter den vier Hauptleistungen)
+SERVICES_MORE = [
+    ("/leistungen/website-relaunch/", "Website-Relaunch"),
+    ("/leistungen/online-shop/", "Online-Shop"),
+    ("/leistungen/landingpage/", "Landingpage"),
+    ("/leistungen/seo/", "SEO"),
+    ("/leistungen/google-ads/", "Google Ads"),
+    ("/leistungen/social-media-marketing/", "Social Media"),
+]
+
+# Branchenseiten: Pfad, Name, Kurztext, Symbol
+BRANCHEN = [
+    ("/branchen/gastronomie/", "Gastronomie", "Restaurants, Cafés und Bars", "food"),
+    ("/branchen/handwerk/", "Handwerk", "Tischler, Maler, Elektriker und mehr", "hammer"),
+    ("/branchen/praxen/", "Praxen", "Ärzte, Zahnärzte und Therapeuten", "health"),
+    ("/branchen/kanzleien/", "Kanzleien", "Rechtsanwälte und Steuerberater", "scale"),
+    ("/branchen/einzelhandel/", "Einzelhandel", "Geschäfte, Filialen und Shops", "bag"),
+    ("/branchen/dienstleister/", "Dienstleister", "Reinigung, Beauty, Events und Beratung", "brief"),
+    ("/branchen/industrie/", "Industrie & Mittelstand", "Produktfinder und B2B-Anfragen", "factory"),
+    ("/branchen/vereine/", "Vereine", "Vereine und gemeinnützige Organisationen", "heart"),
+]
+
 
 def book_href(ctx):
     return ctx.u("/#termin") if ctx.path == "/" else ctx.u("/termin/")
@@ -227,9 +249,17 @@ def header(ctx, active=""):
     drop = "".join(
         f'<a class="drop__link" href="{ctx.u(p)}"{cur("svc:" + p)}><span class="ic ic--{tn}">{icon(i)}</span><b>{e(t)}</b><small>{e(d)}</small></a>'
         for p, t, d, i, tn in SERVICES)
+    more = "".join(f'<a href="{ctx.u(p)}"{cur("svc:" + p)}>{e(t)}</a>' for p, t in SERVICES_MORE)
+    bdrop = "".join(
+        f'<a class="drop__link drop__link--sm" href="{ctx.u(p)}"{cur("br:" + p)}><span class="ic ic--sm">{icon(i)}</span><b>{e(n)}</b><small>{e(d)}</small></a>'
+        for p, n, d, i in BRANCHEN)
     msub = "".join(
         f'<a href="{ctx.u(p)}"><span class="ic ic--sm ic--{tn}">{icon(i)}</span><b>{e(t)}</b><small>{e(d)}</small></a>'
         for p, t, d, i, tn in SERVICES)
+    msub += f'<p class="mnav__more">{"".join(f"""<a href="{ctx.u(p)}">{e(t)}</a>""" for p, t in SERVICES_MORE)}<a href="{ctx.u("/leistungen/")}">Alle Leistungen</a></p>'
+    mbr = "".join(
+        f'<a href="{ctx.u(p)}"><span class="ic ic--sm">{icon(i)}</span><b>{e(n)}</b><small>{e(d)}</small></a>'
+        for p, n, d, i in BRANCHEN)
     return f"""
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <header class="header" data-header>
@@ -240,13 +270,20 @@ def header(ctx, active=""):
         <button class="nav__link" type="button" aria-expanded="false" aria-controls="drop-leistungen"{cur('leistungen')}>Leistungen {icon('down')}</button>
         <div class="drop" id="drop-leistungen">
           {drop}
-          <div class="drop__foot"><span>Nicht sicher, was Sie brauchen?</span><a class="link" href="{ctx.u('/#pakete')}">Paket finden {icon('arrow')}</a></div>
+          <div class="drop__more"><span>Außerdem</span>{more}</div>
+          <div class="drop__foot"><span>Nicht sicher, was Sie brauchen?</span><a class="link" href="{ctx.u('/leistungen/')}">Alle Leistungen {icon('arrow')}</a></div>
+        </div>
+      </div>
+      <div class="nav__item" data-drop>
+        <button class="nav__link" type="button" aria-expanded="false" aria-controls="drop-branchen"{cur('branchen')}>Branchen {icon('down')}</button>
+        <div class="drop drop--br" id="drop-branchen">
+          {bdrop}
+          <div class="drop__foot"><span>Aus Hamburg, für ganz Deutschland</span><a class="link" href="{ctx.u('/branchen/')}">Alle Branchen {icon('arrow')}</a></div>
         </div>
       </div>
       <a class="nav__link" href="{ctx.u('/referenzen/')}"{cur('referenzen')}>Referenzen</a>
-      <a class="nav__link" href="{ctx.u('/#ablauf')}">Ablauf</a>
+      <a class="nav__link" href="{ctx.u('/ratgeber/')}"{cur('ratgeber')}>Ratgeber</a>
       <a class="nav__link" href="{ctx.u('/ueber-uns/')}"{cur('ueber-uns')}>Über uns</a>
-      <a class="nav__link" href="{ctx.u('/#faq')}">FAQ</a>
     </nav>
     <div class="header__actions">
       <a class="icon-btn header__wa" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}</a>
@@ -262,12 +299,16 @@ def header(ctx, active=""):
       <button class="mnav__link" type="button" aria-expanded="false" aria-controls="mnav-sub" data-msub>Leistungen<span class="pm" aria-hidden="true"></span></button>
       <div class="mnav__sub" id="mnav-sub"><div>{msub}</div></div>
     </div>
-    <a class="mnav__link" href="{ctx.u('/referenzen/')}" data-m style="--d:2"{cur('referenzen')}>Referenzen</a>
-    <a class="mnav__link" href="{ctx.u('/#ablauf')}" data-m style="--d:3">Ablauf</a>
-    <a class="mnav__link" href="{ctx.u('/ueber-uns/')}" data-m style="--d:4"{cur('ueber-uns')}>Über uns</a>
-    <a class="mnav__link" href="{ctx.u('/#faq')}" data-m style="--d:5">FAQ</a>
+    <div data-m style="--d:2">
+      <button class="mnav__link" type="button" aria-expanded="false" aria-controls="mnav-br" data-msub>Branchen<span class="pm" aria-hidden="true"></span></button>
+      <div class="mnav__sub" id="mnav-br"><div>{mbr}<p class="mnav__more"><a href="{ctx.u('/branchen/')}">Alle Branchen</a><a href="{ctx.u('/webdesign-hamburg/')}">Webdesign Hamburg</a></p></div></div>
+    </div>
+    <a class="mnav__link" href="{ctx.u('/referenzen/')}" data-m style="--d:3"{cur('referenzen')}>Referenzen</a>
+    <a class="mnav__link" href="{ctx.u('/ratgeber/')}" data-m style="--d:4"{cur('ratgeber')}>Ratgeber</a>
+    <a class="mnav__link" href="{ctx.u('/ueber-uns/')}" data-m style="--d:5"{cur('ueber-uns')}>Über uns</a>
+    <a class="mnav__link" href="{ctx.u('/kontakt/')}" data-m style="--d:6"{cur('kontakt')}>Kontakt</a>
   </nav>
-  <div class="mnav__foot" data-m style="--d:6">
+  <div class="mnav__foot" data-m style="--d:7">
     <a class="btn btn--primary btn--lg btn--block" href="{cta}">Erstgespräch buchen</a>
     <a class="btn btn--ghost btn--lg btn--block" href="{SITE['wa']}" target="_blank" rel="noopener">{icon('wa')} Per WhatsApp schreiben</a>
     <div class="mnav__meta"><a href="tel:{SITE['phone_intl']}">{e(SITE['phone'])}</a><a href="mailto:{SITE['email']}">{e(SITE['email'])}</a><span>{e(SITE['hours'])}</span></div>
@@ -278,6 +319,9 @@ def header(ctx, active=""):
 def footer(ctx):
     fab = "" if ctx.path in ("/impressum/", "/datenschutz/", "/agb/") else f'''<a class="fab" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}<span class="fab__tip" aria-hidden="true">Per WhatsApp schreiben</span></a>'''
     svc = "".join(f'<li><a href="{ctx.u(p)}"><i class="footer__dot ic--{tn}" aria-hidden="true"></i>{e(t)}</a></li>' for p, t, _, _, tn in SERVICES)
+    svc += "".join(f'<li><a href="{ctx.u(p)}">{e(t)}</a></li>' for p, t in SERVICES_MORE)
+    br = "".join(f'<li><a href="{ctx.u(p)}">{e(n)}</a></li>' for p, n, _, _ in BRANCHEN)
+    br += f'<li><a href="{ctx.u("/webdesign-hamburg/")}">Webdesign Hamburg</a></li>'
     return f"""
 <footer class="footer">
   <div class="wrap">
@@ -302,13 +346,18 @@ def footer(ctx):
         <h3>Leistungen</h3>
         <ul>{svc}</ul>
       </nav>
+      <nav class="footer__col" aria-label="Branchen">
+        <h3>Branchen</h3>
+        <ul>{br}</ul>
+      </nav>
       <nav class="footer__col" aria-label="Medialyte">
         <h3>Medialyte</h3>
         <ul>
           <li><a href="{ctx.u('/referenzen/')}">Referenzen</a></li>
           <li><a href="{ctx.u('/ueber-uns/')}">Über uns</a></li>
-          <li><a href="{ctx.u('/#ablauf')}">Ablauf</a></li>
-          <li><a href="{ctx.u('/#faq')}">Häufige Fragen</a></li>
+          <li><a href="{ctx.u('/ratgeber/')}">Ratgeber</a></li>
+          <li><a href="{ctx.u('/faq/')}">Häufige Fragen</a></li>
+          <li><a href="{ctx.u('/kontakt/')}">Kontakt</a></li>
           <li><a href="{ctx.u('/termin/')}">Erstgespräch buchen</a></li>
         </ul>
       </nav>
@@ -354,6 +403,11 @@ def org_schema():
         ],
         "areaServed": {"@type": "Country", "name": "Deutschland"},
         "sameAs": [SITE["instagram"], SITE["linkedin"], SITE["youtube"]],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog", "name": "Leistungen von Medialyte",
+            "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": t, "url": SITE["url"] + p}}
+                                for p, t in [(p, t) for p, t, *_ in SERVICES] + SERVICES_MORE],
+        },
         "knowsAbout": ["Webdesign", "Website-Erstellung", "CRM-Entwicklung", "Dashboards", "KI-Agenten", "Google Ads", "Suchmaschinenoptimierung", "Social Media Marketing"],
     }
 
@@ -430,9 +484,34 @@ def document(ctx, page, body):
 """
 
 
+def llms_txt(built):
+    """Kurzbeschreibung für KI-Suchmaschinen (llms.txt): wer Medialyte ist und welche Seite wofür steht."""
+    lines = ["# Medialyte", "",
+             "> Digitalagentur aus Hamburg für Betriebe in ganz Deutschland: Websites, Kundenmanagement-Systeme, "
+             "ein KI-Agent für Website-Änderungen per WhatsApp und Online-Marketing (SEO, Google Ads, Social Media). "
+             "Angebot innerhalb von 48 Stunden nach einem kostenfreien Erstgespräch; Abrechnung als einmalige Pauschale plus monatliches Abo.", "",
+             f"Kontakt: {SITE['phone']} · {SITE['email']} · WhatsApp {SITE['wa']} · {SITE['hours']}", ""]
+    groups = [("Leistungen", "/leistungen/"), ("Branchen", "/branchen/"), ("Ratgeber", "/ratgeber/")]
+    used = set()
+    for title, prefix in groups:
+        lines.append(f"## {title}")
+        for p in built:
+            if p["path"].startswith(prefix) and "noindex" not in p.get("robots", ""):
+                lines.append(f"- [{p['title'].split(' | ')[0].split(' – ')[0]}]({SITE['url']}{p['path']}): {p['desc']}")
+                used.add(p["path"])
+        lines.append("")
+    lines.append("## Weitere Seiten")
+    for p in built:
+        if p["path"] not in used and p.get("sitemap", True) and "noindex" not in p.get("robots", ""):
+            lines.append(f"- [{p['title'].split(' | ')[0]}]({SITE['url']}{p['path']}): {p['desc']}")
+    return "\n".join(lines) + "\n"
+
+
 # ---------------------------------------------------------------- Ausgabe
 def build(mode="prod", out=None, cname=None):
     import pages  # noqa: E402  (Inhalte)
+    import seo_pages  # noqa: E402  (Leistungs-, Branchen- und Ratgeberseiten)
+    all_pages = pages.PAGES[:-1] + seo_pages.extra_pages(pages._after_dialog) + pages.PAGES[-1:]  # 404 bleibt am Ende
     out = Path(out or (ROOT / {"prod": "dist", "preview": "preview", "staging": "staging"}[mode]))
     if out.exists():
         shutil.rmtree(out)
@@ -440,7 +519,7 @@ def build(mode="prod", out=None, cname=None):
     shutil.copytree(SRC / "assets", out / "assets", ignore=shutil.ignore_patterns("*.json", "css", "js"))
     bundle(out)
     built = []
-    for page in pages.PAGES:
+    for page in all_pages:
         ctx = Ctx(mode, page["path"])
         body = (header(ctx, page.get("active", "")) + "\n<main id=\"main\">" + page["render"](ctx) + "</main>\n"
                 + footer(ctx) + page.get("after", lambda c: "")(ctx))
@@ -455,6 +534,7 @@ def build(mode="prod", out=None, cname=None):
             for p in built if p.get("sitemap", True) and "noindex" not in p.get("robots", ""))
         (out / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n', encoding="utf-8")
         (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: {SITE['url']}/sitemap.xml\n", encoding="utf-8")
+        (out / "llms.txt").write_text(llms_txt(built), encoding="utf-8")
         shutil.copy(ROOT / "deploy/.htaccess", out / ".htaccess")
         if (ROOT / "api").exists():
             shutil.copytree(ROOT / "api", out / "api", ignore=shutil.ignore_patterns("config.php", "data"))

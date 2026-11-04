@@ -34,6 +34,19 @@
 @media (hover:hover) and (pointer:fine){.drop__link:hover{background:rgba(255,255,255,.05)}}
 .drop__foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.035);font-size:.9rem;color:var(--steel)}
 .drop__foot .link{font-size:.92rem}
+/* Weitere Leistungen als kurze Links unter den vier Hauptleistungen */
+.drop__more{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 14px 4px;border-top:1px solid var(--line);margin-top:4px}
+.drop__more span{font-size:.8rem;color:var(--steel);margin-right:6px;text-transform:uppercase;letter-spacing:.08em}
+.drop__more a{padding:7px 12px;border-radius:999px;font-size:.9rem;color:var(--text-2);background:rgba(255,255,255,.04);border:1px solid var(--line);transition:color .2s ease,background-color .2s ease}
+@media (hover:hover) and (pointer:fine){.drop__more a:hover{color:var(--text);background:rgba(255,255,255,.08)}}
+.drop__more a[aria-current="page"]{color:var(--text);border-color:var(--line-3)}
+/* Branchen-Menü: kompakter */
+.drop--br{width:640px}
+.drop__link--sm{grid-template-columns:36px minmax(0,1fr);padding:11px 12px;gap:1px 12px}
+.drop__link--sm b{font-size:.96rem}
+.drop__link--sm small{font-size:.82rem}
+.drop__link--sm .ic{width:36px;height:36px;border-radius:10px}
+.drop__link--sm .ic svg{width:18px;height:18px}
 
 .header__actions{display:flex;align-items:center;gap:10px;flex:none}
 .icon-btn{position:relative;width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line-2);background:transparent;color:var(--text);transition:border-color .2s ease,background-color .2s ease,transform .16s var(--ease-out)}
@@ -85,6 +98,8 @@
 .mnav__sub .ic{grid-row:span 2}
 .mnav__sub b{font-size:1.06rem;font-weight:600;line-height:1.3}
 .mnav__sub small{font-size:.88rem;color:var(--steel);line-height:1.35}
+.mnav__sub .mnav__more{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 18px}
+.mnav__sub .mnav__more a{display:inline-flex;padding:9px 14px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.04);font-size:.95rem;color:var(--text-2)}
 .mnav__foot{margin-top:auto;padding-top:28px;display:grid;gap:10px}
 .mnav__meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;margin-top:10px;font-size:.92rem;color:var(--steel)}
 .mnav__meta a{color:var(--text-2)}

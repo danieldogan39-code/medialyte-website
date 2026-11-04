@@ -7,6 +7,7 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 | Pfad | Inhalt |
 |---|---|
 | `pages.py` | Seiten (Startseite, Leistungen, Referenzen, Über uns, Termin, Rechtliches) mit Titeln, Beschreibungen und Texten |
+| `seo_pages.py` | Seiten für die Sichtbarkeit bei Google: Leistungsübersicht `/leistungen/` und sechs weitere Leistungsseiten (Relaunch, Online-Shop, Landingpage, SEO, Google Ads, Social Media), `/branchen/` mit acht Branchenseiten, `/webdesign-hamburg/`, `/kontakt/`, `/faq/`, `/ratgeber/` mit Artikeln. Inhalte nur mit belegbaren Angaben. |
 | `parts.py` | Gemeinsame Bausteine und Inhalte: Die Idee mit Selbstcheck, Kundenreise, Referenzen, Ergebnisse, Vergleich, Pakete und Paket-Finder, Ablauf, FAQ, Buchungsformular |
 | `mocks.py` | Gezeichnete Oberflächen: Cockpit mit vier Beispiel-Betrieben (jede Beispiel-Website zeigt ihre wichtigste Funktion: reservieren, anfragen, Termin buchen), Relaunch alt → neu, Pipeline, KI-Agent zum Ausprobieren, Kampagne, Monatsbericht, KI-Agent im Dashboard |
 | `build.py` | Kopfzeile, mobiles Menü, Fußzeile, Meta-Daten und SEO, Kontaktdaten, Verfügbarkeit fürs Buchungsformular |
@@ -43,7 +44,13 @@ python3 build.py --mode preview  # Vorschau mit relativen Links und Demo-Formula
 python3 build.py --mode staging --cname neu.entwurf.medialyte.de  # Testversion für GitHub Pages nach staging/
 ```
 
-`dist/` enthält alles, was auf den Server gehört, inklusive `sitemap.xml`, `robots.txt`, `.htaccess` und `api/`.
+`dist/` enthält alles, was auf den Server gehört, inklusive `sitemap.xml`, `robots.txt`, `llms.txt`, `.htaccess` und `api/`.
+
+## SEO in Kürze
+
+- Jede Seite hat einen eigenen Titel (≤ 60 Zeichen), eine eigene Beschreibung, Brotkrümel und strukturierte Daten (Leistung, FAQ, Artikel, Brotkrümel; auf der Startseite Organisation mit Leistungskatalog).
+- Menü, Fußzeile und „Passt dazu“-Kacheln verlinken alle wichtigen Seiten untereinander – das ist die Grundlage dafür, dass Google mehrere Unterseiten unter dem Eintrag zeigt.
+- Neue Branche oder Leistung: Eintrag in `BRANCHEN` bzw. `SERVICES_MORE` (`build.py`) und die Seite in `seo_pages.py` anlegen; Menü, Fußzeile, Sitemap und `llms.txt` ziehen automatisch nach.
 
 ## Prüfen
 
@@ -84,6 +91,6 @@ Das Dashboard prüft die Signatur und legt daraus einen Lead an. `slots.php` lie
 - [ ] Datenschutzerklärung und AGB einfügen (`render_legal_placeholder` in `pages.py` ersetzen)
 - [ ] Optional: echte Fotos für die Beispiel-Websites im Cockpit (derzeit bewusst ohne Bilder, mit Funktionskarten)
 - [ ] `api/config.php` auf dem Server anlegen, Webhook zum Dashboard setzen
-- [ ] Nach dem Livegang: Sitemap in der Google Search Console einreichen
+- [ ] Sitemap in der Google Search Console einreichen und neue Seiten zur Indexierung anmelden
 
 Bestätigt am 27.10.2026: Termin-Zeiten (Mo–Do 9–18 Uhr, Fr 9–16 Uhr, 30 Minuten), WhatsApp-Nummer, Kennzahlen von RechnungsRadar im Bereich Ergebnisse, Freigabe des RITZ-Entwurfs als Referenz. Die Beispiel-Betriebe im Cockpit (Trattoria Lume, Tischlerei Brandt, Zahnarztpraxis am Park, Kanzlei Lindqvist) sind erfunden und als Beispiel gekennzeichnet.

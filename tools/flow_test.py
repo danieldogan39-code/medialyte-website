@@ -236,7 +236,7 @@ async def mobile(b):
     check("Handy-Menü schließt mit Esc", await pg.evaluate("!document.getElementById('mnav').classList.contains('is-open') && document.getElementById('mnav').hasAttribute('inert')"))
     await pg.click(".burger")
     await pg.wait_for_timeout(600)
-    await pg.click("#mnav a[href*='#faq']")
+    await pg.click("#mnav a.mnav__link[href='#top']")
     await pg.wait_for_timeout(1200)
     check("Handy-Menü: Link schließt Menü", await pg.evaluate("!document.getElementById('mnav').classList.contains('is-open')"))
 

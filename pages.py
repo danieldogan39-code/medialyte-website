@@ -113,8 +113,17 @@ def render_home(ctx):
   </div>
 </section>"""
 
+    from seo_pages import branch_tiles, tiles  # noqa: E402  (vermeidet Kreis-Import)
+    branchen = f"""
+<section class="section" id="branchen">
+  <div class="wrap">
+    {sh('Für Ihre Branche gemacht.', 'Ein Restaurant braucht die Reservierung, ein Handwerksbetrieb Anfragen mit Fotos, eine Praxis Online-Termine. Wählen Sie Ihre Branche und sehen Sie, was Ihre Website leisten kann.', split=True, more=f'<a class="link" href="{ctx.u('/branchen/')}">Alle Branchen {icon('arrow')}</a>')}
+    {tiles(ctx, branch_tiles())}
+  </div>
+</section>"""
+
     # Der Film steht direkt nach den Leistungen; die Abschnitte wechseln sich danach hell und dunkel ab
-    blocks = [idee, reise, film_s, referenzen, ergebnisse, vergleich, pakete, ablauf, faq, termin]
+    blocks = [idee, reise, film_s, referenzen, ergebnisse, branchen, vergleich, pakete, ablauf, faq, termin]
     blocks = [re.sub(r'<section class="section( section--deep)?"', '<section class="section' + (' section--deep' if i % 2 else '') + '"', b, count=1)
               for i, b in enumerate(blocks)]
     return hero + logo_marquee(ctx) + "".join(blocks)
@@ -151,10 +160,12 @@ def _svc_page(ctx, crumb, h1, lead, visual, sections, faqs, ask, close=None):
     # Der Leistungsfilm der Seite ist schon im Kopfbereich erreichbar
     film = next((k for k, f in SVC_FILMS.items() if f[5] == ask), None)
     actions = btn_book(ctx, "Erstgespräch buchen", ask) + btn_wa(ctx) + (film_link(ctx, SVC_FILMS[film][1]) if film else "")
-    out = page_hero(ctx, [("Start", "/"), ("Leistungen", "/#leistungen"), (crumb, "")], h1, lead, actions, visual)
+    out = page_hero(ctx, [("Start", "/"), ("Leistungen", "/leistungen/"), (crumb, "")], h1, lead, actions, visual)
     out += sections
     title = {"Website-Erstellung": "Fragen zur Website-Erstellung", "KI-Agent": "Fragen zum KI-Agenten", "Kundenmanagement-System": "Fragen zum System"}.get(crumb, "Fragen zum " + e(crumb))
     out += f'<section class="section section--deep"><div class="wrap">{faq_block(ctx, faqs, title)}</div></section>'
+    from seo_pages import RELATED_CORE, related  # noqa: E402  (vermeidet Kreis-Import)
+    out += related(ctx, "Passt dazu", RELATED_CORE[crumb])
     out += closing(ctx, *close) if close else closing(ctx)
     return out
 
@@ -445,35 +456,35 @@ def _after_dialog(ctx):
 
 
 PAGES = [
-    {"path": "/", "title": "Medialyte | Website, Kundenmanagement & KI-Agent – Digitalagentur Hamburg",
-     "desc": "Medialyte baut Websites, die Kunden bringen, das Kundenmanagement-System dahinter und einen KI-Agenten für Änderungen per WhatsApp. Plus Werbung mit 200+ erfolgreichen Kampagnen. Für Betriebe in ganz Deutschland.",
+    {"path": "/", "title": "Medialyte | Webdesign, Kundenmanagement & KI-Agent – Hamburg",
+     "desc": "Medialyte baut Websites, die Kunden bringen, das Kundenmanagement-System dahinter und einen KI-Agenten für Änderungen per WhatsApp. Für ganz Deutschland.",
      "og_title": "Medialyte | Ihre Website soll Kunden bringen. Nicht Arbeit machen.",
      "render": render_home, "after": _after_dialog, "priority": "1.0",
      "schema": [org_schema(), {"@context": "https://schema.org", "@type": "WebSite", "name": "Medialyte", "url": SITE["url"] + "/", "inLanguage": "de-DE", "publisher": {"@id": SITE["url"] + "/#org"}}, faq_schema(FAQ_MAIN)]},
     {"path": "/leistungen/website-erstellung/", "active": "leistungen",
-     "title": "Website erstellen lassen – individuell, schnell & bei Google sichtbar | Medialyte",
+     "title": "Website erstellen lassen – individuell & schnell | Medialyte",
      "desc": "Website erstellen lassen oder Relaunch: individuell für Ihre Zielgruppe, schnell, mobil und SEO-optimiert. Inklusive Hosting, Domain, SSL und KI-Agent für Änderungen per WhatsApp.",
      "render": render_web, "after": _after_dialog, "priority": "0.9",
      "schema": [_svc_schema("Website-Erstellung", "/leistungen/website-erstellung/", "Individuelle Websites und Relaunches für Betriebe aller Branchen."),
-                breadcrumb_schema([("Start", "/"), ("Website-Erstellung", "/leistungen/website-erstellung/")]), faq_schema(FAQ_WEB)]},
+                breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/"), ("Website-Erstellung", "/leistungen/website-erstellung/")]), faq_schema(FAQ_WEB)]},
     {"path": "/leistungen/kundenmanagement-system/", "active": "leistungen",
-     "title": "Kundenmanagement-System & Dashboard entwickeln lassen | Medialyte",
+     "title": "Kundenmanagement-System & CRM entwickeln lassen | Medialyte",
      "desc": "Eigenes CRM und Dashboard nach Maß: Anfragen, Kunden, Termine, Angebote und Aufträge an einem Ort, direkt mit Ihrer Website verbunden. Kunden- und Produktmanagement-Systeme von Medialyte.",
      "render": render_sys, "after": _after_dialog, "priority": "0.9",
      "schema": [_svc_schema("Kundenmanagement-System", "/leistungen/kundenmanagement-system/", "Individuelle Kunden- und Produktmanagement-Systeme mit Dashboard."),
-                breadcrumb_schema([("Start", "/"), ("Kundenmanagement-System", "/leistungen/kundenmanagement-system/")]), faq_schema(FAQ_SYS)]},
+                breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/"), ("Kundenmanagement-System", "/leistungen/kundenmanagement-system/")]), faq_schema(FAQ_SYS)]},
     {"path": "/leistungen/ki-agent/", "active": "leistungen",
-     "title": "KI-Agent für Ihre Website – Änderungen per WhatsApp | Medialyte",
+     "title": "KI-Agent für Websites – Änderungen per WhatsApp | Medialyte",
      "desc": "Der Medialyte KI-Agent hält Ihre Website aktuell: Öffnungszeiten, Preise, Speisekarten und Bilder ändern Sie per WhatsApp oder im Dashboard. Laufende Pflege inklusive.",
      "render": render_agent, "priority": "0.8",
      "schema": [_svc_schema("KI-Agent für Websites", "/leistungen/ki-agent/", "KI-Agent für Website-Pflege und Änderungen per WhatsApp oder Dashboard."),
-                breadcrumb_schema([("Start", "/"), ("KI-Agent", "/leistungen/ki-agent/")]), faq_schema(FAQ_AGENT)]},
+                breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/"), ("KI-Agent", "/leistungen/ki-agent/")]), faq_schema(FAQ_AGENT)]},
     {"path": "/leistungen/online-marketing/", "active": "leistungen",
-     "title": "Online-Marketing & Google Ads – 200+ erfolgreiche Kampagnen | Medialyte",
+     "title": "Online-Marketing & Werbung – 200+ Kampagnen | Medialyte",
      "desc": "Google Ads, Social-Media-Werbung, SEO und Landingpages aus einer Hand, abgestimmt auf Ihre Website. Über 200 erfolgreiche Kampagnen. Jetzt kostenfreies Erstgespräch buchen.",
      "render": render_mkt, "priority": "0.8",
      "schema": [_svc_schema("Online-Marketing", "/leistungen/online-marketing/", "Google Ads, Social Media, SEO und Landingpages."),
-                breadcrumb_schema([("Start", "/"), ("Online-Marketing", "/leistungen/online-marketing/")]), faq_schema(FAQ_MKT)]},
+                breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/"), ("Online-Marketing", "/leistungen/online-marketing/")]), faq_schema(FAQ_MKT)]},
     {"path": "/referenzen/", "active": "referenzen",
      "title": "Referenzen & Projekte | Medialyte Digitalagentur",
      "desc": "Referenzen von Medialyte: RechnungsRadar, Juwelier Rubin, RITZ Instrument Transformers, Hubo d’Moran, FassadenTrio und mehr – mit Vorschau der ganzen Seite.",

@@ -14,11 +14,18 @@ ErrorDocument 404 /404.html
 
   # Alte WordPress-Adressen auf die neuen Seiten umleiten
   RewriteRule ^datenschutzerklaerung/?$ /datenschutz/ [L,R=301]
-  RewriteRule ^kontakt/?$ /termin/ [L,R=301]
   RewriteRule ^beratung/?$ /termin/ [L,R=301]
   RewriteRule ^(kostenlose-erstberatung|kostenfreie-beratung|erstberatung)/?$ /termin/ [L,R=301]
   RewriteRule ^(dashboard|home|startseite)/?$ / [L,R=301]
-  RewriteRule ^leistungen/?$ /#leistungen [L,R=301,NE]
+  RewriteRule ^(faq|haeufige-fragen)$ /faq/ [L,R=301]
+  RewriteRule ^(blog|wissen)/?$ /ratgeber/ [L,R=301]
+  RewriteRule ^(webdesign|webdesign-agentur-hamburg|webdesign-agentur)/?$ /webdesign-hamburg/ [L,R=301]
+  RewriteRule ^(seo|suchmaschinenoptimierung)/?$ /leistungen/seo/ [L,R=301]
+  RewriteRule ^(google-ads|sea)/?$ /leistungen/google-ads/ [L,R=301]
+  RewriteRule ^(relaunch|website-relaunch)/?$ /leistungen/website-relaunch/ [L,R=301]
+  RewriteRule ^(onlineshop|online-shop|shop)/?$ /leistungen/online-shop/ [L,R=301]
+  RewriteRule ^(social-media|social-media-marketing)/?$ /leistungen/social-media-marketing/ [L,R=301]
+  RewriteRule ^(crm|kundenmanagement)/?$ /leistungen/kundenmanagement-system/ [L,R=301]
   RewriteRule ^(wp-admin|wp-login\.php|wp-content|wp-includes|xmlrpc\.php|feed)(/.*)?$ / [L,R=301]
 </IfModule>
 

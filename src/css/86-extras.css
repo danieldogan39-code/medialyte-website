@@ -101,7 +101,7 @@
 .wrun{display:grid;gap:22px;padding:clamp(24px,3vw,40px)}
 .wrun__head{display:flex;align-items:center;gap:18px}
 .wrun__k{margin:0 0 2px;font-size:.85rem;color:var(--steel)}
-.wrun__t{margin-left:auto;font-size:.95rem;color:var(--text-2)}
+.wrun__t{margin-left:auto;flex:none;white-space:nowrap;font-size:.95rem;color:var(--text-2);font-variant-numeric:tabular-nums}
 .wrun__spin{width:40px;height:40px;flex:none;border-radius:50%;border:3px solid var(--line-2);border-top-color:#F7C65E;animation:wspin .9s linear infinite}
 @keyframes wspin{to{transform:rotate(360deg)}}
 .wrun__bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden}

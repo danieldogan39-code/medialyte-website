@@ -1,5 +1,6 @@
-/* Website-Check: misst eine Adresse mit Google PageSpeed Insights (Handy-Ansicht) und zeigt das Ergebnis verständlich.
-   Die Anfrage geht erst nach einem Klick auf „Prüfen“ an Google. Nichts wird gespeichert. */
+/* Website-Check: misst eine Adresse mit Google PageSpeed Insights und zeigt das Ergebnis verständlich.
+   Die Anfrage geht erst nach einem Klick auf „Website prüfen“ an Google. Nichts wird gespeichert.
+   Handy-Ansicht zuerst; die Computer-Ansicht wird erst gemessen, wenn sie jemand anklickt. */
 ML.module("wcheck", function (ML) {
   var $ = ML.$, $$ = ML.$$, esc = ML.esc;
 
@@ -9,24 +10,26 @@ ML.module("wcheck", function (ML) {
     if (!/^https?:\/\//i.test(v)) v = "https://" + v;
     try { var u = new URL(v); if (!/\.[a-z]{2,}$/i.test(u.hostname)) return ""; return u.href; } catch (e) { return ""; }
   }
+  function short(u) { return String(u).replace(/^https?:\/\//, "").replace(/\/$/, ""); }
+  function host(u) { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return short(u); } }
   function bad(input) {
     input.setAttribute("aria-invalid", "true");
     input.focus();
     var f = input.closest("form");
     if (f && !f.querySelector(".wcf__err")) {
-      var p = document.createElement("p"); p.className = "wcf__err"; p.textContent = "Bitte geben Sie eine gültige Adresse ein, z. B. ihre-website.de";
+      var p = document.createElement("p"); p.className = "wcf__err"; p.setAttribute("role", "alert");
+      p.textContent = "Bitte geben Sie eine gültige Adresse ein, z. B. ihre-website.de";
       f.appendChild(p);
     }
   }
-  /* Startseite und Ratgeber: Formular führt zur Check-Seite (ohne Skript klappt das genauso über GET) */
   $$("[data-wcheck-form]").forEach(function (f) {
     var input = f.querySelector("input");
     input.addEventListener("input", function () { input.removeAttribute("aria-invalid"); var er = f.querySelector(".wcf__err"); if (er) er.remove(); });
     f.addEventListener("submit", function (ev) {
       var u = norm(input.value);
       if (!u) { ev.preventDefault(); bad(input); return; }
-      input.value = u.replace(/^https?:\/\//, "").replace(/\/$/, "");
-      if (f.hasAttribute("data-wcheck-page")) { ev.preventDefault(); run(u, input); }
+      input.value = short(u);
+      if (f.hasAttribute("data-wcheck-page")) { ev.preventDefault(); start(u); }
     });
   });
 
@@ -38,38 +41,59 @@ ML.module("wcheck", function (ML) {
 
   var box = $("[data-wcheck]");
   if (!box) return;
-  var pageForm = $("[data-wcheck-page]"), pageInput = pageForm && pageForm.querySelector("input");
+  var form = $("[data-wcheck-page]"), input = form.querySelector("input"), btn = form.querySelector("button");
+  var stage = $("[data-wst]"), cache = {}, cur = { url: "", view: "mobile" }, busy = false, tick = null;
 
-  var busy = false, stepT = null;
-  var STEPS = ["Ihre Website wird geladen …", "Ladezeit wird gemessen …", "Darstellung auf dem Handy wird geprüft …", "Google-Grundlagen werden geprüft …", "Barrierefreiheit wird geprüft …", "Ergebnis wird zusammengestellt …"];
-  function show(state) {
-    $("[data-wc-load]", box).hidden = state !== "load";
-    $("[data-wc-err]", box).hidden = state !== "err";
-    $("[data-wc-done]", box).hidden = state !== "done";
+  function show(s) {
+    $("[data-wc-load]", box).hidden = s !== "load";
+    $("[data-wc-err]", box).hidden = s !== "err";
+    $("[data-wc-done]", box).hidden = s !== "done";
   }
   function fail(t, p) {
     $("[data-wc-errt]", box).textContent = t;
     $("[data-wc-errp]", box).textContent = p;
     show("err");
   }
-  function run(url, input) {
-    if (busy) return;
+  function loading(on, url) {
+    if (stage) stage.classList.toggle("is-scan", on);
+    var steps = $$("[data-wc-steps] li", box), prog = $("[data-wc-prog]", box), tm = $("[data-wc-timer]", box);
+    clearInterval(tick);
+    if (!on) return;
+    $("[data-wc-runhost]", box).textContent = host(url) + (cur.view === "desktop" ? " (Computer)" : "");
+    var t0 = Date.now();
+    steps.forEach(function (s) { s.className = ""; });
+    function upd() {
+      var s = (Date.now() - t0) / 1000;
+      tm.textContent = Math.floor(s) + " s";
+      /* geschätzter Fortschritt: nähert sich 92 %, bis das Ergebnis da ist */
+      prog.style.transform = "scaleX(" + (0.92 * (1 - Math.exp(-s / 14))).toFixed(3) + ")";
+      var k = Math.min(steps.length - 1, Math.floor(s / 5.5));
+      steps.forEach(function (li, i) { li.className = i < k ? "is-done" : i === k ? "is-on" : ""; });
+    }
+    upd(); tick = setInterval(upd, 250);
+  }
+
+  function start(url) {
+    cur.url = url; cur.view = "mobile"; cache = {};
+    try { history.replaceState(null, "", location.pathname + "?url=" + encodeURIComponent(short(url))); } catch (e) { /* egal */ }
     var g = $("[data-wc-google]", box);
     if (g) g.setAttribute("href", "https://pagespeed.web.dev/analysis?url=" + encodeURIComponent(url) + "&form_factor=mobile");
-    busy = true;
-    var btn = pageForm.querySelector("button");
-    btn.disabled = true; btn.textContent = "Prüft …";
-    box.hidden = false; show("load");
-    var si = 0, step = $("[data-wc-step]", box);
-    step.textContent = STEPS[0];
-    clearInterval(stepT);
-    stepT = setInterval(function () { si = Math.min(si + 1, STEPS.length - 1); step.textContent = STEPS[si]; }, 6000);
+    var sh = stage && stage.querySelector("[data-wst-host]"); if (sh) sh.textContent = host(url);
+    measure(url, "mobile");
+  }
+
+  function measure(url, view) {
+    if (busy) return;
+    if (cache[view]) { render(cache[view], view); return; }
+    busy = true; cur.view = view;
+    btn.disabled = true; btn.querySelector("span").textContent = "Prüft …";
+    box.hidden = false; show("load"); loading(true, url);
     box.scrollIntoView({ behavior: ML.reduce ? "auto" : "smooth", block: "start" });
     var q = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=" + encodeURIComponent(url) +
-      "&strategy=mobile&locale=de&category=PERFORMANCE&category=ACCESSIBILITY&category=BEST_PRACTICES&category=SEO" +
+      "&strategy=" + view + "&locale=de&category=PERFORMANCE&category=ACCESSIBILITY&category=BEST_PRACTICES&category=SEO" +
       (ML.cfg.psiKey ? "&key=" + encodeURIComponent(ML.cfg.psiKey) : "");
     var ctrl = window.AbortController ? new AbortController() : null;
-    var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 100000);
+    var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 110000);
     fetch(q, ctrl ? { signal: ctrl.signal } : {}).then(function (r) {
       return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
     }).then(function (res) {
@@ -80,91 +104,184 @@ ML.module("wcheck", function (ML) {
       var lr = res.j.lighthouseResult;
       if (!lr || (lr.runtimeError && lr.runtimeError.code && lr.runtimeError.code !== "NO_ERROR"))
         return fail("Die Seite ließ sich nicht laden.", "Stimmt die Adresse? Ist die Website gerade erreichbar? Gern prüfen wir sie auch persönlich.");
-      render(lr, res.j.loadingExperience, url);
+      cache[view] = { lr: lr, field: res.j.loadingExperience, url: url };
+      render(cache[view], view);
     }).catch(function () {
       fail("Die Prüfung hat zu lange gedauert.", "Bitte versuchen Sie es gleich noch einmal – oder wir prüfen Ihre Website persönlich.");
     }).then(function () {
-      clearTimeout(to); clearInterval(stepT);
-      busy = false; btn.disabled = false; btn.textContent = "Prüfen";
+      clearTimeout(to); loading(false);
+      busy = false; btn.disabled = false; btn.querySelector("span").textContent = "Website prüfen";
     });
   }
 
-  /* Mit ?url= von der Startseite gekommen: direkt prüfen */
-  var start = null;
-  try { start = new URLSearchParams(location.search).get("url"); } catch (e) { start = null; }
-  if (start && pageInput) {
-    var su = norm(start);
-    if (su) { pageInput.value = su.replace(/^https?:\/\//, "").replace(/\/$/, ""); run(su, pageInput); }
-  }
+  /* Ansicht wechseln, Link kopieren, neu prüfen */
+  $$("[data-wc-view]", box).forEach(function (b) {
+    b.addEventListener("click", function () {
+      var v = b.getAttribute("data-wc-view");
+      if (v === cur.view && cache[v]) return;
+      measure(cur.url, v);
+    });
+  });
+  var cp = $("[data-wc-copy]", box);
+  if (cp) cp.addEventListener("click", function () {
+    var link = location.origin + location.pathname + "?url=" + encodeURIComponent(short(cur.url)), sp = cp.querySelector("span");
+    function done(t) { sp.textContent = t; setTimeout(function () { sp.textContent = "Link kopieren"; }, 2200); }
+    if (navigator.clipboard) navigator.clipboard.writeText(link).then(function () { done("Kopiert"); }, function () { done("Nicht möglich"); });
+    else done("Nicht möglich");
+  });
+  var ag = $("[data-wc-again]", box);
+  if (ag) ag.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: ML.reduce ? "auto" : "smooth" });
+    input.value = ""; setTimeout(function () { input.focus({ preventScroll: true }); }, ML.reduce ? 0 : 450);
+  });
+
+  /* ---------------- Auswertung ---------------- */
+  var CAT = [
+    ["performance", "Ladezeit", "Wie schnell Ihre Seite lädt und auf Eingaben reagiert.", "zap"],
+    ["accessibility", "Barrierefreiheit", "Ob alle Menschen Ihre Seite gut nutzen können.", "eye"],
+    ["best-practices", "Technik", "Sicherheit und moderne Technik nach aktuellem Standard.", "shield"],
+    ["seo", "Google-Grundlagen", "Ob Google Ihre Seite gut lesen und anzeigen kann.", "search"]];
+  /* Grenzwerte nach Google: gut bis …, schlecht ab … */
+  var MET = {
+    lcp: ["Ladezeit (LCP)", "Größter Inhalt sichtbar", 2500, 4000, "ms"],
+    fcp: ["Erster Inhalt (FCP)", "Erstes Element sichtbar", 1800, 3000, "ms"],
+    inp: ["Reaktion (INP)", "Reaktion auf Tippen und Klicken", 200, 500, "ms"],
+    tbt: ["Blockierzeit (TBT)", "Zeit, in der die Seite nicht reagiert", 200, 600, "ms"],
+    cls: ["Stabilität (CLS)", "Wie stark Inhalte verrutschen", 0.1, 0.25, ""],
+    si: ["Aufbau (Speed Index)", "Wie schnell die Seite sichtbar wird", 3400, 5800, "ms"]};
+  var BASICS = [
+    ["is-on-https", "Verschlüsselt (HTTPS)", "Nicht verschlüsselt (kein HTTPS)"],
+    ["viewport", "Für das Handy eingerichtet", "Nicht für das Handy eingerichtet"],
+    ["document-title", "Seitentitel vorhanden", "Seitentitel fehlt"],
+    ["meta-description", "Beschreibung für Google vorhanden", "Beschreibung für Google fehlt"],
+    ["is-crawlable", "Google darf die Seite aufnehmen", "Seite ist für Google gesperrt"],
+    ["http-status-code", "Seite antwortet fehlerfrei", "Seite antwortet mit Fehler"],
+    ["html-has-lang", "Sprache der Seite angegeben", "Sprache der Seite fehlt"],
+    ["link-text", "Aussagekräftige Linktexte", "Linktexte wie „hier klicken“"],
+    ["image-alt", "Bilder mit Alternativtext", "Bildern fehlt der Alternativtext"],
+    ["color-contrast", "Ausreichende Kontraste", "Kontraste zu schwach"]];
 
   function tone(s) { return s >= 90 ? "ok" : s >= 50 ? "mid" : "bad"; }
-  function clean(t) { return String(t || "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/`/g, ""); }
-  function ring(label, s) {
-    var c = 2 * Math.PI * 30, off = c * (1 - s / 100);
-    return '<li class="wcs wcs--' + tone(s) + '"><svg viewBox="0 0 72 72" aria-hidden="true"><circle class="wcs__bg" cx="36" cy="36" r="30"/>' +
-      '<circle class="wcs__fg" cx="36" cy="36" r="30" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/></svg>' +
-      '<b>' + s + '</b><span>' + esc(label) + "</span></li>";
+  function clean(t) {
+    return String(t || "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/`/g, "")
+      .replace(/\s*(Weitere Informationen|Mehr erfahren|Learn more)[^.]*\.?\s*$/i, "").trim();
   }
-  function render(lr, field, url) {
-    var cats = lr.categories || {}, A = lr.audits || {};
-    var names = [["performance", "Ladezeit"], ["accessibility", "Barrierefreiheit"], ["best-practices", "Technik"], ["seo", "Google-Grundlagen"]];
-    var scores = names.map(function (n) { var c = cats[n[0]]; return c && c.score != null ? Math.round(c.score * 100) : null; });
-    var valid = scores.filter(function (s) { return s != null; });
-    var avg = valid.length ? valid.reduce(function (a, b) { return a + b; }, 0) / valid.length : 0;
-    $("[data-wc-host]", box).textContent = (function () { try { return new URL(lr.finalDisplayedUrl || lr.finalUrl || url).hostname.replace(/^www\./, ""); } catch (e) { return url; } })();
-    $("[data-wc-verdict]", box).textContent = avg >= 90 ? "Stark – technisch ist Ihre Website gut aufgestellt." : avg >= 75 ? "Solide, mit Luft nach oben." : avg >= 50 ? "Hier verschenkt Ihre Website Potenzial." : "Hier besteht dringender Handlungsbedarf.";
-    $("[data-wc-scores]", box).innerHTML = names.map(function (n, i) { return scores[i] == null ? "" : ring(n[1], scores[i]); }).join("");
+  function fmt(v, unit) {
+    if (unit === "ms") return v >= 1000 ? (v / 1000).toFixed(1).replace(".", ",") + " s" : Math.round(v) + " ms";
+    return v.toFixed(2).replace(".", ",");
+  }
+  function ring(s, r) {
+    var c = 2 * Math.PI * r;
+    return 'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - s / 100)).toFixed(1) + '"';
+  }
+  function svgRing(s) {
+    return '<svg viewBox="0 0 72 72" aria-hidden="true"><circle class="wring__bg" cx="36" cy="36" r="30"/><circle class="wring__fg" cx="36" cy="36" r="30" ' + ring(s, 30) + "/></svg>";
+  }
 
-    /* Messwerte: echte Besuche (Google-Daten), sonst Testmessung */
-    var fm = field && field.metrics, vit = [];
-    function row(name, val, okv, unit, good, note) {
-      var st = good ? "ok" : "bad";
-      vit.push('<li class="is-' + st + '"><span>' + esc(name) + '<small>' + esc(note) + '</small></span><b>' + esc(val + unit) + '</b><i>' + (good ? "gut" : "zu langsam") + "</i></li>");
-    }
-    if (fm && fm.LARGEST_CONTENTFUL_PAINT_MS) {
-      $("[data-wc-src]", box).textContent = "Gemessen an echten Besuchen der letzten 28 Tage (Daten von Google).";
-      var l = fm.LARGEST_CONTENTFUL_PAINT_MS.percentile / 1000;
-      row("Ladezeit (LCP)", l.toFixed(1).replace(".", ","), 2.5, " s", l <= 2.5, "gut: bis 2,5 s");
-      if (fm.INTERACTION_TO_NEXT_PAINT) { var n = fm.INTERACTION_TO_NEXT_PAINT.percentile; row("Reaktion (INP)", n, 200, " ms", n <= 200, "gut: bis 200 ms"); }
-      if (fm.CUMULATIVE_LAYOUT_SHIFT_SCORE) { var s = fm.CUMULATIVE_LAYOUT_SHIFT_SCORE.percentile / 100; row("Stabilität (CLS)", s.toFixed(2).replace(".", ","), 0.1, "", s <= 0.1, "gut: bis 0,1"); }
-    } else {
-      $("[data-wc-src]", box).textContent = "Testmessung in der Handy-Ansicht – für Ihre Seite liegen noch keine Daten echter Besuche vor.";
-      var lcp = A["largest-contentful-paint"], cls = A["cumulative-layout-shift"], tbt = A["total-blocking-time"];
-      if (lcp) { var lv = lcp.numericValue / 1000; row("Ladezeit (LCP)", lv.toFixed(1).replace(".", ","), 2.5, " s", lv <= 2.5, "gut: bis 2,5 s"); }
-      if (tbt) { var tv = Math.round(tbt.numericValue); row("Blockierzeit (TBT)", tv, 200, " ms", tv <= 200, "gut: bis 200 ms"); }
-      if (cls) { var cv = cls.numericValue; row("Stabilität (CLS)", cv.toFixed(2).replace(".", ","), 0.1, "", cv <= 0.1, "gut: bis 0,1"); }
-    }
-    $("[data-wc-vitals]", box).innerHTML = vit.join("");
+  function render(d, view) {
+    var lr = d.lr, A = lr.audits || {}, cats = lr.categories || {};
+    cur.view = view;
+    $$("[data-wc-view]", box).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-wc-view") === view ? "true" : "false"); });
+    $("[data-wc-host]", box).textContent = host(lr.finalDisplayedUrl || lr.finalUrl || d.url);
 
-    /* Grundlagen: einfache Ja/Nein-Punkte */
-    var basics = [["is-on-https", "Verschlüsselt (HTTPS)", "Nicht verschlüsselt (kein HTTPS)"], ["viewport", "Für das Handy eingerichtet", "Nicht für das Handy eingerichtet"],
-                  ["document-title", "Seitentitel vorhanden", "Seitentitel fehlt"], ["meta-description", "Beschreibung für Google vorhanden", "Beschreibung für Google fehlt"],
-                  ["image-alt", "Bilder mit Alternativtext", "Bildern fehlt der Alternativtext"], ["color-contrast", "Ausreichende Kontraste", "Kontraste zu schwach"]];
-    $("[data-wc-basics]", box).innerHTML = basics.filter(function (b) { return A[b[0]] && A[b[0]].score != null; }).map(function (b) {
-      var ok = A[b[0]].score >= 0.9;
-      return '<li class="is-' + (ok ? "ok" : "bad") + '"><span class="wcb__ic" aria-hidden="true">' + (ok ? "✓" : "!") + "</span>" + esc(ok ? b[1] : b[2]) + "</li>";
+    /* Gesamtwert: Ladezeit zählt doppelt, weil sie am stärksten über Anfragen entscheidet */
+    var sc = {}, sum = 0, wsum = 0;
+    CAT.forEach(function (c) { var x = cats[c[0]]; if (x && x.score != null) { sc[c[0]] = Math.round(x.score * 100); var w = c[0] === "performance" ? 2 : 1; sum += sc[c[0]] * w; wsum += w; } });
+    var total = wsum ? Math.round(sum / wsum) : 0, t = tone(total);
+    var g = $("[data-wc-grade]", box);
+    g.className = "wgrade wgrade--" + t;
+    g.querySelector(".wgrade__fg").setAttribute("stroke-dasharray", (2 * Math.PI * 52).toFixed(1));
+    g.querySelector(".wgrade__fg").setAttribute("stroke-dashoffset", (2 * Math.PI * 52 * (1 - total / 100)).toFixed(1));
+    $("[data-wc-total]", box).textContent = total;
+    $("[data-wc-label]", box).innerHTML = '<span class="wsum__grade">' + (total >= 90 ? "Sehr gut" : total >= 75 ? "Gut" : total >= 50 ? "Ausbaufähig" : "Kritisch") + "</span><span>" + (view === "desktop" ? "Computer-Ansicht" : "Handy-Ansicht") + "</span>";
+    $("[data-wc-verdict]", box).textContent = total >= 90 ? "Stark – technisch ist Ihre Website gut aufgestellt." : total >= 75 ? "Solide, mit Luft nach oben." : total >= 50 ? "Hier verschenkt Ihre Website Potenzial." : "Hier besteht dringender Handlungsbedarf.";
+    var weakest = CAT.filter(function (c) { return sc[c[0]] != null; }).sort(function (a, b) { return sc[a[0]] - sc[b[0]]; })[0];
+    $("[data-wc-explain]", box).textContent = total >= 90
+      ? "Ihre Seite erfüllt die wichtigsten technischen Anforderungen. Ob sie auch überzeugt und Anfragen bringt, entscheiden Inhalt, Aufbau und der nächste Schritt für Ihre Besucher."
+      : "Am meisten Potenzial liegt im Bereich „" + weakest[1] + "“. Unten sehen Sie, was konkret bremst – sortiert nach Wirkung.";
+
+    /* Bildschirmfoto aus der Messung */
+    var shot = A["final-screenshot"] && A["final-screenshot"].details && A["final-screenshot"].details.data;
+    $("[data-wc-shotbox]", box).hidden = !shot;
+    $("[data-wc-frame]", box).className = "wshot__frame wshot__frame--" + view;
+    if (shot) $("[data-wc-shot]", box).src = shot;
+    $("[data-wc-shotcap]", box).textContent = view === "desktop" ? "So sah Ihre Seite am Computer aus" : "So sah Ihre Seite auf dem Handy aus";
+
+    /* Kategorien */
+    $("[data-wc-cats]", box).innerHTML = CAT.map(function (c) {
+      var s = sc[c[0]]; if (s == null) return "";
+      return '<li class="wcat wcat--' + tone(s) + '"><div class="wcat__ring">' + svgRing(s) + '<b class="tnum">' + s + "</b></div>" +
+        '<div class="wcat__txt"><h3>' + esc(c[1]) + "</h3><p>" + esc(c[2]) + "</p></div></li>";
     }).join("");
 
-    /* Die größten Bremsen: nicht bestandene Prüfungen, nach Gewicht sortiert */
+    /* Filmstreifen */
+    var th = A["screenshot-thumbnails"] && A["screenshot-thumbnails"].details && A["screenshot-thumbnails"].details.items;
+    var fb = $("[data-wc-filmbox]", box);
+    fb.hidden = !(th && th.length);
+    if (th && th.length) {
+      var pick = th.length > 8 ? th.filter(function (x, i) { return i % Math.ceil(th.length / 8) === 0 || i === th.length - 1; }) : th;
+      $("[data-wc-film]", box).innerHTML = pick.map(function (x) {
+        return '<li><div class="wfilm__img wfilm__img--' + view + '"><img src="' + x.data + '" alt="" loading="lazy" decoding="async"></div><span class="tnum">' + fmt(x.timing, "ms") + "</span></li>";
+      }).join("");
+    }
+
+    /* Messwerte: echte Besuche, wenn vorhanden, sonst Testmessung */
+    var fm = d.field && d.field.metrics, rows = [], useField = !!(fm && fm.LARGEST_CONTENTFUL_PAINT_MS && view === "mobile");
+    function add(key, v) { if (v != null && isFinite(v)) rows.push([key, v]); }
+    if (useField) {
+      add("lcp", fm.LARGEST_CONTENTFUL_PAINT_MS.percentile);
+      if (fm.INTERACTION_TO_NEXT_PAINT) add("inp", fm.INTERACTION_TO_NEXT_PAINT.percentile);
+      if (fm.CUMULATIVE_LAYOUT_SHIFT_SCORE) add("cls", fm.CUMULATIVE_LAYOUT_SHIFT_SCORE.percentile / 100);
+      if (fm.FIRST_CONTENTFUL_PAINT_MS) add("fcp", fm.FIRST_CONTENTFUL_PAINT_MS.percentile);
+    } else {
+      var nv = function (id) { return A[id] && A[id].numericValue; };
+      add("lcp", nv("largest-contentful-paint")); add("fcp", nv("first-contentful-paint"));
+      add("tbt", nv("total-blocking-time")); add("cls", nv("cumulative-layout-shift")); add("si", nv("speed-index"));
+    }
+    $("[data-wc-vsrc]", box).textContent = useField ? "Echte Besuche der letzten 28 Tage (Daten von Google)" : "Testmessung – für diese Seite liegen keine Daten echter Besuche vor";
+    $("[data-wc-metrics]", box).innerHTML = rows.map(function (r) {
+      var m = MET[r[0]], v = r[1], st = v <= m[2] ? "ok" : v <= m[3] ? "mid" : "bad";
+      var max = m[3] * 1.6, pos = Math.min(100, (v / max) * 100), g1 = (m[2] / max) * 100, g2 = (m[3] / max) * 100;
+      return '<li class="wm wm--' + st + '"><div class="wm__top"><span><b>' + esc(m[0]) + "</b><small>" + esc(m[1]) + '</small></span><span class="wm__v tnum">' + fmt(v, m[4]) + "</span></div>" +
+        '<div class="wm__bar" style="--g1:' + g1.toFixed(1) + "%;--g2:" + g2.toFixed(1) + '%"><i style="left:' + pos.toFixed(1) + '%"></i></div>' +
+        '<div class="wm__leg"><span>gut bis ' + fmt(m[2], m[4]) + "</span><em>" + (st === "ok" ? "gut" : st === "mid" ? "verbesserungswürdig" : "zu langsam") + "</em></div></li>";
+    }).join("");
+
+    /* Grundlagen */
+    $("[data-wc-basics]", box).innerHTML = BASICS.filter(function (b) { return A[b[0]] && A[b[0]].score != null; }).map(function (b) {
+      var ok = A[b[0]].score >= 0.9;
+      return '<li class="is-' + (ok ? "ok" : "bad") + '"><span class="wbasic__ic" aria-hidden="true">' + (ok ? "✓" : "!") + "</span><span>" + esc(ok ? b[1] : b[2]) + "</span></li>";
+    }).join("");
+
+    /* Empfehlungen: nicht bestandene Prüfungen nach Wirkung */
     var found = [], seen = {};
-    names.forEach(function (n) {
-      var c = cats[n[0]]; if (!c) return;
-      (c.auditRefs || []).forEach(function (ref) {
-        var a = A[ref.id];
-        if (!a || seen[ref.id] || a.score == null || a.score >= 0.9 || a.scoreDisplayMode === "informative" || a.scoreDisplayMode === "numeric" || a.scoreDisplayMode === "manual" || a.scoreDisplayMode === "notApplicable") return;
+    CAT.forEach(function (c) {
+      var x = cats[c[0]]; if (!x) return;
+      (x.auditRefs || []).forEach(function (ref) {
+        var a = A[ref.id], mode = a && a.scoreDisplayMode;
+        if (!a || seen[ref.id] || a.score == null || a.score >= 0.9 || mode === "informative" || mode === "manual" || mode === "notApplicable" || mode === "numeric") return;
         seen[ref.id] = 1;
-        var w = (ref.weight || 0) + (a.details && a.details.overallSavingsMs ? Math.min(10, a.details.overallSavingsMs / 300) : 0);
-        found.push({ t: clean(a.title), w: w * (1 - a.score), cat: n[1] });
+        var ms = a.details && a.details.overallSavingsMs ? a.details.overallSavingsMs : (a.metricSavings && a.metricSavings.LCP) || 0;
+        found.push({ t: clean(a.title), d: clean(a.description), ms: ms, cat: c[1], w: ((ref.weight || 0) + Math.min(10, ms / 300)) * (1 - a.score) + (c[0] === "performance" ? 0.5 : 0) });
       });
     });
     found.sort(function (x, y) { return y.w - x.w; });
-    var top = found.slice(0, 5);
+    var top = found.slice(0, 6);
     $("[data-wc-findbox]", box).hidden = !top.length;
-    $("[data-wc-findt]", box).textContent = avg >= 90 ? "Was sich noch verbessern lässt" : "Das bremst Ihre Website am meisten";
-    $("[data-wc-find]", box).innerHTML = top.map(function (f) { return "<li><span>" + esc(f.t) + "</span><small>" + esc(f.cat) + "</small></li>"; }).join("");
+    $("[data-wc-findt]", box).textContent = total >= 90 ? "Was sich noch verbessern lässt" : "Das bremst Ihre Website am meisten";
+    $("[data-wc-find]", box).innerHTML = top.map(function (f, i) {
+      var sv = f.ms >= 100 ? '<span class="wfind__save">spart ca. ' + fmt(f.ms, "ms") + "</span>" : "";
+      return '<li><details' + (i === 0 ? " open" : "") + '><summary><span class="wfind__n">' + (i + 1) + '</span><span class="wfind__t">' + esc(f.t) + "</span>" + sv +
+        '<span class="wfind__cat">' + esc(f.cat) + '</span><span class="qa__ic" aria-hidden="true"></span></summary><p>' + esc(f.d) + "</p></details></li>";
+    }).join("");
 
     var bk = $("[data-wc-book]", box);
-    if (bk) { var h = bk.getAttribute("href").split("&website=")[0]; bk.setAttribute("href", h + "&website=" + encodeURIComponent(url.replace(/^https?:\/\//, "").replace(/\/$/, ""))); }
+    if (bk) { var h = bk.getAttribute("href").split("&website=")[0]; bk.setAttribute("href", h + "&website=" + encodeURIComponent(short(d.url))); }
     show("done");
   }
+
+  /* Mit ?url= gekommen (z. B. von der Startseite): direkt prüfen */
+  var q0 = null;
+  try { q0 = new URLSearchParams(location.search).get("url"); } catch (e) { q0 = null; }
+  if (q0) { var u0 = norm(q0); if (u0) { input.value = short(u0); start(u0); } }
 });

@@ -286,6 +286,7 @@ def header(ctx, active=""):
       <a class="nav__link" href="{ctx.u('/referenzen/')}"{cur('referenzen')}>Referenzen</a>
       <a class="nav__link" href="{ctx.u('/ratgeber/')}"{cur('ratgeber')}>Ratgeber</a>
       <a class="nav__link" href="{ctx.u('/ueber-uns/')}"{cur('ueber-uns')}>Über uns</a>
+      <a class="nav__link nav__check" href="{ctx.u('/website-check/')}"{cur('check')}><span class="nav__check-ic" aria-hidden="true">{icon('zap')}</span>Website-Check</a>
     </nav>
     <div class="header__actions">
       <a class="icon-btn header__wa" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}</a>
@@ -309,8 +310,9 @@ def header(ctx, active=""):
     <a class="mnav__link" href="{ctx.u('/ratgeber/')}" data-m style="--d:4"{cur('ratgeber')}>Ratgeber</a>
     <a class="mnav__link" href="{ctx.u('/ueber-uns/')}" data-m style="--d:5"{cur('ueber-uns')}>Über uns</a>
     <a class="mnav__link" href="{ctx.u('/kontakt/')}" data-m style="--d:6"{cur('kontakt')}>Kontakt</a>
+    <a class="mnav__link mnav__check" href="{ctx.u('/website-check/')}" data-m style="--d:7"{cur('check')}><span>{icon('zap')} Website-Check</span><small>Kostenlos</small></a>
   </nav>
-  <div class="mnav__foot" data-m style="--d:7">
+  <div class="mnav__foot" data-m style="--d:8">
     <a class="btn btn--primary btn--lg btn--block" href="{cta}">Erstgespräch buchen</a>
     <a class="btn btn--ghost btn--lg btn--block" href="{SITE['wa']}" target="_blank" rel="noopener">{icon('wa')} Per WhatsApp schreiben</a>
     <div class="mnav__meta"><a href="tel:{SITE['phone_intl']}">{e(SITE['phone'])}</a><a href="mailto:{SITE['email']}">{e(SITE['email'])}</a><span>{e(SITE['hours'])}</span></div>

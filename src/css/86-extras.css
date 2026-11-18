@@ -5,11 +5,9 @@
 :root{--w-ok:#3DD68C;--w-mid:#F5B942;--w-bad:#FF6E6E;--w-ok-r:61,214,140;--w-mid-r:245,185,66;--w-bad-r:255,110,110}
 
 /* ---------- Kopfmenü: Website-Check hervorgehoben ---------- */
-.nav__check{display:inline-flex;align-items:center;gap:7px;margin-left:6px;padding-inline:12px 14px!important;border-radius:999px;background:rgba(245,185,66,.1);box-shadow:inset 0 0 0 1px rgba(245,185,66,.32);color:var(--text)}
+.nav__check{gap:6px}
 .nav__check-ic{display:grid;color:#F7C65E}
-.nav__check-ic svg{width:15px;height:15px}
-@media (hover:hover) and (pointer:fine){.nav__check:hover{background:rgba(245,185,66,.17)}}
-.nav__check[aria-current="page"]{background:rgba(245,185,66,.2)}
+.nav__check-ic svg{width:15px;height:15px;transition:none}
 .mnav__check{display:flex!important;align-items:center;justify-content:space-between;gap:12px}
 .mnav__check>span{display:inline-flex;align-items:center;gap:10px}
 .mnav__check svg{width:22px;height:22px;color:#F7C65E}
@@ -243,7 +241,6 @@
 .nav__link{white-space:nowrap}
 @media (max-width:1280px) and (min-width:1081px){
   .nav__link{padding-inline:10px;font-size:.93rem}
-  .nav__check{padding-inline:10px 12px!important}
 }
 @media (prefers-reduced-motion:reduce){.wst__beam{display:none}}
 @media (max-width:560px){

@@ -160,6 +160,7 @@ ML.module("wcheck", function (ML) {
     found.sort(function (x, y) { return y.w - x.w; });
     var top = found.slice(0, 5);
     $("[data-wc-findbox]", box).hidden = !top.length;
+    $("[data-wc-findt]", box).textContent = avg >= 90 ? "Was sich noch verbessern lässt" : "Das bremst Ihre Website am meisten";
     $("[data-wc-find]", box).innerHTML = top.map(function (f) { return "<li><span>" + esc(f.t) + "</span><small>" + esc(f.cat) + "</small></li>"; }).join("");
 
     var bk = $("[data-wc-book]", box);

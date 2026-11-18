@@ -73,7 +73,7 @@ def render_check(ctx):
           <div class="wcr__box"><h3>Ladezeit und Stabilität</h3><p class="wcr__src" data-wc-src></p><ul class="wcr__vit" data-wc-vitals></ul></div>
           <div class="wcr__box"><h3>Grundlagen</h3><ul class="wcr__basics" data-wc-basics></ul></div>
         </div>
-        <div class="wcr__box wcr__box--wide" data-wc-findbox><h3>Das bremst Ihre Website am meisten</h3><ol class="wcr__find" data-wc-find></ol></div>
+        <div class="wcr__box wcr__box--wide" data-wc-findbox><h3 data-wc-findt>Das bremst Ihre Website am meisten</h3><ol class="wcr__find" data-wc-find></ol></div>
         <div class="wcr__cta">
           <div><h3>Was bedeutet das für Ihre Anfragen?</h3><p>Zahlen sind der Anfang. Im kostenfreien Erstgespräch zeigen wir Ihnen, was sich bei Ihrer Website am meisten lohnt – ehrlich und ohne Fachchinesisch.</p></div>
           <div class="wcr__act"><a class="btn btn--primary" data-wc-book href="{ctx.u("/termin/?anliegen=web-besser")}">Auswertung besprechen</a>{btn_wa(ctx)}</div>

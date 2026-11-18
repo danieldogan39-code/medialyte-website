@@ -238,3 +238,18 @@
 .wnojs{margin-top:16px;color:var(--text-2)}
 .wfind details[open] .qa__ic::after{transform:rotate(0)}
 .wfind details[open] .qa__ic::before,.wfind details[open] .qa__ic::after{background:var(--text)}
+
+/* Kopfmenü bleibt einzeilig, auch mit dem zusätzlichen Punkt */
+.nav__link{white-space:nowrap}
+@media (max-width:1280px) and (min-width:1081px){
+  .nav__link{padding-inline:10px;font-size:.93rem}
+  .nav__check{padding-inline:10px 12px!important}
+  .header__wa{display:none}
+}
+@media (prefers-reduced-motion:reduce){.wst__beam{display:none}}
+@media (max-width:560px){
+  .wcf--hero .wcf__ic{top:33px}
+  .wdone{padding:14px}
+  .wsum{padding:18px}
+  .wpanel{padding:16px}
+}

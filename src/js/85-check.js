@@ -164,7 +164,7 @@ ML.module("wcheck", function (ML) {
   function tone(s) { return s >= 90 ? "ok" : s >= 50 ? "mid" : "bad"; }
   function clean(t) {
     return String(t || "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/`/g, "")
-      .replace(/\s*(Weitere Informationen|Mehr erfahren|Learn more)[^.]*\.?\s*$/i, "").trim();
+      .replace(/\s*((Weitere )?Informationen (zu|zum|zur|über|dazu)|Weitere Informationen|Mehr erfahren|Learn more)[^.]*\.?\s*$/i, "").trim();
   }
   function fmt(v, unit) {
     if (unit === "ms") return v >= 1000 ? (v / 1000).toFixed(1).replace(".", ",") + " s" : Math.round(v) + " ms";

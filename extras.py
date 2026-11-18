@@ -86,7 +86,7 @@ def render_check(ctx):
             + feats([("zap", "Ladezeit", "Wie schnell der wichtigste Inhalt erscheint und ob beim Laden etwas verrutscht."),
                      ("mobile", "Handy", "Ob Ihre Seite auf dem Smartphone gut lesbar und bedienbar ist."),
                      ("search", "Google-Grundlagen", "Seitentitel, Beschreibung, Verschlüsselung und weitere Punkte, die Google auswertet."),
-                     ("eye", "Barrierefreiheit", "Kontraste, Beschriftungen und Alternativtexte – wichtig für alle Besucher.")], tone="ads")
+                     ("eye", "Barrierefreiheit", "Kontraste, Beschriftungen und Alternativtexte – wichtig für alle Besucher.")], cols=2, tone="ads")
             + "</div></section>")
     cards = "".join(rui.card(ctx, p, _art(p), i=i) for i, p in enumerate(
         ["/ratgeber/website-ladezeit-core-web-vitals/", "/ratgeber/barrierefreie-website-bfsg/", "/ratgeber/gute-website-wenig-anfragen/"]))

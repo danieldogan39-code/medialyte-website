@@ -135,11 +135,12 @@ ML.module("wcheck", function (ML) {
     $("[data-wc-vitals]", box).innerHTML = vit.join("");
 
     /* Grundlagen: einfache Ja/Nein-Punkte */
-    var basics = [["is-on-https", "Verschlüsselt (HTTPS)"], ["viewport", "Für das Handy eingerichtet"], ["document-title", "Seitentitel vorhanden"],
-                  ["meta-description", "Beschreibung für Google vorhanden"], ["image-alt", "Bilder mit Alternativtext"], ["color-contrast", "Ausreichende Kontraste"]];
+    var basics = [["is-on-https", "Verschlüsselt (HTTPS)", "Nicht verschlüsselt (kein HTTPS)"], ["viewport", "Für das Handy eingerichtet", "Nicht für das Handy eingerichtet"],
+                  ["document-title", "Seitentitel vorhanden", "Seitentitel fehlt"], ["meta-description", "Beschreibung für Google vorhanden", "Beschreibung für Google fehlt"],
+                  ["image-alt", "Bilder mit Alternativtext", "Bildern fehlt der Alternativtext"], ["color-contrast", "Ausreichende Kontraste", "Kontraste zu schwach"]];
     $("[data-wc-basics]", box).innerHTML = basics.filter(function (b) { return A[b[0]] && A[b[0]].score != null; }).map(function (b) {
       var ok = A[b[0]].score >= 0.9;
-      return '<li class="is-' + (ok ? "ok" : "bad") + '"><span class="wcb__ic" aria-hidden="true">' + (ok ? "✓" : "!") + "</span>" + esc(b[1]) + '<span class="sr-only">' + (ok ? ": erfüllt" : ": nicht erfüllt") + "</span></li>";
+      return '<li class="is-' + (ok ? "ok" : "bad") + '"><span class="wcb__ic" aria-hidden="true">' + (ok ? "✓" : "!") + "</span>" + esc(ok ? b[1] : b[2]) + "</li>";
     }).join("");
 
     /* Die größten Bremsen: nicht bestandene Prüfungen, nach Gewicht sortiert */
@@ -148,7 +149,7 @@ ML.module("wcheck", function (ML) {
       var c = cats[n[0]]; if (!c) return;
       (c.auditRefs || []).forEach(function (ref) {
         var a = A[ref.id];
-        if (!a || seen[ref.id] || a.score == null || a.score >= 0.9 || a.scoreDisplayMode === "informative" || a.scoreDisplayMode === "manual" || a.scoreDisplayMode === "notApplicable") return;
+        if (!a || seen[ref.id] || a.score == null || a.score >= 0.9 || a.scoreDisplayMode === "informative" || a.scoreDisplayMode === "numeric" || a.scoreDisplayMode === "manual" || a.scoreDisplayMode === "notApplicable") return;
         seen[ref.id] = 1;
         var w = (ref.weight || 0) + (a.details && a.details.overallSavingsMs ? Math.min(10, a.details.overallSavingsMs / 300) : 0);
         found.push({ t: clean(a.title), w: w * (1 - a.score), cat: n[1] });

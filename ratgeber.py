@@ -20,6 +20,9 @@ THEMEN = [  # Schlüssel, Überschrift, Einleitung
      "Was nach der Anfrage passiert: schnelle Antworten, Kundenmanagement und ein KI-Agent als Helfer."),
 ]
 
+# Beitrag, der oben auf der Übersicht groß gezeigt wird
+FEATURED = "/ratgeber/meta-ads-facebook-instagram/"
+
 # Themen der vier bestehenden Artikel
 THEMA_ALT = {
     "/ratgeber/was-kostet-eine-website/": "website",

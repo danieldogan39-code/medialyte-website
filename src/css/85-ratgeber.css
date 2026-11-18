@@ -84,10 +84,8 @@ path.cv-old{stroke:var(--steel-2)}
 .rfilter__n{font-size:.92rem;color:var(--steel)}
 @media (max-width:640px){
   .rfilter{gap:10px}
-  .rfilter .chips{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
-  .rfilter .chips::-webkit-scrollbar{display:none}
-  .rfilter .chips{gap:2px;padding:4px}
-  .rfilter .chip{padding:9px 10px;font-size:.88rem}
+  .rfilter .chips{display:flex;flex-wrap:wrap;gap:6px;padding:0;background:none;border:0;border-radius:0}
+  .rfilter .chip{padding:9px 13px;font-size:.9rem;border:1px solid var(--line-2)}
   .rfilter .chip b{margin-left:4px}
 }
 
@@ -147,3 +145,4 @@ html:not(.has-rprog) .rprog{display:none}
 .rtable thead th{color:var(--text);font-weight:600;background:rgba(255,255,255,.04)}
 .rtable tbody th{color:var(--text);font-weight:500;width:28%}
 .rtable td{color:var(--text-2)}
+.prose .rauthor .btn{text-decoration:none}

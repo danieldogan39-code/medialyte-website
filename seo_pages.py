@@ -17,7 +17,7 @@ from parts import (FAQ_MAIN, btn_book, btn_wa, cases, closing, faq_block, feats,
 import re
 
 import pages
-from ratgeber import NEW_ARTICLES, THEMA_ALT, THEMEN
+from ratgeber import FEATURED, NEW_ARTICLES, THEMA_ALT, THEMEN
 import ratgeber_ui as rui
 
 
@@ -840,7 +840,7 @@ def rag_tile(path):
 
 def render_ratgeber(ctx):
     newest = max(a.get("iso", "2026-11-04") for a in ARTICLES.values())
-    feat = next(p for p, a in ARTICLES.items() if a.get("iso") == newest)
+    feat = FEATURED if FEATURED in ARTICLES else next(p for p, a in ARTICLES.items() if a.get("iso") == newest)
     out = page_hero(ctx, [("Start", "/"), ("Ratgeber", "")], 'Ratgeber – <span class="quiet">Wissen für Ihren Auftritt.</span>',
                     f"Was kostet eine Website? Google Ads oder Meta Ads? Gilt das Barrierefreiheitsgesetz auch für mich? In {len(ARTICLES)} Beiträgen beantworten wir die Fragen, die Betriebe uns am häufigsten stellen – verständlich und ohne Fachchinesisch.",
                     btn_book(ctx) + btn_wa(ctx), rui.featured(ctx, feat, ARTICLES[feat]))

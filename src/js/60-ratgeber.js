@@ -38,7 +38,7 @@ ML.module("rprogress", function (ML) {
 
 ML.module("rtoc", function (ML) {
   var toc = ML.$(".legal .prose__toc"), art = ML.$("[data-rarticle]");
-  if (!toc || !art || !ML.hasIO) return;
+  if (!toc || !art) return;
   var links = {}, cur = null;
   ML.$$("a[href^='#']", toc).forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
   var heads = ML.$$("h2[id]", art).filter(function (h) { return links[h.id]; });
@@ -49,12 +49,14 @@ ML.module("rtoc", function (ML) {
     cur = id;
     if (links[id]) links[id].classList.add("is-on");
   }
-  var io = new IntersectionObserver(function () {
-    /* Aktiv ist die letzte Überschrift, die das obere Drittel schon passiert hat */
+  /* Aktiv ist die letzte Überschrift, die das obere Drittel schon passiert hat (einmal pro Bild berechnet) */
+  var ticking = false;
+  function upd() {
+    ticking = false;
     var line = window.innerHeight * 0.33, best = heads[0].id;
-    heads.forEach(function (h) { if (h.getBoundingClientRect().top < line) best = h.id; });
+    for (var i = 0; i < heads.length; i++) { if (heads[i].getBoundingClientRect().top < line) best = heads[i].id; else break; }
     mark(best);
-  }, { rootMargin: "-20% 0px -60% 0px", threshold: [0, 1] });
-  heads.forEach(function (h) { io.observe(h); });
-  mark(heads[0].id);
+  }
+  window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(upd); } }, { passive: true });
+  upd();
 });

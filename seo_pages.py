@@ -815,7 +815,7 @@ def render_ratgeber(ctx):
                     for i, p in enumerate(order))
     counts = {k: sum(1 for a in ARTICLES.values() if a["thema"] == k) for k, _, _ in THEMEN}
     chips = (f'<button class="chip" type="button" data-th="alle" aria-pressed="true">Alle<b>{len(ARTICLES)}</b></button>'
-             + "".join(f'<button class="chip" type="button" data-th="{k}" aria-pressed="false">{rui.THEMA_UI[k][0]}<b>{counts[k]}</b></button>' for k, _, _ in THEMEN))
+             + "".join(f'<button class="chip" type="button" data-th="{k}" aria-pressed="false">{rui.THEMA_UI[k][0].split(" &")[0]}<b>{counts[k]}</b></button>' for k, _, _ in THEMEN))
     out += (f'<section class="section section--flush" id="beitraege"><div class="wrap">'
             f'<div class="rfilter" data-rfilter hidden><div class="chips" role="group" aria-label="Nach Thema filtern">{chips}</div>'
             f'<span class="rfilter__n" data-rcount aria-live="polite">{len(ARTICLES) - 1} Beiträge</span></div>'

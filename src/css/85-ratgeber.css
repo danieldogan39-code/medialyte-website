@@ -80,7 +80,7 @@ path.cv-old{stroke:var(--steel-2)}
 
 /* Filter */
 .rfilter{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-bottom:clamp(22px,3vw,36px)}
-.rfilter .chip b{margin-left:6px;font-weight:500;opacity:.6}
+.rfilter .chip b{margin-left:6px;font-weight:500;color:inherit;opacity:.6}
 .rfilter__n{font-size:.92rem;color:var(--steel)}
 @media (max-width:640px){
   .rfilter{gap:10px}

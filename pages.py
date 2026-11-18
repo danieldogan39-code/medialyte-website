@@ -149,7 +149,7 @@ FAQ_AGENT = [
     ("Ist der KI-Agent im Preis enthalten?", "<p>Der KI-Agent ist Teil des monatlichen Abos. Welche Leistungen genau enthalten sind, steht transparent in Ihrem Angebot.</p>"),
 ]
 FAQ_MKT = [
-    ("Welche Werbekanäle nutzen Sie?", "<p>Vor allem Google Ads und Social Media wie Instagram und Facebook. Welche Kanäle für Sie sinnvoll sind, hängt von Ihrer Zielgruppe ab – das klären wir im Erstgespräch.</p>"),
+    ("Welche Werbekanäle nutzen Sie?", "<p>Vor allem Google Ads und Meta Ads, also Werbung auf Facebook und Instagram. Google erreicht Menschen, die gezielt suchen, Meta die, die noch gar nicht suchen. Welche Kanäle für Sie sinnvoll sind, hängt von Ihrer Zielgruppe ab – das klären wir im Erstgespräch.</p>"),
     ("Wie messen Sie den Erfolg einer Kampagne?", "<p>Mit sauberer Messung von Anfragen, Anrufen und Buchungen, nicht nur von Klicks. Sie erhalten regelmäßig einen Bericht, den man ohne Fachwissen versteht.</p>"),
     ("Was ist mit dem Werbebudget?", "<p>Das Werbebudget zahlen Sie direkt an die Plattform, etwa Google. Unsere Betreuung ist davon getrennt und steht transparent im Angebot.</p>"),
     ("Lohnt sich Werbung ohne gute Website?", "<p>Meist nicht. Deshalb prüfen wir zuerst, ob Ihre Website Besucher in Anfragen verwandelt. Wenn nicht, verbessern wir sie, bevor wir Budget in Werbung stecken.</p>"),
@@ -327,7 +327,7 @@ def render_mkt(ctx):
     {sh('Marketing, das messbar wirkt.', 'Wir erreichen Ihre Zielgruppe dort, wo sie sucht – und machen aus Aufmerksamkeit Anfragen.', split=True)}
     {feats(tone="ads", items=[
         ('search', 'Google Ads', 'Anzeigen genau dann, wenn Kunden nach Ihrer Leistung suchen. Mit klarer Zielgruppe und kontrolliertem Budget.'),
-        ('camera', 'Social-Media-Werbung', 'Kampagnen auf Instagram und Facebook, die zu Ihrer Marke passen und gezielt neue Kunden ansprechen.'),
+        ('users', 'Meta Ads auf Facebook und Instagram', 'Kampagnen mit Motiven, die auffallen – für Menschen in Ihrer Region, die noch gar nicht nach Ihnen suchen.'),
         ('trend', 'SEO und lokale Sichtbarkeit', 'Bessere Platzierungen bei Google, gepflegte Unternehmensprofile und Inhalte, die gefunden werden.'),
         ('layout', 'Landingpages', 'Eigene Seiten für Ihre Angebote, gebaut für eine Aufgabe: aus Besuchern Anfragen machen.'),
         ('spark', 'KI-gestützte Marketing-Agenten', 'Automatisierte Abläufe für Inhalte, Auswertung und Nachfassen, damit kein Kontakt verloren geht.'),
@@ -357,7 +357,7 @@ def render_mkt(ctx):
   </div>
 </section>"""
     return _svc_page(ctx, "Online-Marketing", 'Online-Marketing, <span class="quiet">das neue Kunden bringt.</span>',
-                     "Google Ads, Social Media und SEO aus einer Hand – abgestimmt auf Ihre Website. Aus über 200 Kampagnen wissen wir, wie aus Reichweite echte Anfragen werden.",
+                     "Google Ads, Meta Ads auf Facebook und Instagram, Social Media und SEO aus einer Hand – abgestimmt auf Ihre Website. Aus über 200 Kampagnen wissen wir, wie aus Reichweite echte Anfragen werden.",
                      mocks.campaign(), sections, FAQ_MKT, "werbung",
                      ("Mehr Anfragen statt nur mehr Klicks?", "Sprechen wir über Ihre Ziele.",
                       "Im kostenfreien Erstgespräch prüfen wir, ob Ihre Website bereit für Werbung ist, und sagen ehrlich, welche Kanäle sich für Sie lohnen. Ihr Angebot erhalten Sie innerhalb von 48 Stunden."))
@@ -481,9 +481,9 @@ PAGES = [
                 breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/"), ("KI-Agent", "/leistungen/ki-agent/")]), faq_schema(FAQ_AGENT)]},
     {"path": "/leistungen/online-marketing/", "active": "leistungen",
      "title": "Online-Marketing & Werbung – 200+ Kampagnen | Medialyte",
-     "desc": "Google Ads, Social-Media-Werbung, SEO und Landingpages aus einer Hand, abgestimmt auf Ihre Website. Über 200 erfolgreiche Kampagnen. Jetzt kostenfreies Erstgespräch buchen.",
+     "desc": "Google Ads, Meta Ads auf Facebook und Instagram, SEO und Landingpages aus einer Hand, abgestimmt auf Ihre Website. Über 200 erfolgreiche Kampagnen.",
      "render": render_mkt, "priority": "0.8",
-     "schema": [_svc_schema("Online-Marketing", "/leistungen/online-marketing/", "Google Ads, Social Media, SEO und Landingpages."),
+     "schema": [_svc_schema("Online-Marketing", "/leistungen/online-marketing/", "Google Ads, Meta Ads (Facebook und Instagram), Social Media, SEO und Landingpages."),
                 breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/"), ("Online-Marketing", "/leistungen/online-marketing/")]), faq_schema(FAQ_MKT)]},
     {"path": "/referenzen/", "active": "referenzen",
      "title": "Referenzen & Projekte | Medialyte Digitalagentur",

@@ -13,7 +13,9 @@ THEMEN = [  # Schlüssel, Überschrift, Einleitung
     ("website", "Website planen und verbessern",
      "Kosten, Relaunch und Barrierefreiheit – und was zu tun ist, wenn eine gute Website trotzdem zu wenig bringt."),
     ("gefunden", "Bei Google gefunden werden",
-     "Mehr Sichtbarkeit in Ihrer Region: mit dem Unternehmensprofil, einer schnellen Website und Anzeigen."),
+     "Mehr Sichtbarkeit in Ihrer Region: mit einem gepflegten Unternehmensprofil und einer schnellen Website."),
+    ("werbung", "Werbeanzeigen (Ads)",
+     "Google Ads und Meta Ads auf Facebook und Instagram: wie Anzeigen Anfragen bringen statt Budget zu verbrennen."),
     ("kunden", "Kunden und Abläufe",
      "Was nach der Anfrage passiert: schnelle Antworten, Kundenmanagement und ein KI-Agent als Helfer."),
 ]
@@ -159,7 +161,7 @@ NEW_ARTICLES = {
     },
     # ------------------------------------------------------------------ Google Ads
     "/ratgeber/google-ads-fuer-kleine-unternehmen/": {
-        "thema": "gefunden", "date": "18. November 2026", "iso": "2026-11-18",
+        "thema": "werbung", "date": "18. November 2026", "iso": "2026-11-18",
         "teaser": "Wie Google Ads funktioniert, wie Sie Ihr Budget berechnen und welche Fehler am meisten Geld kosten.",
         "crumb": "Google Ads für kleine Unternehmen", "icon": "target", "read": 6,
         "title": "Google Ads für kleine Unternehmen: Start und Budget",
@@ -193,7 +195,7 @@ NEW_ARTICLES = {
         "sources": [
             ("Warum die täglichen Kosten das durchschnittliche Tagesbudget überschreiten können", "Google Ads-Hilfe", "https://support.google.com/google-ads/answer/2375423?hl=de"),
         ],
-        "rel": ["/leistungen/google-ads/", "/leistungen/landingpage/"], "rel_rag": ["/ratgeber/google-unternehmensprofil-optimieren/"],
+        "rel": ["/leistungen/google-ads/", "/leistungen/meta-ads/"], "rel_rag": ["/ratgeber/google-ads-oder-meta-ads/", "/ratgeber/meta-ads-facebook-instagram/"],
         "close": "Google Ads richtig aufsetzen?",
     },
     # ------------------------------------------------------------------ KI-Agent
@@ -276,5 +278,90 @@ NEW_ARTICLES = {
         ],
         "rel": ["/leistungen/kundenmanagement-system/", "/leistungen/ki-agent/"], "rel_rag": ["/ratgeber/crm-fuer-kleine-unternehmen/"],
         "close": "Keine Anfrage mehr verlieren?",
+    },
+    # ------------------------------------------------------------------ Meta Ads
+    "/ratgeber/meta-ads-facebook-instagram/": {
+        "thema": "werbung", "date": "18. November 2026", "iso": "2026-11-18",
+        "teaser": "Wie Werbung auf Facebook und Instagram funktioniert, was ein gutes Motiv ausmacht und welche Sonderregeln gelten.",
+        "crumb": "Meta Ads: Facebook & Instagram", "icon": "camera", "read": 6,
+        "title": "Meta Ads: Werbung auf Facebook & Instagram erklärt",
+        "desc": "Wie Meta Ads funktionieren, wen Sie auf Facebook und Instagram erreichen, was ein gutes Motiv ausmacht und welche Sonderregeln für Stellenanzeigen gelten.",
+        "h1": 'Meta Ads: <span class="quiet">Werbung auf Facebook und Instagram, die Anfragen bringt.</span>',
+        "lead": "Auf Facebook und Instagram verbringen Ihre Kunden jeden Tag Zeit – auch die, die noch gar nicht nach Ihnen suchen. Mit Meta Ads erreichen Sie genau diese Menschen in Ihrer Region. Wie das funktioniert und worauf es ankommt.",
+        "sections": [
+            ("was", "Was sind Meta Ads?",
+             "<p>Meta ist das Unternehmen hinter Facebook, Instagram, Messenger und WhatsApp. Über den Werbeanzeigenmanager von Meta schalten Sie Anzeigen vor allem auf Facebook und Instagram: im Feed, in Stories und in Reels. Möglich sind Bilder, Videos und Karussells mit mehreren Bildern hintereinander.</p>"),
+            ("unterschied", "Der große Unterschied zu Google",
+             "<p>Bei <a href=\"{u:/ratgeber/google-ads-fuer-kleine-unternehmen/}\">Google Ads</a> sucht der Kunde bereits nach Ihrer Leistung. Bei Meta Ads scrollt er durch seinen Feed und wird auf etwas aufmerksam, wonach er noch gar nicht gesucht hat. Meta Ads wecken also Bedarf, statt ihn abzufangen.</p>"
+             "<p>Deshalb eignen sie sich besonders, um in der Region bekannt zu werden, ein neues Angebot vorzustellen, für eine Veranstaltung zu werben oder neue Mitarbeiter zu finden. Einen ausführlichen Vergleich finden Sie im Beitrag <a href=\"{u:/ratgeber/google-ads-oder-meta-ads/}\">Google Ads oder Meta Ads?</a></p>"),
+            ("zielgruppe", "Wen Sie erreichen",
+             "<ul><li><b>Region:</b> ein Umkreis um Ihren Betrieb, einzelne Städte oder ganz Deutschland.</li>"
+             "<li><b>Alter und Interessen:</b> etwa Menschen, die sich für Einrichtung, Sport oder Gastronomie interessieren.</li>"
+             "<li><b>Eigene Zielgruppen:</b> zum Beispiel Besucher Ihrer Website, die noch nicht angefragt haben – nur mit deren Einwilligung.</li></ul>"
+             "<p>Meta findet passende Menschen zunehmend selbst. Umso wichtiger wird das Motiv: Es entscheidet, wer stehen bleibt.</p>"),
+            ("motiv", "Das Motiv entscheidet",
+             "<ul><li><b>Die ersten Sekunden zählen:</b> Im Feed wird schnell weitergewischt. Zeigen Sie sofort, worum es geht.</li>"
+             "<li><b>Hochkant denken:</b> Stories und Reels füllen den ganzen Bildschirm des Handys.</li>"
+             "<li><b>Echt statt Hochglanz:</b> Ihr Team, Ihre Arbeit, Ihre Räume wirken oft stärker als Stockfotos.</li>"
+             "<li><b>Untertitel:</b> Damit das Video auch ohne Ton verstanden wird.</li>"
+             "<li><b>Eine klare Botschaft</b> und ein klarer nächster Schritt pro Anzeige.</li>"
+             "<li><b>Mehrere Varianten testen:</b> Zwei oder drei Motive zeigen schnell, was ankommt.</li></ul>"),
+            ("ziel", "Anfragen statt Likes",
+             "<p>Beim Anlegen einer Kampagne wählen Sie ein Ziel, etwa Leads, Umsätze oder Besuche auf der Website. Meta liefert die Anzeige dann vor allem an Menschen aus, die dieses Ziel wahrscheinlich erfüllen. Wer „Interaktionen“ wählt, bekommt Likes – aber nicht unbedingt Kunden. Auch der Knopf „Beitrag hervorheben“ ist bequem, bietet aber weniger Steuerung als der Werbeanzeigenmanager.</p>"
+             "<p>Für Anfragen gibt es zwei Wege: ein <b>Formular direkt in Facebook oder Instagram</b>, das schnell ausgefüllt ist, oder eine <b><a href=\"{u:/leistungen/landingpage/}\">Landingpage</a></b> auf Ihrer Website, die mehr erklärt und gezielter fragt. Welcher Weg besser passt, hängt von Ihrem Angebot ab.</p>"),
+            ("messen", "Messen mit Pixel und Conversions API",
+             "<p>Damit Meta weiß, welche Anzeigen zu Anfragen führen, braucht es eine Messung. Der <b>Meta-Pixel</b> erfasst Ereignisse im Browser, die <b>Conversions API</b> überträgt sie direkt von Ihrem Server oder Kundensystem. Laut Meta werden diese Server-Ereignisse wie Pixel-Ereignisse verarbeitet und für Auswertung und Optimierung genutzt.</p>"
+             "<p>Wichtig in Deutschland: Die Messung muss datenschutzkonform eingerichtet sein, in der Regel mit Einwilligung der Besucher über Ihr Cookie-Banner.</p>"),
+            ("sonderregeln", "Sonderregeln: Stellenanzeigen, Wohnungen, Finanzen, Politik",
+             "<p>Für Anzeigen zu <b>Jobs, Wohnraum und Finanzprodukten</b> gelten bei Meta besondere Anzeigenkategorien. Wer Werbung für eine offene Stelle schaltet, muss die Kampagne entsprechend kennzeichnen. Dann ist die Auswahl der Zielgruppe eingeschränkt: Alle Geschlechter, Alter grundsätzlich von 18 bis über 65, in Europa ein Umkreis von mindestens 15 Kilometern und keine ähnlichen Zielgruppen (Lookalikes).</p>"
+             "<p>Anzeigen zu <b>politischen und gesellschaftlichen Themen</b> lässt Meta in der EU seit dem 6. Oktober 2025 nicht mehr zu.</p>"),
+            ("budget", "Budget und Geduld",
+             "<p>Sie legen ein Tagesbudget oder ein Gesamtbudget für die Laufzeit fest und können es jederzeit ändern. Starten Sie lieber mit einem überschaubaren Budget und wenigen, guten Motiven, als das Geld auf viele Anzeigen zu verteilen. Die Auslieferung braucht ein paar Tage, um zu lernen – wer täglich alles umstellt, bremst sie aus.</p>"),
+            ("medialyte", "Meta Ads mit Medialyte",
+             "<p>Wir planen Ihre Kampagnen, produzieren die Motive – von Fotos bis zu Reels mit Motion Design –, bauen die passende Landingpage und richten die Messung ein. Jeden Monat sehen Sie in einem verständlichen Bericht, was Ihr Budget gebracht hat. Mehr auf der Seite <a href=\"{u:/leistungen/meta-ads/}\">Meta Ads</a>.</p>"),
+        ],
+        "sources": [
+            ("Special Ad Categories (besondere Anzeigenkategorien)", "Meta for Developers, Marketing API", "https://developers.facebook.com/documentation/ads-commerce/marketing-api/audiences/special-ad-category"),
+            ("Conversions API", "Meta for Developers", "https://developers.facebook.com/documentation/ads-commerce/conversions-api"),
+        ],
+        "rel": ["/leistungen/meta-ads/", "/leistungen/social-media-marketing/"], "rel_rag": ["/ratgeber/google-ads-oder-meta-ads/", "/ratgeber/google-ads-fuer-kleine-unternehmen/"],
+        "close": "Werbung auf Facebook und Instagram?",
+    },
+    # ------------------------------------------------------------------ Google oder Meta
+    "/ratgeber/google-ads-oder-meta-ads/": {
+        "thema": "werbung", "date": "18. November 2026", "iso": "2026-11-18",
+        "teaser": "Nachfrage abfangen oder Nachfrage wecken? Welcher Kanal zu Ihrem Betrieb passt – und wann sich beide lohnen.",
+        "crumb": "Google Ads oder Meta Ads?", "icon": "sliders", "read": 4,
+        "title": "Google Ads oder Meta Ads? Der Vergleich",
+        "desc": "Google Ads oder Werbung auf Facebook und Instagram? Die Unterschiede, typische Einsatzbereiche je Branche und wann sich beide Kanäle zusammen lohnen.",
+        "h1": 'Google Ads oder Meta Ads? <span class="quiet">Was zu Ihrem Betrieb passt.</span>',
+        "lead": "Beide Kanäle können Kunden bringen – aber auf ganz unterschiedliche Weise. Wer den Unterschied kennt, setzt sein Werbebudget dort ein, wo es am meisten bewirkt.",
+        "sections": [
+            ("kern", "Der Kern: abfangen oder wecken",
+             "<p><b>Google Ads fangen Nachfrage ab.</b> Ihre Anzeige erscheint, wenn jemand aktiv nach Ihrer Leistung sucht – „Dachdecker Hamburg“, „Steuerberater in der Nähe“. Der Bedarf ist schon da.</p>"
+             "<p><b>Meta Ads wecken Nachfrage.</b> Ihre Anzeige erscheint auf Facebook und Instagram, während jemand durch seinen Feed scrollt. Er hat nicht nach Ihnen gesucht, wird aber aufmerksam – weil das Motiv ihn anspricht.</p>"),
+            ("vergleich", "Der Vergleich auf einen Blick",
+             "<div class=\"rtable\"><table><thead><tr><th></th><th>Google Ads</th><th>Meta Ads</th></tr></thead><tbody>"
+             "<tr><th>Situation des Kunden</th><td>sucht aktiv nach einer Lösung</td><td>scrollt und ist offen für Neues</td></tr>"
+             "<tr><th>Stärke</th><td>dringender, konkreter Bedarf</td><td>Bekanntheit, neue Angebote, Emotionen</td></tr>"
+             "<tr><th>Was zählt</th><td>Suchbegriffe und Zielseite</td><td>Motiv, Video und Zielgruppe</td></tr>"
+             "<tr><th>Typische Ziele</th><td>Anrufe, Anfragen, Buchungen</td><td>Reichweite, Anfragen, Bewerbungen</td></tr>"
+             "<tr><th>Passt oft zu</th><td>Handwerk, Kanzleien, Praxen, Notdienste, B2B</td><td>Gastronomie, Handel, Beauty, Events, Recruiting</td></tr>"
+             "</tbody></table></div>"),
+            ("google", "Wann Google Ads die bessere Wahl ist",
+             "<ul><li>Kunden suchen bereits aktiv nach Ihrer Leistung.</li><li>Der Bedarf ist dringend: Rohrbruch, Schlüsseldienst, Termin beim Anwalt.</li>"
+             "<li>Ihre Leistung lässt sich schlecht in einem Bild zeigen, aber gut in Worten suchen.</li><li>Sie verkaufen an Unternehmen, die gezielt nach Anbietern suchen.</li></ul>"),
+            ("meta", "Wann Meta Ads die bessere Wahl ist",
+             "<ul><li>Ihr Angebot ist neu oder noch wenig bekannt – danach sucht noch niemand.</li><li>Ihre Leistung lebt von Bildern: Essen, Mode, Einrichtung, Vorher-Nachher.</li>"
+             "<li>Sie möchten in Ihrer Region bekannt werden oder für eine Veranstaltung werben.</li><li>Sie suchen Mitarbeiter, die gerade gar nicht aktiv nach einem Job suchen.</li></ul>"),
+            ("beides", "Am stärksten: beide zusammen",
+             "<p>Oft ergänzen sich die Kanäle. Meta Ads machen Ihren Betrieb in der Region bekannt. Wenn diese Menschen später Bedarf haben, suchen sie bei Google – und finden Sie dort wieder, über Anzeigen und Ihr <a href=\"{u:/ratgeber/google-unternehmensprofil-optimieren/}\">Unternehmensprofil</a>. Wichtig ist, beide Kanäle gemeinsam auszuwerten, damit Sie sehen, was am Ende wirklich Anfragen bringt.</p>"),
+            ("start", "Mit begrenztem Budget: Wo anfangen?",
+             "<p>Starten Sie dort, wo die Nachfrage schon ist. Suchen Ihre Kunden aktiv nach Ihrer Leistung, beginnen Sie mit Google Ads. Ist Ihr Angebot neu, sehr visuell oder suchen Sie Personal, beginnen Sie mit Meta Ads. Wichtiger als der Kanal ist in beiden Fällen eine Zielseite, die überzeugt, und eine Messung, die zeigt, was wirkt.</p>"),
+            ("medialyte", "Google und Meta mit Medialyte",
+             "<p>Wir betreuen <a href=\"{u:/leistungen/google-ads/}\">Google Ads</a> und <a href=\"{u:/leistungen/meta-ads/}\">Meta Ads</a> aus einer Hand, abgestimmt auf Ihre Website und mit einem gemeinsamen Monatsbericht. Im Erstgespräch sagen wir Ihnen ehrlich, welcher Kanal für Ihren Betrieb am meisten verspricht.</p>"),
+        ],
+        "rel": ["/leistungen/google-ads/", "/leistungen/meta-ads/"], "rel_rag": ["/ratgeber/meta-ads-facebook-instagram/", "/ratgeber/google-ads-fuer-kleine-unternehmen/"],
+        "close": "Welcher Kanal passt zu Ihnen?",
     },
 }

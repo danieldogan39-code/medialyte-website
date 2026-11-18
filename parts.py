@@ -232,7 +232,7 @@ STATIONS = [
      ["Änderungen in eigenen Worten, ohne Technik", "Bei einfachen Websites per WhatsApp", "Bei großen Systemen direkt im Dashboard", "Laufende Pflege inklusive"],
      "/leistungen/ki-agent/", "Mehr zum KI-Agenten", "agent", "Wählen Sie eine Nachricht – der Agent setzt sie auf der Beispiel-Website um."),
     ("Werbung", "Werbung, die Anfragen bringt – nicht nur Klicks",
-     "Wenn das Fundament steht, bringen wir gezielt neue Kunden auf Ihre Seite: mit Google Ads, Social Media und Landingpages. Aus über 200 Kampagnen wissen wir, worauf es ankommt.",
+     "Wenn das Fundament steht, bringen wir gezielt neue Kunden auf Ihre Seite: mit Google Ads, Meta Ads auf Facebook und Instagram, Social Media und Landingpages. Aus über 200 Kampagnen wissen wir, worauf es ankommt.",
      ["Google Ads und Social-Media-Kampagnen", "Landingpages für Ihre wichtigsten Angebote", "SEO und lokale Sichtbarkeit", "Messbar: Anfragen, Anrufe, Buchungen"],
      "/leistungen/online-marketing/", "Mehr zum Online-Marketing", "campaign", "Beispiel: Anzeige bei Google und die Kampagne dahinter."),
 ]
@@ -630,7 +630,7 @@ def booking_widget(ctx):
         opt("anliegen", "web-neu", "globe", "Neue Website", "Noch keine oder eine veraltete Website"),
         opt("anliegen", "web-besser", "trend", "Website verbessern", "Mehr Anfragen über Ihre Website"),
         opt("anliegen", "system", "db", "Kunden- oder Produktmanagement", "Eigenes System mit Dashboard"),
-        opt("anliegen", "werbung", "mega", "Werbung und Online-Marketing", "Google Ads, Social Media, SEO"),
+        opt("anliegen", "werbung", "mega", "Werbung und Online-Marketing", "Google Ads, Meta Ads, Social Media, SEO"),
         opt("anliegen", "agent", "bot", "KI-Agent und Pflege", "Website aktuell halten ohne Aufwand"),
         opt("anliegen", "brief", "mail", "Brief von Medialyte erhalten", "Es gibt schon einen Entwurf für mich"),
     ])

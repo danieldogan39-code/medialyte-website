@@ -10,7 +10,8 @@ from build import e, icon
 # Thema -> (kurzer Name, Farbton der Leistungen)
 THEMA_UI = {
     "website": ("Website", "web"),
-    "gefunden": ("Google", "ads"),
+    "gefunden": ("Google", "ai"),
+    "werbung": ("Ads", "ads"),
     "kunden": ("Kunden & Abläufe", "crm"),
 }
 
@@ -86,6 +87,36 @@ COVER = {
         '<circle class="cv-af" cx="314" cy="62" r="30"/><path class="cv-hand" d="M314 46v16l10 8"/>'),
 }
 
+def _phone(x, y, w=120, h=200, cta=True):
+    s = (f'<rect class="cv-s" x="{x}" y="{y}" width="{w}" height="{h}" rx="18"/>'
+         f'<circle class="cv-t" cx="{x + 20}" cy="{y + 22}" r="8"/>' + _lines(x + 34, y + 16, [46], cls="cv-t") +
+         f'<rect class="cv-tiny" x="{x + 34}" y="{y + 26}" width="30" height="4" rx="2"/>'
+         f'<rect class="cv-a" x="{x + 10}" y="{y + 40}" width="{w - 20}" height="{h * .46:.0f}" rx="8"/>'
+         f'<circle class="cv-af" cx="{x + w * .68:.0f}" cy="{y + 40 + h * .14:.0f}" r="10"/>'
+         f'<path class="cv-a cv-w" d="M{x + 18} {y + 40 + h * .4:.0f}l{w * .2:.0f}-{h * .14:.0f} {w * .16:.0f} {h * .09:.0f} {w * .14:.0f}-{h * .06:.0f} {w * .2:.0f} {h * .11:.0f}"/>')
+    if cta:
+        cy = y + 40 + h * .46 + 10
+        s += (f'<rect class="cv-af" x="{x + 10}" y="{cy:.0f}" width="{w - 20}" height="20" rx="6"/>'
+              f'<text class="cv-tag" x="{x + w / 2:.0f}" y="{cy + 13.5:.0f}" text-anchor="middle">Jetzt anfragen</text>'
+              f'<path class="cv-l" d="M{x + 14} {cy + 38:.0f}h70"/>' + _lines(x + 14, cy + 48, [w - 46], cls="cv-t"))
+    return s
+
+
+COVER["meta-ads-facebook-instagram"] = (
+    '<circle class="cv-ringc" cx="200" cy="125" r="104"/><circle class="cv-ringc" cx="200" cy="125" r="70" opacity=".6"/>' +
+    _phone(140, 22, 120, 206) +
+    '<path class="cv-heart" d="M78 92c-8-8-22-2-22 9 0 12 22 24 22 24s22-12 22-24c0-11-14-17-22-9z"/>' +
+    '<rect class="cv-card" x="296" y="70" width="72" height="44" rx="12"/><path class="cv-a cv-w" d="M310 98l12-10 10 8 18-14"/>' +
+    '<rect class="cv-card" x="40" y="150" width="76" height="40" rx="12"/>' + _lines(52, 162, [40, 52], gap=10))
+
+COVER["google-ads-oder-meta-ads"] = (
+    '<rect class="cv-s" x="28" y="56" width="160" height="34" rx="17"/><circle class="cv-l" cx="48" cy="73" r="6"/>' + _lines(62, 71, [96]) +
+    '<rect class="cv-hl" x="28" y="104" width="160" height="44" rx="9"/><rect class="cv-af" x="38" y="113" width="40" height="11" rx="3"/>' +
+    '<text class="cv-tag" x="58" y="121.5" text-anchor="middle" style="font-size:7px">Anzeige</text>' + _lines(84, 115, [90]) + _lines(38, 133, [130]) +
+    _lines(28, 164, [140, 110], gap=13) +
+    _phone(250, 26, 116, 198) +
+    '<circle class="cv-vs" cx="219" cy="125" r="17"/><text class="cv-k" x="219" y="131" text-anchor="middle" style="font-size:14px">vs</text>')
+
 
 def cover(path, extra_cls=""):
     slug = path.strip("/").split("/")[-1]
@@ -132,6 +163,14 @@ KURZ = {
         "Ein KI-Agent erledigt Aufgaben, statt nur Fragen zu beantworten.",
         "Routine darf er selbst erledigen, Wichtiges bereitet er vor, ein Mensch gibt frei.",
         "Seit dem 2. August 2026 müssen KI-Chats als solche erkennbar sein."],
+    "/ratgeber/meta-ads-facebook-instagram/": [
+        "Meta Ads laufen vor allem auf Facebook und Instagram – im Feed, in Stories und in Reels.",
+        "Sie wecken Bedarf bei Menschen, die noch nicht suchen; das Motiv entscheidet, wer stehen bleibt.",
+        "Für Stellenanzeigen gelten Sonderregeln: eingeschränkte Zielgruppe, in Europa mindestens 15 km Umkreis."],
+    "/ratgeber/google-ads-oder-meta-ads/": [
+        "Google Ads fangen Nachfrage ab, Meta Ads wecken Nachfrage.",
+        "Dringender, gesuchter Bedarf spricht für Google; neue, visuelle Angebote und Recruiting für Meta.",
+        "Am stärksten sind beide zusammen – mit einer Zielseite, die überzeugt, und gemeinsamer Auswertung."],
     "/ratgeber/anfragen-schneller-beantworten/": [
         "Wer zuerst kompetent antwortet, setzt den Maßstab für alle anderen.",
         "Eine sofortige Eingangsbestätigung überbrückt die Zeit bis zur Antwort.",

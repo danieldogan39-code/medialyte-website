@@ -210,7 +210,7 @@ SERVICES = [
     ("/leistungen/website-erstellung/", "Website-Erstellung", "Neue Website oder Relaunch, gemacht für Ihre Kunden", "globe", "web"),
     ("/leistungen/kundenmanagement-system/", "Kundenmanagement-System", "Ihr eigenes Dashboard für Anfragen, Kunden und Aufträge", "db", "crm"),
     ("/leistungen/ki-agent/", "KI-Agent", "Website ändern per WhatsApp oder im Dashboard", "bot", "ai"),
-    ("/leistungen/online-marketing/", "Online-Marketing", "Google Ads, Social Media und SEO, die Anfragen bringen", "mega", "ads"),
+    ("/leistungen/online-marketing/", "Online-Marketing", "Google & Meta Ads, Social Media und SEO, die Anfragen bringen", "mega", "ads"),
 ]
 
 # Weitere Leistungen mit eigener Seite (im Menü als kurze Links unter den vier Hauptleistungen)
@@ -220,6 +220,7 @@ SERVICES_MORE = [
     ("/leistungen/landingpage/", "Landingpage"),
     ("/leistungen/seo/", "SEO"),
     ("/leistungen/google-ads/", "Google Ads"),
+    ("/leistungen/meta-ads/", "Meta Ads"),
     ("/leistungen/social-media-marketing/", "Social Media"),
 ]
 
@@ -408,7 +409,7 @@ def org_schema():
             "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": t, "url": SITE["url"] + p}}
                                 for p, t in [(p, t) for p, t, *_ in SERVICES] + SERVICES_MORE],
         },
-        "knowsAbout": ["Webdesign", "Website-Erstellung", "CRM-Entwicklung", "Dashboards", "KI-Agenten", "Google Ads", "Suchmaschinenoptimierung", "Social Media Marketing"],
+        "knowsAbout": ["Webdesign", "Website-Erstellung", "CRM-Entwicklung", "Dashboards", "KI-Agenten", "Google Ads", "Meta Ads", "Facebook-Werbung", "Instagram-Werbung", "Suchmaschinenoptimierung", "Social Media Marketing"],
     }
 
 
@@ -488,7 +489,7 @@ def llms_txt(built):
     """Kurzbeschreibung für KI-Suchmaschinen (llms.txt): wer Medialyte ist und welche Seite wofür steht."""
     lines = ["# Medialyte", "",
              "> Digitalagentur aus Hamburg für Betriebe in ganz Deutschland: Websites, Kundenmanagement-Systeme, "
-             "ein KI-Agent für Website-Änderungen per WhatsApp und Online-Marketing (SEO, Google Ads, Social Media). "
+             "ein KI-Agent für Website-Änderungen per WhatsApp und Online-Marketing (SEO, Google Ads, Meta Ads auf Facebook und Instagram, Social Media)."
              "Angebot innerhalb von 48 Stunden nach einem kostenfreien Erstgespräch; Abrechnung als einmalige Pauschale plus monatliches Abo.", "",
              f"Kontakt: {SITE['phone']} · {SITE['email']} · WhatsApp {SITE['wa']} · {SITE['hours']}", ""]
     groups = [("Leistungen", "/leistungen/"), ("Branchen", "/branchen/"), ("Ratgeber", "/ratgeber/")]

@@ -1,12 +1,12 @@
 """Zusätzliche Seiten für die Sichtbarkeit bei Google.
 
-- /leistungen/ (Übersicht) und sechs weitere Leistungsseiten
+- /leistungen/ (Übersicht) und sieben weitere Leistungsseiten
 - /branchen/ (Übersicht) und acht Branchenseiten
 - /webdesign-hamburg/ (lokale Seite für Hamburg)
 - /kontakt/ und /faq/
 - /ratgeber/ (Übersicht nach Themen) und Ratgeber-Artikel (Teil 2 in ratgeber.py)
 
-Jede Seite beantwortet eine eigene Suchanfrage („Website für Handwerker“, „Google Ads Agentur“,
+Jede Seite beantwortet eine eigene Suchanfrage („Website für Handwerker“, „Google Ads Agentur“, „Meta Ads Agentur“,
 „Website Relaunch Checkliste“ …) und verlinkt auf passende Nachbarseiten. Inhalte bewusst nur mit
 belegbaren Angaben: keine erfundenen Zahlen, Preise oder Kundenstimmen.
 """
@@ -46,6 +46,7 @@ ALL_SERVICES = [  # Pfad, Symbol, Farbe, Titel, Kurztext
     ("/leistungen/online-marketing/", "mega", "ads", "Online-Marketing", "Werbung und Sichtbarkeit aus einer Hand"),
     ("/leistungen/seo/", "search", "ads", "SEO", "Bei Google gefunden werden – auch lokal"),
     ("/leistungen/google-ads/", "target", "ads", "Google Ads", "Anzeigen genau dann, wenn Kunden suchen"),
+    ("/leistungen/meta-ads/", "users", "ads", "Meta Ads", "Werbung auf Facebook und Instagram"),
     ("/leistungen/social-media-marketing/", "camera", "ads", "Social-Media-Marketing", "Instagram, Facebook, TikTok und LinkedIn"),
 ]
 _SVC = {p: (p, ic, tn, t, d) for p, ic, tn, t, d in ALL_SERVICES}
@@ -61,8 +62,8 @@ RELATED_CORE = {  # „Passt dazu“ auf den vier Hauptleistungsseiten
                                     "/leistungen/seo/", "/webdesign-hamburg/", "/leistungen/ki-agent/"),
     "Kundenmanagement-System": svc_tiles("/leistungen/ki-agent/", "/leistungen/website-erstellung/", "/leistungen/online-shop/"),
     "KI-Agent": svc_tiles("/leistungen/website-erstellung/", "/leistungen/kundenmanagement-system/", "/leistungen/website-relaunch/"),
-    "Online-Marketing": svc_tiles("/leistungen/google-ads/", "/leistungen/seo/", "/leistungen/social-media-marketing/",
-                                  "/leistungen/landingpage/", "/leistungen/online-shop/", "/webdesign-hamburg/"),
+    "Online-Marketing": svc_tiles("/leistungen/google-ads/", "/leistungen/meta-ads/", "/leistungen/seo/",
+                                  "/leistungen/social-media-marketing/", "/leistungen/landingpage/", "/webdesign-hamburg/"),
 }
 
 
@@ -154,7 +155,7 @@ SUB_SERVICES = {
             ("shield", "Zahlung und Vertrauen", "Gängige Zahlarten, klare Versandinfos und Rechtstexte an der richtigen Stelle."),
             ("layers", "Produkte zentral pflegen", "Varianten, Preise und Bestände an einem Ort – auf Wunsch angebunden an Ihr eigenes System."),
             ("zap", "Schnell geladen", "Schlanke Seiten und optimierte Bilder, damit niemand im Warenkorb wartet."),
-            ("trend", "Bereit für Werbung", "Saubere Produktdaten und Messung, damit Google Ads und Social Media verkaufen statt nur Klicks bringen."),
+            ("trend", "Bereit für Werbung", "Saubere Produktdaten und Messung, damit Google Ads und Meta Ads verkaufen statt nur Klicks bringen."),
         ],
         "split": ("Plattform nach Bedarf", "Nicht jeder Shop braucht dasselbe. Für viele Händler ist eine bewährte Shop-Plattform wie Shopify die beste Wahl. Wer besondere Abläufe hat, etwa Anfragen statt Kauf oder tausende technische Produkte, bekommt eine eigene Lösung – wie den Produktfinder in unserem Website-Entwurf für RITZ.",
                   ["Beratung, welche Lösung zu Sortiment und Abläufen passt", "Gestaltung und Einrichtung inklusive Produktimport", "Anbindung an Zahlung, Versand und Ihr System", "Betreuung und Kampagnen nach dem Start"]),
@@ -170,13 +171,13 @@ SUB_SERVICES = {
             ("Übernehmen Sie Produkte aus meinem bisherigen Shop?", "<p>Ja. Wir übernehmen Produkte, Bilder und Texte und richten Weiterleitungen ein, damit bestehende Links und Platzierungen erhalten bleiben.</p>"),
             ("Machen Sie auch Werbung für den Shop?", "<p>Ja. Google Ads, Social-Media-Kampagnen und SEO gehören zu unseren Leistungen. Dafür bauen wir den Shop von Anfang an so, dass Verkäufe sauber gemessen werden.</p>"),
         ],
-        "rel": ["/leistungen/google-ads/", "/leistungen/social-media-marketing/", "/leistungen/kundenmanagement-system/"],
+        "rel": ["/leistungen/google-ads/", "/leistungen/meta-ads/", "/leistungen/kundenmanagement-system/"],
         "rag": ["/ratgeber/was-kostet-eine-website/", "/ratgeber/barrierefreie-website-bfsg/", "/ratgeber/website-ladezeit-core-web-vitals/"],
     },
     "/leistungen/landingpage/": {
         "crumb": "Landingpage", "ask": "werbung", "tone": "web", "icon": "layout",
         "title": "Landingpage erstellen lassen | Medialyte",
-        "desc": "Landingpage erstellen lassen: eine Seite für ein Ziel – Anfragen, Anrufe oder Buchungen. Abgestimmt auf Google Ads und Social Media.",
+        "desc": "Landingpage erstellen lassen: eine Seite für ein Ziel – Anfragen, Anrufe oder Buchungen. Abgestimmt auf Google Ads und Meta Ads.",
         "h1": 'Landingpages, <span class="quiet">die aus Klicks Anfragen machen.</span>',
         "lead": "Wer auf eine Anzeige klickt, will genau das finden, was die Anzeige verspricht. Eine Landingpage hat deshalb nur eine Aufgabe: aus Besuchern Anfragen, Anrufe oder Buchungen zu machen. Wir bauen sie passend zu Ihrer Kampagne – und messen, was sie bringt.",
         "why": ("Was eine gute Landingpage ausmacht", "Keine Ablenkung, ein klarer nächster Schritt und Argumente, die genau diese Zielgruppe überzeugen."),
@@ -199,7 +200,7 @@ SUB_SERVICES = {
             ("Brauche ich für jede Kampagne eine eigene Landingpage?", "<p>Für jedes Angebot mit eigener Zielgruppe lohnt sich meist eine eigene Seite. Wir sagen Ihnen im Erstgespräch, wie viele sinnvoll sind.</p>"),
             ("Kann die Landingpage unter meiner Domain laufen?", "<p>Ja, zum Beispiel als Unterseite Ihrer Website oder unter einer eigenen Adresse. Das stimmen wir mit Ihnen ab.</p>"),
         ],
-        "rel": ["/leistungen/google-ads/", "/leistungen/social-media-marketing/", "/leistungen/online-marketing/"],
+        "rel": ["/leistungen/google-ads/", "/leistungen/meta-ads/", "/leistungen/online-marketing/"],
         "rag": ["/ratgeber/google-ads-fuer-kleine-unternehmen/", "/ratgeber/anfragen-schneller-beantworten/", "/ratgeber/website-ladezeit-core-web-vitals/"],
     },
     "/leistungen/seo/": {
@@ -260,8 +261,40 @@ SUB_SERVICES = {
             ("Was ist Performance Max?", "<p>Ein Kampagnentyp, bei dem Google Ihre Anzeigen automatisch über Suche, YouTube, Display, Gmail und Maps ausspielt. Er funktioniert gut, wenn Ziele und Messung sauber eingerichtet sind – genau darum kümmern wir uns.</p>"),
             ("Übernehmen Sie auch bestehende Kampagnen?", "<p>Ja. Wir prüfen Ihr bestehendes Konto, finden Budgetfresser und Messlücken und optimieren von dort aus weiter.</p>"),
         ],
-        "rel": ["/leistungen/landingpage/", "/leistungen/seo/", "/leistungen/social-media-marketing/"],
-        "rag": ["/ratgeber/google-ads-fuer-kleine-unternehmen/", "/ratgeber/google-unternehmensprofil-optimieren/", "/ratgeber/anfragen-schneller-beantworten/"],
+        "rel": ["/leistungen/meta-ads/", "/leistungen/landingpage/", "/leistungen/seo/"],
+        "rag": ["/ratgeber/google-ads-fuer-kleine-unternehmen/", "/ratgeber/google-ads-oder-meta-ads/", "/ratgeber/google-unternehmensprofil-optimieren/"],
+    },
+    "/leistungen/meta-ads/": {
+        "crumb": "Meta Ads", "ask": "werbung", "tone": "ads", "icon": "users",
+        "title": "Meta Ads Agentur – Facebook & Instagram Werbung | Medialyte",
+        "desc": "Meta Ads: Werbeanzeigen auf Facebook und Instagram mit Motiven, die auffallen, passender Landingpage und sauberer Messung – für Anfragen statt Likes.",
+        "h1": 'Meta Ads, <span class="quiet">die auf Facebook und Instagram Kunden gewinnen.</span>',
+        "lead": "Ihre Kunden verbringen jeden Tag Zeit auf Facebook und Instagram – auch die, die noch gar nicht nach Ihnen suchen. Wir planen Ihre Kampagnen, produzieren die Motive und messen, was wirklich Anfragen bringt. Nicht Likes, sondern Kunden.",
+        "visual": "meta",
+        "why": ("Was wir für Ihre Kampagne tun", "Bei Meta entscheidet das Motiv. Deshalb bekommen Sie Strategie, Produktion und Betreuung aus einer Hand."),
+        "feats": [
+            ("target", "Zielgruppe und Region", "Wir legen fest, wen Sie erreichen: Umkreis, Alter, Interessen und eigene Zielgruppen."),
+            ("video", "Motive, die auffallen", "Reels, Stories, Bilder und Karussells mit starkem Einstieg – gemacht fürs Handy."),
+            ("inbox", "Lead-Formulare", "Anfragen direkt in Facebook und Instagram – auf Wunsch automatisch in Ihrem Kundensystem."),
+            ("layout", "Passende Landingpages", "Wer mehr wissen will, landet auf einer Seite, die das Versprechen der Anzeige hält."),
+            ("pie", "Pixel und Conversions API", "Datenschutzkonforme Messung, damit Meta lernt, welche Anzeigen Anfragen bringen."),
+            ("users", "Recruiting-Kampagnen", "Mitarbeiter erreichen, die gerade nicht aktiv suchen – nach den Regeln für Stellenanzeigen."),
+        ],
+        "split": ("Erst das Motiv, dann das Budget", "Mehr Budget macht eine schwache Anzeige nicht besser. Wir testen mehrere Motive gegeneinander, sehen nach wenigen Tagen, was ankommt, und erhöhen das Budget erst dort, wo es nachweislich Anfragen bringt.",
+                  ["Mehrere Motive im Test statt einer einzigen Anzeige", "Kampagnenziel Anfragen statt Likes", "Messung über Pixel und Conversions API", "Monatlicher Bericht in verständlicher Sprache"]),
+        "process": [("Analyse", "Zielgruppe, Angebot, Region und Budget."),
+                    ("Produktion", "Motive, Texte, Landingpage und Messung."),
+                    ("Start", "Kampagne geht live, wir beobachten die ersten Tage eng."),
+                    ("Optimieren", "Motive testen, Budget verschieben, monatlicher Bericht.")],
+        "faqs": [
+            ("Lohnen sich Meta Ads für meinen Betrieb?", "<p>Meta Ads erreichen Menschen, die noch nicht aktiv nach Ihnen suchen. Das passt besonders zu neuen oder visuellen Angeboten, Veranstaltungen, regionaler Bekanntheit und der Suche nach Mitarbeitern. Suchen Ihre Kunden vor allem gezielt nach Ihrer Leistung, ist Google Ads oft der bessere Start. Im Erstgespräch sagen wir Ihnen ehrlich, was passt.</p>"),
+            ("Wie viel Budget brauche ich für Meta Ads?", "<p>Das hängt von Region, Zielgruppe und Ziel ab. Im Erstgespräch schätzen wir ein realistisches Startbudget. Das Werbebudget zahlen Sie direkt an Meta, unsere Betreuung ist davon getrennt und steht transparent im Angebot.</p>"),
+            ("Brauche ich eigene Fotos und Videos?", "<p>Nicht unbedingt. Wir produzieren Motive für Sie – von Bildern über Reels bis zu Animationen. Echte Aufnahmen aus Ihrem Betrieb wirken oft am stärksten. Wenn Sie möchten, begleiten wir Sie dabei.</p>"),
+            ("Was ist der Unterschied zu Social-Media-Marketing?", "<p>Beim Social-Media-Marketing geht es um Ihre eigenen Kanäle: Beiträge, Reels und Community. Meta Ads sind bezahlte Anzeigen, die gezielt Menschen über Ihre Follower hinaus erreichen. Beides ergänzt sich gut.</p>"),
+            ("Übernehmen Sie auch bestehende Werbekonten?", "<p>Ja. Wir prüfen Ihr bestehendes Konto im Werbeanzeigenmanager, finden Budgetfresser und Messlücken und optimieren von dort aus weiter.</p>"),
+        ],
+        "rel": ["/leistungen/google-ads/", "/leistungen/social-media-marketing/", "/leistungen/landingpage/"],
+        "rag": ["/ratgeber/meta-ads-facebook-instagram/", "/ratgeber/google-ads-oder-meta-ads/", "/ratgeber/anfragen-schneller-beantworten/"],
     },
     "/leistungen/social-media-marketing/": {
         "crumb": "Social-Media-Marketing", "ask": "werbung", "tone": "ads", "icon": "camera",
@@ -273,7 +306,7 @@ SUB_SERVICES = {
         "feats": [
             ("target", "Strategie und Redaktionsplan", "Welche Kanäle, welche Themen, wie oft – passend zu Ihrer Zielgruppe."),
             ("video", "Reels, Storys und Beiträge", "Kurze Videos mit starkem Einstieg, Motion Design und Bilder, die auffallen."),
-            ("mega", "Werbekampagnen", "Anzeigen auf Instagram, Facebook, TikTok und LinkedIn, gezielt für neue Kunden."),
+            ("mega", "Werbekampagnen", "Meta Ads auf Instagram und Facebook sowie Anzeigen auf TikTok und LinkedIn, gezielt für neue Kunden."),
             ("users", "Community-Management", "Wir betreuen Kommentare und Nachrichten und bauen Beziehungen auf."),
             ("pen", "Einheitlicher Auftritt", "Ein Branding, an dem man Sie sofort erkennt – auf jedem Kanal."),
             ("pie", "Auswertung", "Sie sehen, welche Inhalte wirken und welche Kampagnen Anfragen bringen."),
@@ -289,8 +322,8 @@ SUB_SERVICES = {
             ("Muss ich selbst vor die Kamera?", "<p>Nein. Viele Inhalte funktionieren mit Produkten, Räumen, Animationen oder Ihrem Team. Wenn Sie möchten, begleiten wir Sie aber gern beim Dreh.</p>"),
             ("Ist das Werbebudget im Preis enthalten?", "<p>Nein. Das Werbebudget zahlen Sie direkt an die Plattform. Unsere Leistung für Inhalte, Kampagnen und Betreuung steht getrennt und transparent im Angebot.</p>"),
         ],
-        "rel": ["/leistungen/online-marketing/", "/leistungen/google-ads/", "/leistungen/landingpage/"],
-        "rag": [],
+        "rel": ["/leistungen/meta-ads/", "/leistungen/online-marketing/", "/leistungen/landingpage/"],
+        "rag": ["/ratgeber/meta-ads-facebook-instagram/", "/ratgeber/google-ads-oder-meta-ads/", "/ratgeber/anfragen-schneller-beantworten/"],
     },
 }
 
@@ -298,7 +331,8 @@ def render_sub(path):
     d = SUB_SERVICES[path]
 
     def r(ctx):
-        vis = {"relaunch": mocks.relaunch, "campaign": mocks.campaign}.get(d.get("visual"), lambda: "")()
+        vis = {"relaunch": mocks.relaunch, "campaign": mocks.campaign,
+               "meta": lambda: rui.hero_cover("/ratgeber/meta-ads-facebook-instagram/", {"thema": "werbung"})}.get(d.get("visual"), lambda: "")()
         out = page_hero(ctx, [("Start", "/"), ("Leistungen", "/leistungen/"), (d["crumb"], "")], d["h1"], d["lead"],
                         btn_book(ctx, "Erstgespräch buchen", d["ask"]) + btn_wa(ctx), vis)
         out += f'<section class="section"><div class="wrap">{sh(d["why"][0], d["why"][1], split=True)}{feats(d["feats"], tone=d["tone"])}</div></section>'
@@ -808,7 +842,7 @@ def render_ratgeber(ctx):
     newest = max(a.get("iso", "2026-11-04") for a in ARTICLES.values())
     feat = next(p for p, a in ARTICLES.items() if a.get("iso") == newest)
     out = page_hero(ctx, [("Start", "/"), ("Ratgeber", "")], 'Ratgeber – <span class="quiet">Wissen für Ihren Auftritt.</span>',
-                    f"Was kostet eine Website? Gilt das Barrierefreiheitsgesetz auch für mich? Wann lohnt sich ein KI-Agent? In {len(ARTICLES)} Beiträgen beantworten wir die Fragen, die Betriebe uns am häufigsten stellen – verständlich und ohne Fachchinesisch.",
+                    f"Was kostet eine Website? Google Ads oder Meta Ads? Gilt das Barrierefreiheitsgesetz auch für mich? In {len(ARTICLES)} Beiträgen beantworten wir die Fragen, die Betriebe uns am häufigsten stellen – verständlich und ohne Fachchinesisch.",
                     btn_book(ctx) + btn_wa(ctx), rui.featured(ctx, feat, ARTICLES[feat]))
     order = sorted(ARTICLES, key=lambda p: [k for k, _, _ in THEMEN].index(ARTICLES[p]["thema"]))
     cards = "".join(rui.card(ctx, p, ARTICLES[p], neu=ARTICLES[p].get("iso") == newest, i=i, cls=" rcard--dup" if p == feat else "")
@@ -837,7 +871,7 @@ def article_schema(path, a):
 def extra_pages(after_dialog):
     out = [{"path": "/leistungen/", "active": "leistungen",
             "title": "Leistungen – Website, CRM, KI-Agent & Marketing | Medialyte",
-            "desc": "Alle Leistungen im Überblick: Website, Relaunch, Online-Shop, Landingpage, Kundenmanagement-System, KI-Agent, SEO, Google Ads und Social Media.",
+            "desc": "Alle Leistungen im Überblick: Website, Relaunch, Online-Shop, Landingpage, Kundenmanagement-System, KI-Agent, SEO, Google Ads, Meta Ads und Social Media.",
             "render": render_leistungen, "priority": "0.9",
             "schema": [breadcrumb_schema([("Start", "/"), ("Leistungen", "/leistungen/")])]}]
     for p, d in SUB_SERVICES.items():
@@ -874,8 +908,8 @@ def extra_pages(after_dialog):
                 "render": render_faq, "priority": "0.7",
                 "schema": [breadcrumb_schema([("Start", "/"), ("Häufige Fragen", "/faq/")]), faq_schema(_all_faqs())]})
     out.append({"path": "/ratgeber/", "active": "ratgeber",
-                "title": "Ratgeber – Website, Google, KI & Kunden | Medialyte",
-                "desc": "Website-Kosten, Relaunch, Barrierefreiheit (BFSG), Ladezeit, Google Ads, KI-Agent und Kundenmanagement – der Medialyte-Ratgeber, verständlich erklärt.",
+                "title": "Ratgeber – Website, Werbung, KI & Kunden | Medialyte",
+                "desc": "Website-Kosten, Relaunch, Barrierefreiheit, Ladezeit, Google Ads, Meta Ads auf Facebook und Instagram, KI-Agent und CRM – verständlich erklärt.",
                 "render": render_ratgeber, "priority": "0.7",
                 "schema": [breadcrumb_schema([("Start", "/"), ("Ratgeber", "/ratgeber/")])]})
     for p, a in ARTICLES.items():

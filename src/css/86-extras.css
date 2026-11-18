@@ -81,3 +81,6 @@
 .wcr__cta p{color:var(--text-2);max-width:62ch}
 @media (max-width:860px){.wcr__cta{grid-template-columns:minmax(0,1fr)}}
 .wcr__nojs{margin-top:16px;color:var(--text-2)}
+.wcr__alt{margin-top:4px;font-size:.9rem;color:var(--steel)}
+.wcr__alt a{color:var(--text);text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;gap:4px}
+.wcr__alt svg{width:14px;height:14px}

@@ -54,6 +54,8 @@ ML.module("wcheck", function (ML) {
   }
   function run(url, input) {
     if (busy) return;
+    var g = $("[data-wc-google]", box);
+    if (g) g.setAttribute("href", "https://pagespeed.web.dev/analysis?url=" + encodeURIComponent(url) + "&form_factor=mobile");
     busy = true;
     var btn = pageForm.querySelector("button");
     btn.disabled = true; btn.textContent = "Prüft …";

@@ -64,6 +64,7 @@ def render_check(ctx):
         <h2 class="h3" data-wc-errt>Die Prüfung hat nicht geklappt.</h2>
         <p data-wc-errp></p>
         <div class="wcr__act">{btn_book(ctx, "Persönlich prüfen lassen", "web-besser")}{btn_wa(ctx)}</div>
+        <p class="wcr__alt">Oder direkt bei Google messen: <a data-wc-google href="https://pagespeed.web.dev/" target="_blank" rel="noopener">PageSpeed Insights öffnen {icon("out")}</a></p>
       </div>
       <div class="wcr__done" data-wc-done hidden>
         <div class="wcr__head"><p class="wcr__k">Ergebnis für <b data-wc-host></b></p><h2 class="h3" data-wc-verdict></h2></div>

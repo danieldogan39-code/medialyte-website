@@ -1,4 +1,4 @@
-"""Erzeugt Favicon-PNGs und das Vorschaubild für soziale Netzwerke (og.jpg) mit Chromium.
+"""Erzeugt die Favicon-PNGs mit Chromium (Vorschaubilder für Links: tools/og_images.py).
 Aufruf: python3 tools/icons_og.py
 """
 import asyncio
@@ -38,16 +38,13 @@ async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch()
         pg = await b.new_page(viewport={"width": 1200, "height": 630})
-        await pg.set_content(OG)
-        await pg.evaluate("document.fonts.ready")
-        await pg.wait_for_timeout(400)
-        await pg.screenshot(path=str(IMG / "og.jpg"), type="jpeg", quality=88)
+        # Vorschaubilder für geteilte Links: tools/og_images.py
         for size, name in [(32, "favicon-32.png"), (180, "apple-touch-icon.png"), (512, "icon-512.png")]:
             pg2 = await b.new_page(viewport={"width": size, "height": size})
             await pg2.set_content(f"<style>*{{margin:0}}svg{{width:{size}px;height:{size}px;display:block}}</style>{FAV}")
             await pg2.screenshot(path=str(IMG / name), omit_background=True)
             await pg2.close()
         await b.close()
-    print("og.jpg und Icons erstellt")
+    print("Icons erstellt")
 
 asyncio.run(main())

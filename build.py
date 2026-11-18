@@ -439,7 +439,13 @@ def document(ctx, page, body):
         title = "Medialyte"  # Name der Vorschau in der Artifact-Galerie
     desc = page["desc"]
     canonical = ctx.abs(page["path"])
-    og_img = SITE["url"] + "/assets/img/og.jpg"
+    path = page["path"]
+    og_name, og_alt = ("og-check.jpg", "Kostenloser Website-Check von Medialyte: Ladezeit, Handy und Google in unter einer Minute") if path == "/website-check/" else \
+        ("og-termin.jpg", "Kostenfreies Erstgespräch mit Medialyte buchen") if path == "/termin/" else \
+        ("og-ratgeber.jpg", "Medialyte Ratgeber: Websites, Google, Werbung und Kunden verständlich erklärt") if path.startswith("/ratgeber/") else \
+        ("og.jpg", "Medialyte: Ihre Website soll Kunden bringen. Nicht Arbeit machen.")
+    og_img = SITE["url"] + "/assets/img/" + og_name + "?v=2"  # Versionsangabe, damit Netzwerke das neue Bild holen
+    og_type = "article" if path.startswith("/ratgeber/") and path != "/ratgeber/" else "website"
     schemas = page.get("schema", [])
     ld = "".join(f'<script type="application/ld+json">{json.dumps(s, ensure_ascii=False)}</script>' for s in schemas)
     cfg = {"whatsapp": SITE["wa"], "booking": BOOKING}
@@ -452,7 +458,7 @@ def document(ctx, page, body):
 <meta name="description" content="{e(desc)}">
 <meta name="robots" content="{robots}">
 <link rel="canonical" href="{canonical}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{og_type}">
 <meta property="og:locale" content="de_DE">
 <meta property="og:site_name" content="Medialyte">
 <meta property="og:title" content="{e(page.get('og_title', title))}">
@@ -461,7 +467,10 @@ def document(ctx, page, body):
 <meta property="og:image" content="{og_img}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="{e(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{og_img}">
 <meta name="theme-color" content="#0E192A">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="{ctx.a('img/favicon.svg')}" type="image/svg+xml">

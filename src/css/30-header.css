@@ -110,11 +110,11 @@
 body.menu-open{overflow:hidden}
 
 /* ---------- WhatsApp-Knopf ---------- */
-.fab{position:fixed;z-index:50;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));width:58px;height:58px;display:grid;place-items:center;border-radius:50%;background:var(--wa);color:#04210E;box-shadow:0 18px 40px -14px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08) inset;
+.fab{position:fixed;z-index:50;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));width:58px;height:58px;display:grid;place-items:center;border-radius:var(--r);background:var(--wa);color:#fff;box-shadow:0 18px 40px -14px rgba(0,0,0,.6),0 10px 24px -12px rgba(37,211,102,.7);
   opacity:0;visibility:hidden;transform:translateY(14px) scale(.92);transition:opacity .3s ease,transform .45s var(--ease-out),visibility 0s linear .45s}
-.fab svg{width:28px;height:28px}
+.fab svg{width:41px;height:41px}
 .fab.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .3s ease,transform .45s var(--ease-out),visibility 0s}
 .fab__tip{position:absolute;right:calc(100% + 12px);top:50%;transform:translate(6px,-50%);white-space:nowrap;padding:9px 14px;border-radius:12px;background:var(--text);color:var(--navy);font-size:.88rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .25s var(--ease-out)}
 @media (hover:hover) and (pointer:fine){.fab:hover .fab__tip{opacity:1;transform:translate(0,-50%)}}
 body.menu-open .fab{opacity:0;visibility:hidden}
-@media (max-width:640px){.fab{width:52px;height:52px}.fab svg{width:25px;height:25px}}
+@media (max-width:640px){.fab{width:52px;height:52px;border-radius:16px}.fab svg{width:37px;height:37px}}

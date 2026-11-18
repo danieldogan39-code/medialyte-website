@@ -109,8 +109,8 @@
 .wrun__bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
 .wrun__bar i{display:block;height:100%;background:linear-gradient(90deg,#F7C65E,var(--coral));transform-origin:0 50%;transform:scaleX(0);transition:transform .25s linear}
 .wrun__steps{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.wrun__steps li{position:relative;padding:12px 14px 12px 40px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--line);font-size:.92rem;color:var(--steel);transition:color .3s ease,border-color .3s ease}
-.wrun__steps li::before{content:"";position:absolute;left:14px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;border:2px solid var(--line-3)}
+.wrun__steps li{position:relative;padding:12px 14px 12px 40px;line-height:1.45;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--line);font-size:.92rem;color:var(--steel);transition:color .3s ease,border-color .3s ease}
+.wrun__steps li::before{content:"";position:absolute;left:14px;top:calc(12px + (1.45em - 14px) / 2);width:14px;height:14px;border-radius:50%;border:2px solid var(--line-3)}
 .wrun__steps li.is-on{color:var(--text);border-color:rgba(245,185,66,.4)}
 .wrun__steps li.is-on::before{border-color:#F7C65E;border-top-color:transparent;animation:wspin .8s linear infinite}
 .wrun__steps li.is-done{color:var(--text-2)}
@@ -262,7 +262,7 @@
 
 /* ---------- WhatsApp im Kopfbereich: grüne Kachel, Radius wie die Symbol-Kacheln der Seite (--r-sm) ---------- */
 .hwa{display:inline-grid;place-items:center;width:42px;height:42px;flex:none;border-radius:var(--r-sm);background:var(--wa);color:#fff;box-shadow:0 8px 20px -10px rgba(37,211,102,.75);transition:transform .16s var(--ease-out),filter .2s ease;-webkit-tap-highlight-color:transparent}
-.hwa svg{width:24px;height:24px;display:block}
+.hwa svg{width:30px;height:30px;display:block}
 .hwa:active{transform:scale(.94)}
 @media (hover:hover) and (pointer:fine){.hwa:hover{filter:brightness(1.08)}}
 @media (max-width:1080px){.header .hwa{display:inline-grid!important}}

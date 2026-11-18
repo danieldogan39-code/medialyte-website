@@ -95,10 +95,10 @@ def render_check(ctx):
 <section class="section section--flush wres" id="ergebnis" data-wcheck hidden>
   <div class="wrap">
     <div class="wrun" data-wc-load aria-live="polite">
-      <div class="wrun__head"><span class="wrun__spin" aria-hidden="true"></span><div><p class="wrun__k">Prüfung läuft</p><h2 class="h3" data-wc-runhost>Ihre Website</h2></div><span class="wrun__t tnum" data-wc-timer>0 s</span></div>
+      <div class="wrun__head"><span class="wrun__spin" aria-hidden="true"></span><div><p class="wrun__k">Prüfung läuft – alle Bereiche werden gleichzeitig gemessen</p><h2 class="h3" data-wc-runhost>Ihre Website</h2></div><span class="wrun__t tnum" data-wc-timer>0 s</span></div>
       <div class="wrun__bar" aria-hidden="true"><i data-wc-prog></i></div>
       <ol class="wrun__steps" data-wc-steps>
-        <li>Website im Handy-Browser öffnen</li><li>Ladezeit und Reaktion messen</li><li>Darstellung und Stabilität prüfen</li><li>Google-Grundlagen auswerten</li><li>Barrierefreiheit prüfen</li><li>Empfehlungen zusammenstellen</li>
+        <li data-part="performance">Ladezeit und Stabilität messen</li><li data-part="accessibility">Barrierefreiheit prüfen</li><li data-part="best-practices">Technik und Sicherheit prüfen</li><li data-part="seo">Google-Grundlagen prüfen</li><li data-final>Ergebnis zusammenstellen</li>
       </ol>
     </div>
     <div class="werr" data-wc-err hidden role="alert">

@@ -289,7 +289,7 @@ def header(ctx, active=""):
       <a class="nav__link nav__check" href="{ctx.u('/website-check/')}"{cur('check')}><span class="nav__check-ic" aria-hidden="true">{icon('zap')}</span>Website-Check</a>
     </nav>
     <div class="header__actions">
-      <a class="icon-btn header__wa" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben">{icon('wa')}</a>
+      <a class="hwa" href="{SITE['wa']}" target="_blank" rel="noopener" aria-label="Per WhatsApp schreiben"><span class="hwa__ic">{icon('wa')}<i class="hwa__dot" aria-hidden="true"></i></span><span class="hwa__t">WhatsApp</span></a>
       <a class="btn btn--primary btn--sm header__cta" href="{cta}">Erstgespräch buchen</a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menü öffnen"><span></span><span></span></button>
     </div>

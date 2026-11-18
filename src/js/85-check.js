@@ -54,23 +54,33 @@ ML.module("wcheck", function (ML) {
     $("[data-wc-errp]", box).textContent = p;
     show("err");
   }
+  /* Fortschritt ist echt: jeder Prüfbereich läuft als eigene Messung, sein Schritt wird abgehakt, sobald Google ihn liefert */
+  var PARTS = [["PERFORMANCE", "performance"], ["ACCESSIBILITY", "accessibility"], ["BEST_PRACTICES", "best-practices"], ["SEO", "seo"]];
+  var t0 = 0, doneN = 0;
   function loading(on, url) {
     if (stage) stage.classList.toggle("is-scan", on);
-    var steps = $$("[data-wc-steps] li", box), prog = $("[data-wc-prog]", box), tm = $("[data-wc-timer]", box);
+    var prog = $("[data-wc-prog]", box), tm = $("[data-wc-timer]", box);
     clearInterval(tick);
     if (!on) return;
     $("[data-wc-runhost]", box).textContent = host(url) + (cur.view === "desktop" ? " (Computer)" : "");
-    var t0 = Date.now();
-    steps.forEach(function (s) { s.className = ""; });
+    t0 = Date.now(); doneN = 0;
+    $$("[data-wc-steps] li", box).forEach(function (li) { li.className = li.hasAttribute("data-part") ? "is-on" : ""; li.removeAttribute("data-t"); });
     function upd() {
       var s = (Date.now() - t0) / 1000;
       tm.textContent = Math.floor(s) + " s";
-      /* geschätzter Fortschritt: nähert sich 92 %, bis das Ergebnis da ist */
-      prog.style.transform = "scaleX(" + (0.92 * (1 - Math.exp(-s / 14))).toFixed(3) + ")";
-      var k = Math.min(steps.length - 1, Math.floor(s / 5.5));
-      steps.forEach(function (li, i) { li.className = i < k ? "is-done" : i === k ? "is-on" : ""; });
+      /* Balken: fertige Bereiche zählen voll, der laufende Anteil wächst langsam, erreicht aber nie den nächsten Abschnitt */
+      var base = doneN / PARTS.length, slice = 1 / PARTS.length, creep = doneN < PARTS.length ? slice * 0.85 * (1 - Math.exp(-s / 12)) : 0;
+      prog.style.transform = "scaleX(" + Math.min(0.97, 0.03 + (base + creep) * 0.94).toFixed(3) + ")";
     }
-    upd(); tick = setInterval(upd, 250);
+    upd(); tick = setInterval(upd, 200);
+  }
+  function stepDone(cat, ok) {
+    var li = $('[data-wc-steps] li[data-part="' + cat + '"]', box);
+    if (!li) return;
+    doneN++;
+    li.className = ok ? "is-done" : "is-fail";
+    li.setAttribute("data-t", Math.round((Date.now() - t0) / 1000) + " s");
+    if (doneN === PARTS.length) { var last = $("[data-wc-steps] li[data-final]", box); if (last) last.className = "is-on"; }
   }
 
   function start(url) {
@@ -82,6 +92,22 @@ ML.module("wcheck", function (ML) {
     measure(url, "mobile");
   }
 
+  function one(url, view, part) {
+    var q = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=" + encodeURIComponent(url) +
+      "&strategy=" + view + "&locale=de&category=" + part[0] + (ML.cfg.psiKey ? "&key=" + encodeURIComponent(ML.cfg.psiKey) : "");
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 110000);
+    return fetch(q, ctrl ? { signal: ctrl.signal } : {}).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
+    }, function () { return { ok: false, status: 0, j: {} }; }).then(function (res) {
+      clearTimeout(to);
+      var lr = res.ok && res.j.lighthouseResult;
+      var good = !!(lr && !(lr.runtimeError && lr.runtimeError.code && lr.runtimeError.code !== "NO_ERROR") && lr.categories && lr.categories[part[1]]);
+      stepDone(part[1], good);
+      return { part: part[1], ok: good, status: res.status, j: res.j, lr: lr };
+    });
+  }
+
   function measure(url, view) {
     if (busy) return;
     if (cache[view]) { render(cache[view], view); return; }
@@ -89,27 +115,27 @@ ML.module("wcheck", function (ML) {
     btn.disabled = true; btn.querySelector("span").textContent = "Prüft …";
     box.hidden = false; show("load"); loading(true, url);
     box.scrollIntoView({ behavior: ML.reduce ? "auto" : "smooth", block: "start" });
-    var q = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=" + encodeURIComponent(url) +
-      "&strategy=" + view + "&locale=de&category=PERFORMANCE&category=ACCESSIBILITY&category=BEST_PRACTICES&category=SEO" +
-      (ML.cfg.psiKey ? "&key=" + encodeURIComponent(ML.cfg.psiKey) : "");
-    var ctrl = window.AbortController ? new AbortController() : null;
-    var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 110000);
-    fetch(q, ctrl ? { signal: ctrl.signal } : {}).then(function (r) {
-      return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
-    }).then(function (res) {
-      if (!res.ok) {
-        if (res.status === 429) return fail("Gerade sind sehr viele Prüfungen unterwegs.", "Bitte versuchen Sie es in ein paar Minuten noch einmal – oder wir prüfen Ihre Website gern persönlich.");
-        return fail("Die Seite ließ sich nicht prüfen.", "Stimmt die Adresse? Manche Websites blockieren automatische Prüfungen. Gern schauen wir uns Ihre Seite persönlich an.");
+    Promise.all(PARTS.map(function (p) { return one(url, view, p); })).then(function (rs) {
+      var perf = rs[0];
+      if (!perf.ok) {
+        if (rs.some(function (r) { return r.status === 429; })) return fail("Gerade sind sehr viele Prüfungen unterwegs.", "Bitte versuchen Sie es in ein paar Minuten noch einmal – oder wir prüfen Ihre Website gern persönlich.");
+        if (rs.every(function (r) { return r.status === 0; })) return fail("Die Prüfung hat zu lange gedauert.", "Bitte versuchen Sie es gleich noch einmal – oder wir prüfen Ihre Website persönlich.");
+        return fail("Die Seite ließ sich nicht prüfen.", "Stimmt die Adresse? Ist die Website erreichbar? Manche Websites blockieren automatische Prüfungen. Gern schauen wir uns Ihre Seite persönlich an.");
       }
-      var lr = res.j.lighthouseResult;
-      if (!lr || (lr.runtimeError && lr.runtimeError.code && lr.runtimeError.code !== "NO_ERROR"))
-        return fail("Die Seite ließ sich nicht laden.", "Stimmt die Adresse? Ist die Website gerade erreichbar? Gern prüfen wir sie auch persönlich.");
-      cache[view] = { lr: lr, field: res.j.loadingExperience, url: url };
-      render(cache[view], view);
+      /* Ergebnisse der vier Messungen zusammenführen */
+      var lr = { finalDisplayedUrl: perf.lr.finalDisplayedUrl, finalUrl: perf.lr.finalUrl, categories: {}, audits: {} };
+      rs.forEach(function (r) { if (!r.ok) return; Object.assign(lr.audits, r.lr.audits); lr.categories[r.part] = r.lr.categories[r.part]; });
+      Object.assign(lr.audits, perf.lr.audits); /* Messwerte und Bilder immer aus der Ladezeit-Messung */
+      cache[view] = { lr: lr, field: perf.j.loadingExperience, url: url };
+      var last = $("[data-wc-steps] li[data-final]", box);
+      if (last) last.className = "is-done";
+      $("[data-wc-prog]", box).style.transform = "scaleX(1)";
+      /* kurz zeigen, dass alles fertig ist, dann das Ergebnis */
+      return new Promise(function (ok) { setTimeout(ok, ML.reduce ? 0 : 450); }).then(function () { render(cache[view], view); });
     }).catch(function () {
-      fail("Die Prüfung hat zu lange gedauert.", "Bitte versuchen Sie es gleich noch einmal – oder wir prüfen Ihre Website persönlich.");
+      fail("Die Prüfung hat nicht geklappt.", "Bitte versuchen Sie es gleich noch einmal – oder wir prüfen Ihre Website persönlich.");
     }).then(function () {
-      clearTimeout(to); loading(false);
+      loading(false);
       busy = false; btn.disabled = false; btn.querySelector("span").textContent = "Website prüfen";
     });
   }

@@ -4,7 +4,7 @@
 - /branchen/ (Übersicht) und acht Branchenseiten
 - /webdesign-hamburg/ (lokale Seite für Hamburg)
 - /kontakt/ und /faq/
-- /ratgeber/ (Übersicht) und Ratgeber-Artikel
+- /ratgeber/ (Übersicht nach Themen) und Ratgeber-Artikel (Teil 2 in ratgeber.py)
 
 Jede Seite beantwortet eine eigene Suchanfrage („Website für Handwerker“, „Google Ads Agentur“,
 „Website Relaunch Checkliste“ …) und verlinkt auf passende Nachbarseiten. Inhalte bewusst nur mit
@@ -17,6 +17,7 @@ from parts import (FAQ_MAIN, btn_book, btn_wa, cases, closing, faq_block, feats,
 import re
 
 import pages
+from ratgeber import NEW_ARTICLES, THEMA_ALT, THEMEN
 
 
 # ======================================================================= Bausteine
@@ -137,7 +138,7 @@ SUB_SERVICES = {
             ("Wie lange dauert ein Relaunch?", "<p>Eine übersichtliche Website ist meist in zwei bis vier Wochen fertig. Bei vielen Unterseiten, einem Shop oder einem System dahinter planen wir den Zeitplan gemeinsam.</p>"),
         ],
         "rel": ["/leistungen/website-erstellung/", "/leistungen/seo/", "/leistungen/ki-agent/"],
-        "rag": ["/ratgeber/website-relaunch-checkliste/", "/ratgeber/was-kostet-eine-website/"],
+        "rag": ["/ratgeber/website-relaunch-checkliste/", "/ratgeber/gute-website-wenig-anfragen/", "/ratgeber/website-ladezeit-core-web-vitals/"],
     },
     "/leistungen/online-shop/": {
         "crumb": "Online-Shop", "ask": "web-neu", "tone": "web", "icon": "bag",
@@ -169,7 +170,7 @@ SUB_SERVICES = {
             ("Machen Sie auch Werbung für den Shop?", "<p>Ja. Google Ads, Social-Media-Kampagnen und SEO gehören zu unseren Leistungen. Dafür bauen wir den Shop von Anfang an so, dass Verkäufe sauber gemessen werden.</p>"),
         ],
         "rel": ["/leistungen/google-ads/", "/leistungen/social-media-marketing/", "/leistungen/kundenmanagement-system/"],
-        "rag": ["/ratgeber/was-kostet-eine-website/"],
+        "rag": ["/ratgeber/was-kostet-eine-website/", "/ratgeber/barrierefreie-website-bfsg/", "/ratgeber/website-ladezeit-core-web-vitals/"],
     },
     "/leistungen/landingpage/": {
         "crumb": "Landingpage", "ask": "werbung", "tone": "web", "icon": "layout",
@@ -198,7 +199,7 @@ SUB_SERVICES = {
             ("Kann die Landingpage unter meiner Domain laufen?", "<p>Ja, zum Beispiel als Unterseite Ihrer Website oder unter einer eigenen Adresse. Das stimmen wir mit Ihnen ab.</p>"),
         ],
         "rel": ["/leistungen/google-ads/", "/leistungen/social-media-marketing/", "/leistungen/online-marketing/"],
-        "rag": [],
+        "rag": ["/ratgeber/google-ads-fuer-kleine-unternehmen/", "/ratgeber/anfragen-schneller-beantworten/", "/ratgeber/website-ladezeit-core-web-vitals/"],
     },
     "/leistungen/seo/": {
         "crumb": "SEO", "ask": "werbung", "tone": "ads", "icon": "search",
@@ -228,7 +229,7 @@ SUB_SERVICES = {
             ("Kann ich bestimmen, welche Unterseiten bei Google unter meinem Eintrag erscheinen?", "<p>Nicht direkt – Google wählt diese Unterseiten-Links selbst aus. Eine klare Seitenstruktur, aussagekräftige Seitentitel und gute interne Verlinkung erhöhen aber die Chance deutlich, dass Google mehrere Ihrer wichtigsten Seiten zeigt.</p>"),
         ],
         "rel": ["/leistungen/google-ads/", "/leistungen/website-relaunch/", "/webdesign-hamburg/"],
-        "rag": ["/ratgeber/google-unternehmensprofil-optimieren/", "/ratgeber/website-relaunch-checkliste/"],
+        "rag": ["/ratgeber/google-unternehmensprofil-optimieren/", "/ratgeber/website-ladezeit-core-web-vitals/", "/ratgeber/website-relaunch-checkliste/"],
     },
     "/leistungen/google-ads/": {
         "crumb": "Google Ads", "ask": "werbung", "tone": "ads", "icon": "target",
@@ -259,7 +260,7 @@ SUB_SERVICES = {
             ("Übernehmen Sie auch bestehende Kampagnen?", "<p>Ja. Wir prüfen Ihr bestehendes Konto, finden Budgetfresser und Messlücken und optimieren von dort aus weiter.</p>"),
         ],
         "rel": ["/leistungen/landingpage/", "/leistungen/seo/", "/leistungen/social-media-marketing/"],
-        "rag": [],
+        "rag": ["/ratgeber/google-ads-fuer-kleine-unternehmen/", "/ratgeber/google-unternehmensprofil-optimieren/", "/ratgeber/anfragen-schneller-beantworten/"],
     },
     "/leistungen/social-media-marketing/": {
         "crumb": "Social-Media-Marketing", "ask": "werbung", "tone": "ads", "icon": "camera",
@@ -688,11 +689,15 @@ def _toc(sections):
 
 
 def _article(ctx, a):
-    body = "".join(f'<h2 id="{aid}">{t}</h2>{html}' for aid, t, html in a["sections"])
+    sections = list(a["sections"])
+    if a.get("sources"):
+        src = "".join(f'<li><a href="{url}" target="_blank" rel="noopener">{e(t)}</a> – {e(pub)}</li>' for t, pub, url in a["sources"])
+        sections.append(("quellen", "Quellen", f'<ol class="sources">{src}</ol>'))
+    body = "".join(f'<h2 id="{aid}">{t}</h2>{html}' for aid, t, html in sections)
     body = re.sub(r"\{u:([^}]+)\}", lambda m: ctx.u(m.group(1)), body)
-    meta = f'<p class="prose__meta">Stand: 4. November 2026 · {a["read"]} Minuten Lesezeit · Von Daniel, Medialyte</p>'
+    meta = f'<p class="prose__meta">Stand: {a.get("date", "4. November 2026")} · {a["read"]} Minuten Lesezeit · Von Daniel, Medialyte</p>'
     out = page_hero(ctx, [("Start", "/"), ("Ratgeber", "/ratgeber/"), (a["crumb"], "")], a["h1"], a["lead"])
-    out += (f'<section class="section section--flush"><div class="wrap"><div class="legal">{_toc(a["sections"])}'
+    out += (f'<section class="section section--flush"><div class="wrap"><div class="legal">{_toc(sections)}'
             f'<article class="prose">{meta}{body}</article></div></div></section>')
     rel = [rag_tile(p) for p in a.get("rel_rag", [])] + svc_tiles(*a["rel"])
     out += related(ctx, "Weiterlesen", rel, deep=True)
@@ -778,24 +783,34 @@ ARTICLES = {
         "close": "Schluss mit Zettelwirtschaft?",
     },
 }
+ARTICLES.update(NEW_ARTICLES)
+for _p, _a in ARTICLES.items():
+    _a.setdefault("thema", THEMA_ALT.get(_p, "website"))
+
+
 def rag_tile(path):
     a = ARTICLES[path]
     return (path, a["icon"], "", a["crumb"], f'Ratgeber · {a["read"]} Minuten Lesezeit')
 
 
 def render_ratgeber(ctx):
-    items = [(p, a["icon"], "", a["crumb"], e(a["teaser"])) for p, a in ARTICLES.items()]
-    return (page_hero(ctx, [("Start", "/"), ("Ratgeber", "")], 'Ratgeber – <span class="quiet">Wissen für Ihren Auftritt.</span>',
-                      "Was kostet eine Website? Wie gelingt ein Relaunch ohne Google-Verlust? Wann lohnt sich ein CRM? Hier beantworten wir die Fragen, die Betriebe uns am häufigsten stellen – verständlich und ohne Fachchinesisch.",
-                      btn_book(ctx) + btn_wa(ctx))
-            + f'<section class="section section--flush"><div class="wrap">{tiles(ctx, items, 2)}</div></section>'
-            + related(ctx, "Unsere Leistungen", svc_tiles("/leistungen/website-erstellung/", "/leistungen/kundenmanagement-system/", "/leistungen/seo/"), deep=True)
+    out = page_hero(ctx, [("Start", "/"), ("Ratgeber", "")], 'Ratgeber – <span class="quiet">Wissen für Ihren Auftritt.</span>',
+                    f"Was kostet eine Website? Gilt das Barrierefreiheitsgesetz auch für mich? Wann lohnt sich ein KI-Agent? In {len(ARTICLES)} Beiträgen beantworten wir die Fragen, die Betriebe uns am häufigsten stellen – verständlich und ohne Fachchinesisch.",
+                    btn_book(ctx) + btn_wa(ctx))
+    toc = "".join(f'<li><a href="#{k}">{t}</a></li>' for k, t, _ in THEMEN)
+    out += f'<section class="section section--flush"><div class="wrap"><nav class="prose__toc faq-toc" aria-label="Themen"><p>Themen</p><ol>{toc}</ol></nav></div></section>'
+    for i, (k, t, lead) in enumerate(THEMEN):
+        items = [(p, a["icon"], "", a["crumb"], e(a["teaser"])) for p, a in ARTICLES.items() if a["thema"] == k]
+        out += (f'<section class="section{" section--deep" if i % 2 == 0 else ""}" id="{k}"><div class="wrap">'
+                f'{sh(t, lead, split=True)}{tiles(ctx, items, 3 if len(items) % 3 == 0 else 2)}</div></section>')
+    return (out
+            + related(ctx, "Unsere Leistungen", svc_tiles("/leistungen/website-erstellung/", "/leistungen/kundenmanagement-system/", "/leistungen/seo/"), deep=len(THEMEN) % 2 == 0)
             + closing(ctx))
 
 
 def article_schema(path, a):
     return {"@context": "https://schema.org", "@type": "Article", "headline": a["crumb"], "description": a["desc"],
-            "datePublished": "2026-11-04", "dateModified": "2026-11-04", "inLanguage": "de-DE",
+            "datePublished": a.get("iso", "2026-11-04"), "dateModified": a.get("iso", "2026-11-04"), "inLanguage": "de-DE",
             "mainEntityOfPage": SITE["url"] + path, "image": SITE["url"] + "/assets/img/og.jpg",
             "author": {"@type": "Organization", "name": "Medialyte", "url": SITE["url"] + "/"},
             "publisher": {"@id": SITE["url"] + "/#org"}}
@@ -842,8 +857,8 @@ def extra_pages(after_dialog):
                 "render": render_faq, "priority": "0.7",
                 "schema": [breadcrumb_schema([("Start", "/"), ("Häufige Fragen", "/faq/")]), faq_schema(_all_faqs())]})
     out.append({"path": "/ratgeber/", "active": "ratgeber",
-                "title": "Ratgeber – Website, SEO & CRM | Medialyte",
-                "desc": "Was kostet eine Website, wie gelingt ein Relaunch, wie optimiere ich mein Google-Profil? Der Medialyte-Ratgeber – verständlich erklärt.",
+                "title": "Ratgeber – Website, Google, KI & Kunden | Medialyte",
+                "desc": "Website-Kosten, Relaunch, Barrierefreiheit (BFSG), Ladezeit, Google Ads, KI-Agent und Kundenmanagement – der Medialyte-Ratgeber, verständlich erklärt.",
                 "render": render_ratgeber, "priority": "0.7",
                 "schema": [breadcrumb_schema([("Start", "/"), ("Ratgeber", "/ratgeber/")])]})
     for p, a in ARTICLES.items():

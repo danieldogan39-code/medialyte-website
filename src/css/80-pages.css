@@ -67,6 +67,10 @@
 .prose__toc a{color:var(--text-2);text-decoration:none}
 @media (hover:hover) and (pointer:fine){.prose__toc a:hover{color:var(--text);text-decoration:underline}}
 @media (max-width:640px){.prose__toc ol{columns:1}.prose__toc li{margin:0}.prose__toc a{display:inline-block;padding-block:7px}}
+.prose ol{margin:0 0 14px;padding-left:1.3em}
+.prose .sources{font-size:.93rem}
+.prose .sources li{margin-bottom:8px;overflow-wrap:anywhere}
+.prose .note{margin-top:22px;padding:16px 18px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line);font-size:.93rem}
 .prose .todo{padding:16px 18px;border-radius:14px;border:1px dashed var(--line-3);color:var(--text-2)}
 
 

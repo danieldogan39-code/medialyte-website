@@ -38,7 +38,7 @@ SITE = {
     "instagram": "https://www.instagram.com/medialyte.de/",
     "linkedin": "https://www.linkedin.com/company/medialyte/",
     "youtube": "https://www.youtube.com/@medialyte.deutschland",
-    "today": date(2026, 11, 4).isoformat(),
+    "today": date(2026, 11, 18).isoformat(),
 }
 
 # Verfügbarkeit fürs Buchungsformular (Wochentag 1 = Montag)

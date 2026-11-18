@@ -8,6 +8,7 @@ Neue Website von Medialyte – ohne WordPress, als schnelle statische Seiten plu
 |---|---|
 | `pages.py` | Seiten (Startseite, Leistungen, Referenzen, Über uns, Termin, Rechtliches) mit Titeln, Beschreibungen und Texten |
 | `seo_pages.py` | Seiten für die Sichtbarkeit bei Google: Leistungsübersicht `/leistungen/` und sechs weitere Leistungsseiten (Relaunch, Online-Shop, Landingpage, SEO, Google Ads, Social Media), `/branchen/` mit acht Branchenseiten, `/webdesign-hamburg/`, `/kontakt/`, `/faq/`, `/ratgeber/` mit Artikeln. Inhalte nur mit belegbaren Angaben. |
+| `ratgeber.py` | Weitere Ratgeber-Artikel (Barrierefreiheit/BFSG, Ladezeit, gute Website mit wenig Anfragen, Google Ads, KI-Agent, Anfragen schneller beantworten), Themen der Übersichtsseite (`THEMEN`) und Quellen je Artikel |
 | `parts.py` | Gemeinsame Bausteine und Inhalte: Die Idee mit Selbstcheck, Kundenreise, Referenzen, Ergebnisse, Vergleich, Pakete und Paket-Finder, Ablauf, FAQ, Buchungsformular |
 | `mocks.py` | Gezeichnete Oberflächen: Cockpit mit vier Beispiel-Betrieben (jede Beispiel-Website zeigt ihre wichtigste Funktion: reservieren, anfragen, Termin buchen), Relaunch alt → neu, Pipeline, KI-Agent zum Ausprobieren, Kampagne, Monatsbericht, KI-Agent im Dashboard |
 | `build.py` | Kopfzeile, mobiles Menü, Fußzeile, Meta-Daten und SEO, Kontaktdaten, Verfügbarkeit fürs Buchungsformular |

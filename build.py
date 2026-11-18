@@ -11,6 +11,7 @@ Die Teil-Dateien werden beim Bauen zu assets/css/site.css und assets/js/site.js 
 """
 import hashlib
 import json
+import os
 import posixpath
 import re
 import shutil
@@ -357,6 +358,7 @@ def footer(ctx):
           <li><a href="{ctx.u('/referenzen/')}">Referenzen</a></li>
           <li><a href="{ctx.u('/ueber-uns/')}">Über uns</a></li>
           <li><a href="{ctx.u('/ratgeber/')}">Ratgeber</a></li>
+          <li><a href="{ctx.u('/website-check/')}">Website-Check</a></li>
           <li><a href="{ctx.u('/faq/')}">Häufige Fragen</a></li>
           <li><a href="{ctx.u('/kontakt/')}">Kontakt</a></li>
           <li><a href="{ctx.u('/termin/')}">Erstgespräch buchen</a></li>
@@ -439,6 +441,8 @@ def document(ctx, page, body):
     schemas = page.get("schema", [])
     ld = "".join(f'<script type="application/ld+json">{json.dumps(s, ensure_ascii=False)}</script>' for s in schemas)
     cfg = {"whatsapp": SITE["wa"], "booking": BOOKING}
+    if os.environ.get("PSI_API_KEY"):  # Browser-Schlüssel für den Website-Check, nur auf medialyte.de gültig
+        cfg["psiKey"] = os.environ["PSI_API_KEY"]
     robots = page.get("robots", "index, follow, max-image-preview:large")
     if ctx.mode == "staging":
         robots = "noindex, nofollow"  # Testversion nicht bei Google

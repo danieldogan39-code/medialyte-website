@@ -9,6 +9,7 @@ import re
 from build import SITE, breadcrumb_schema, e, faq_schema, icon, org_schema
 import legal
 import mocks
+from extras import gratis_band
 from parts import (FAQ_MAIN, PROCESS, REFS, LOGOS, _LOGO_DIMS, book_link, booking_widget, btn_book, btn_wa,
                    cases, closing, compare, faq_block, feats, film, film_link, svc_film, SVC_FILMS, FILM_LENGTH, idea, img, impact, journey, logo_marquee, marquee_rows, page_hero, plans,
                    process, ref_dialog, results, sh, ticks)
@@ -123,7 +124,7 @@ def render_home(ctx):
 </section>"""
 
     # Der Film steht direkt nach den Leistungen; die Abschnitte wechseln sich danach hell und dunkel ab
-    blocks = [idee, reise, film_s, referenzen, ergebnisse, branchen, vergleich, pakete, ablauf, faq, termin]
+    blocks = [idee, reise, film_s, referenzen, gratis_band(ctx), ergebnisse, branchen, vergleich, pakete, ablauf, faq, termin]
     blocks = [re.sub(r'<section class="section( section--deep)?"', '<section class="section' + (' section--deep' if i % 2 else '') + '"', b, count=1)
               for i, b in enumerate(blocks)]
     return hero + logo_marquee(ctx) + "".join(blocks)

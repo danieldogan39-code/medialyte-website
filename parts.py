@@ -49,6 +49,8 @@ REFS = {
 FAQ_MAIN = [
     ("Was kostet eine Website bei Medialyte?",
      "<p>Jedes Angebot besteht aus zwei Teilen: einer einmaligen Pauschale für Konzept, Design und Entwicklung und einem monatlichen Abo für Hosting, Pflege, KI-Agent und Support. Wie hoch beides ist, hängt davon ab, was Ihr Betrieb braucht.</p><p>Nach dem kostenfreien Erstgespräch erhalten Sie innerhalb von 48 Stunden ein Angebot – transparent und ohne versteckte Kosten.</p>"),
+    ("Bekomme ich vorab einen Entwurf?",
+     "<p>Ja. Nach Ihrer Auftragsbestätigung gestalten wir zuerst einen kostenfreien Entwurf Ihrer neuen Website. Sie sehen, wie sie aussehen wird, und entscheiden mit, bevor wir sie fertig bauen.</p>"),
     ("Wie lange dauert ein Projekt?",
      "<p>Eine übersichtliche Website ist meist in zwei bis vier Wochen online. Projekte mit eigenem Kundenmanagement-System brauchen sechs bis zwölf Wochen. Sie kennen jeden Meilenstein vorab.</p>"),
     ("Wie ändere ich später etwas auf meiner Website?",

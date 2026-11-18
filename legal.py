@@ -24,6 +24,7 @@ def datenschutz(ctx):
         ("hosting", "Hosting und Server-Protokolle"),
         ("buchung", "Erstgespräch buchen"),
         ("kontakt", "Kontakt per E-Mail, Telefon oder WhatsApp"),
+        ("check", "Website-Check"),
         ("speicher", "Cookies und Speicher im Browser"),
         ("links", "Links zu sozialen Netzwerken und anderen Websites"),
         ("rechte", "Ihre Rechte"),
@@ -33,10 +34,10 @@ def datenschutz(ctx):
 <section class="section section--flush"><div class="wrap legal">
   {_toc(_num(sections))}
   <div class="prose">
-  <p class="prose__meta">Stand: Oktober 2026</p>
+  <p class="prose__meta">Stand: November 2026</p>
 
   <h2 id="ueberblick">1. Auf einen Blick</h2>
-  <p>Auf dieser Website erheben wir so wenige Daten wie möglich. Es gibt keine Analyse- oder Tracking-Werkzeuge, keine Werbe-Cookies und keine eingebetteten Inhalte anderer Anbieter. Schriften, Bilder und Filme liegen auf unserem eigenen Server.</p>
+  <p>Auf dieser Website erheben wir so wenige Daten wie möglich. Es gibt keine Analyse- oder Tracking-Werkzeuge, keine Werbe-Cookies und keine eingebetteten Inhalte anderer Anbieter. Nur wenn Sie den Website-Check selbst starten, ruft Ihr Browser einen Dienst von Google auf (Abschnitt 6). Schriften, Bilder und Filme liegen auf unserem eigenen Server.</p>
   <p>Personenbezogene Daten verarbeiten wir nur in zwei Fällen: wenn Ihr Browser die Seite vom Server abruft (technisch notwendig) und wenn Sie uns von sich aus schreiben, anrufen oder ein Erstgespräch buchen.</p>
 
   <h2 id="verantwortlich">2. Verantwortlicher</h2>
@@ -87,16 +88,20 @@ def datenschutz(ctx):
   <p>Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Angaben, um Ihr Anliegen zu bearbeiten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn es um einen Auftrag oder ein Angebot geht, sonst unser berechtigtes Interesse, Anfragen zu beantworten (Art. 6 Abs. 1 lit. f DSGVO). Für die Speicherdauer gilt dasselbe wie beim Buchungsformular.</p>
   <p>Unsere WhatsApp-Links öffnen WhatsApp auf Ihrem Gerät oder im Browser. Erst wenn Sie uns schreiben, findet ein Austausch statt. Anbieter ist die WhatsApp Ireland Limited, Merrion Road, Dublin 4, D04 X2K5, Irland. Die Inhalte der Nachrichten sind Ende-zu-Ende-verschlüsselt. Meta, der Mutterkonzern von WhatsApp, erhält jedoch Metadaten wie Ihre Telefonnummer und den Zeitpunkt der Nachricht und kann diese auch in die USA übertragen. Meta ist nach dem EU-US Data Privacy Framework zertifiziert. Wir nutzen WhatsApp für die Kommunikation mit Kunden und Interessenten, weil viele Betriebe so am schnellsten erreichbar sind (Art. 6 Abs. 1 lit. b und f DSGVO). Wenn Sie das nicht möchten, erreichen Sie uns ebenso per E-Mail oder Telefon. Näheres finden Sie in der Datenschutzerklärung von WhatsApp.</p>
 
-  <h2 id="speicher">6. Cookies und Speicher im Browser</h2>
+  <h2 id="check">6. Website-Check</h2>
+  <p>Mit unserem Website-Check können Sie eine Website auf Ladezeit, Darstellung, Suchmaschinen-Grundlagen und Barrierefreiheit prüfen lassen. Erst wenn Sie eine Adresse eingeben und auf „Prüfen“ klicken, sendet Ihr Browser diese Adresse an den Dienst PageSpeed Insights der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Dabei erhält Google auch technische Daten Ihres Browsers wie Ihre IP-Adresse. Eine Übermittlung in die USA ist möglich; Google ist nach dem EU-US Data Privacy Framework zertifiziert.</p>
+  <p>Das Ergebnis wird nur in Ihrem Browser angezeigt. Wir speichern weder die eingegebene Adresse noch das Ergebnis. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO: Unser berechtigtes Interesse ist, Ihnen die von Ihnen angeforderte Prüfung anzubieten. Näheres finden Sie in der Datenschutzerklärung von Google.</p>
+
+  <h2 id="speicher">7. Cookies und Speicher im Browser</h2>
   <p>Diese Website setzt keine Cookies. Deshalb sehen Sie auch kein Cookie-Banner.</p>
   <p>Zwei kleine Einträge legen wir im Sitzungsspeicher Ihres Browsers (sessionStorage) ab: einen Hinweis, damit eine neue Seite nach einem Klick oben beginnt, und den Stand des Buchungsformulars mit Ihren Eingaben, damit beim versehentlichen Neuladen nichts verloren geht. Beide bleiben auf Ihrem Gerät, werden nicht an uns übertragen und beim Schließen des Tabs automatisch gelöscht. Sie sind für die von Ihnen gewünschte Funktion unbedingt erforderlich (§&nbsp;25 Abs.&nbsp;2 Nr.&nbsp;2 TDDDG).</p>
 
-  <h2 id="links">7. Links zu sozialen Netzwerken und anderen Websites</h2>
+  <h2 id="links">8. Links zu sozialen Netzwerken und anderen Websites</h2>
   <p>Auf unsere Profile bei Instagram, LinkedIn und YouTube verweisen wir mit einfachen Links. Es sind keine Plugins oder Inhalte dieser Netzwerke eingebunden. Daten an die Anbieter fließen erst, wenn Sie einen Link anklicken. Dann gelten die Datenschutzbestimmungen des jeweiligen Anbieters: Meta Platforms Ireland Limited (Instagram), LinkedIn Ireland Unlimited Company (LinkedIn) und Google Ireland Limited (YouTube).</p>
   <p>Für die Statistiken, die Meta uns zu unserem Instagram-Profil bereitstellt, sind wir gemeinsam mit Meta verantwortlich (Art. 26 DSGVO). Meta hat sich dabei verpflichtet, die Hauptverantwortung zu übernehmen und Ihre Rechte zu erfüllen.</p>
   <p>Bei unseren Referenzen verlinken wir auf die Websites unserer Kunden. Auch hier werden erst beim Anklicken Daten an die jeweilige Website übertragen. Die Vorschaubilder auf unserer Seite liegen auf unserem eigenen Server.</p>
 
-  <h2 id="rechte">8. Ihre Rechte</h2>
+  <h2 id="rechte">9. Ihre Rechte</h2>
   <p>Sie haben das Recht,</p>
   <ul>
     <li>Auskunft über Ihre bei uns gespeicherten Daten zu erhalten (Art. 15 DSGVO),</li>
@@ -110,7 +115,7 @@ def datenschutz(ctx):
   <p>Eine kurze E-Mail an <a href="mailto:{S['email']}">{e(S['email'])}</a> genügt. Eine automatisierte Entscheidungsfindung oder ein Profiling findet nicht statt.</p>
   <p>Außerdem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren (Art. 77 DSGVO). Für uns zuständig ist der Hamburgische Beauftragte für Datenschutz und Informationsfreiheit, Ludwig-Erhard-Str. 22, 20459 Hamburg, <a href="mailto:mailbox@datenschutz.hamburg.de">mailbox@datenschutz.hamburg.de</a>.</p>
 
-  <h2 id="aenderungen">9. Änderungen dieser Erklärung</h2>
+  <h2 id="aenderungen">10. Änderungen dieser Erklärung</h2>
   <p>Wenn wir die Website um neue Funktionen erweitern oder sich die Rechtslage ändert, passen wir diese Datenschutzerklärung an. Es gilt die jeweils hier veröffentlichte Fassung.</p>
 </div></div></section>"""
 

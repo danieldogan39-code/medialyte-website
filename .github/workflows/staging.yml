@@ -22,6 +22,8 @@ jobs:
           python-version: "3.12"
 
       - name: Testversion bauen
+        env:
+          PSI_API_KEY: ${{ secrets.PSI_API_KEY }}  # optional: Browser-Schlüssel für den Website-Check
         run: python3 build.py --mode staging --cname neu.entwurf.medialyte.de
 
       - name: In gh-pages veröffentlichen

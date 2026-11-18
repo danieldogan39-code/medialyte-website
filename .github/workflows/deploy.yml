@@ -23,6 +23,8 @@ jobs:
           python-version: "3.12"
 
       - name: Website bauen
+        env:
+          PSI_API_KEY: ${{ secrets.PSI_API_KEY }}  # optional: Browser-Schlüssel für den Website-Check
         run: python3 build.py --mode prod
 
       - name: Hochladen per SFTP

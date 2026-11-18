@@ -19,6 +19,7 @@ import re
 import pages
 from ratgeber import FEATURED, NEW_ARTICLES, THEMA_ALT, THEMEN
 import ratgeber_ui as rui
+from extras import CHECK_PATH, render_check
 
 
 # ======================================================================= Bausteine
@@ -907,6 +908,14 @@ def extra_pages(after_dialog):
                 "desc": "Was kostet eine Website bei Medialyte, wie lange dauert ein Projekt, wie ändere ich Inhalte per WhatsApp? Die häufigsten Fragen beantwortet.",
                 "render": render_faq, "priority": "0.7",
                 "schema": [breadcrumb_schema([("Start", "/"), ("Häufige Fragen", "/faq/")]), faq_schema(_all_faqs())]})
+    out.append({"path": CHECK_PATH, "active": "",
+                "title": "Kostenloser Website-Check | Medialyte",
+                "desc": "Wie schnell ist Ihre Website, wie gut auf dem Handy und für Google? Der kostenlose Website-Check misst es in unter einer Minute – ohne Anmeldung.",
+                "render": render_check, "priority": "0.8",
+                "schema": [breadcrumb_schema([("Start", "/"), ("Website-Check", CHECK_PATH)]),
+                           {"@context": "https://schema.org", "@type": "WebApplication", "name": "Website-Check von Medialyte",
+                            "url": SITE["url"] + CHECK_PATH, "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
+                            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "provider": {"@id": SITE["url"] + "/#org"}}]})
     out.append({"path": "/ratgeber/", "active": "ratgeber",
                 "title": "Ratgeber – Website, Werbung, KI & Kunden | Medialyte",
                 "desc": "Website-Kosten, Relaunch, Barrierefreiheit, Ladezeit, Google Ads, Meta Ads auf Facebook und Instagram, KI-Agent und CRM – verständlich erklärt.",

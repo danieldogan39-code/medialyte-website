@@ -105,7 +105,8 @@ NEW_ARTICLES = {
              "<li><b>Cumulative Layout Shift (CLS) – Stabilität:</b> Wie stark verrutschen Inhalte beim Laden? Gut ist ein Wert von höchstens <b>0,1</b>.</li></ul>"
              "<p>Google empfiehlt, die Werte an echten Besuchen zu messen, getrennt nach Handy und Computer. Maßstab ist das 75. Perzentil: Drei von vier Seitenaufrufen sollten die Grenzen einhalten.</p>"),
             ("messen", "So messen Sie Ihre Website",
-             "<ul><li><b>PageSpeed Insights:</b> Adresse eingeben, und das kostenlose Werkzeug von Google zeigt die Werte – aus echten Besuchen, wenn genug Daten vorhanden sind, sonst aus einer Testmessung.</li>"
+             "<ul><li><b>Unser <a href=\"{u:/website-check/}\">Website-Check</a>:</b> misst Ihre Seite kostenlos und ohne Anmeldung in unter einer Minute und erklärt die Ergebnisse verständlich.</li>"
+             "<li><b>PageSpeed Insights:</b> Adresse eingeben, und das kostenlose Werkzeug von Google zeigt die Werte – aus echten Besuchen, wenn genug Daten vorhanden sind, sonst aus einer Testmessung.</li>"
              "<li><b>Google Search Console:</b> Der Bericht zu den Core Web Vitals zeigt, welche Seitengruppen Probleme haben.</li>"
              "<li><b>Selbsttest am Handy:</b> Rufen Sie Ihre Website im Mobilfunknetz auf, nicht im Büro-WLAN.</li></ul>"),
             ("bremsen", "Die häufigsten Bremsen",

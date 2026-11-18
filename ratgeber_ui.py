@@ -139,12 +139,12 @@ KURZ = {
 }
 
 
-def kurz(path):
+def kurz(path, a):
     pts = KURZ.get(path)
     if not pts:
         return ""
     lis = "".join(f'<li>{icon("check")}<span>{e(p)}</span></li>' for p in pts)
-    return f'<aside class="rkurz" aria-label="Das Wichtigste in Kürze"><p class="rkurz__t">Das Wichtigste in Kürze</p><ul>{lis}</ul></aside>'
+    return f'<aside class="rkurz tone--{THEMA_UI[a["thema"]][1]}" aria-label="Das Wichtigste in Kürze"><p class="rkurz__t">Das Wichtigste in Kürze</p><ul>{lis}</ul></aside>'
 
 
 # ---------------------------------------------------------------- Karten

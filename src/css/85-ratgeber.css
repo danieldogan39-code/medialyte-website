@@ -94,7 +94,7 @@ path.cv-old{stroke:var(--steel-2)}
 /* Lesefortschritt */
 .rprog{position:fixed;left:0;right:0;top:0;z-index:120;height:3px;pointer-events:none}
 .rprog i{display:block;height:100%;background:var(--coral);transform-origin:0 50%;transform:scaleX(0)}
-html:not(.rp) .rprog{display:none}
+html:not(.has-rprog) .rprog{display:none}
 
 /* Kurzfassung */
 .rkurz{margin:0 0 40px;padding:22px 24px;border-radius:var(--r);background:linear-gradient(180deg,rgba(var(--tr),.09),rgba(var(--tr),.03));border:1px solid rgba(var(--tr),.28)}

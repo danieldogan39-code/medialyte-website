@@ -703,7 +703,7 @@ def _article(ctx, a):
     out += page_hero(ctx, [("Start", "/"), ("Ratgeber", "/ratgeber/"), (a["crumb"], "")], a["h1"], a["lead"],
                      rui.hero_meta(a), rui.hero_cover(path, a))
     out += (f'<section class="section section--flush"><div class="wrap"><div class="legal">{_toc(sections)}'
-            f'<article class="prose" data-rarticle>{rui.kurz(path)}{body}{author}</article></div></div></section>')
+            f'<article class="prose" data-rarticle>{rui.kurz(path, a)}{body}{author}</article></div></div></section>')
     # Weiterlesen: verwandte Beiträge als Karten, danach die passenden Leistungen
     more = [p for p in a.get("rel_rag", []) if p != path]
     more += [p for p, x in ARTICLES.items() if p != path and p not in more and x["thema"] == a["thema"]]

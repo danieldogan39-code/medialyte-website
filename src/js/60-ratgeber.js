@@ -23,7 +23,7 @@ ML.module("rfilter", function (ML) {
 ML.module("rprogress", function (ML) {
   var art = ML.$("[data-rarticle]"), bar = ML.$(".rprog i");
   if (!art || !bar) return;
-  document.documentElement.classList.add("rp");
+  document.documentElement.classList.add("has-rprog");
   var ticking = false;
   function upd() {
     ticking = false;

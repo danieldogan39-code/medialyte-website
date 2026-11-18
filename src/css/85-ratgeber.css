@@ -86,7 +86,9 @@ path.cv-old{stroke:var(--steel-2)}
   .rfilter{gap:10px}
   .rfilter .chips{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
   .rfilter .chips::-webkit-scrollbar{display:none}
-  .rfilter .chip{padding:9px 12px}
+  .rfilter .chips{gap:2px;padding:4px}
+  .rfilter .chip{padding:9px 10px;font-size:.88rem}
+  .rfilter .chip b{margin-left:4px}
 }
 
 /* ---------- Artikel: Kopfbereich ---------- */

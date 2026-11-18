@@ -18,6 +18,7 @@ import re
 
 import pages
 from ratgeber import NEW_ARTICLES, THEMA_ALT, THEMEN
+import ratgeber_ui as rui
 
 
 # ======================================================================= Bausteine
@@ -689,18 +690,27 @@ def _toc(sections):
 
 
 def _article(ctx, a):
+    path = a["path"]
     sections = list(a["sections"])
     if a.get("sources"):
-        src = "".join(f'<li><a href="{url}" target="_blank" rel="noopener">{e(t)}</a> – {e(pub)}</li>' for t, pub, url in a["sources"])
+        src = "".join(f'<li><span><a href="{url}" target="_blank" rel="noopener">{e(t)}</a><br>{e(pub)}</span></li>' for t, pub, url in a["sources"])
         sections.append(("quellen", "Quellen", f'<ol class="sources">{src}</ol>'))
     body = "".join(f'<h2 id="{aid}">{t}</h2>{html}' for aid, t, html in sections)
     body = re.sub(r"\{u:([^}]+)\}", lambda m: ctx.u(m.group(1)), body)
-    meta = f'<p class="prose__meta">Stand: {a.get("date", "4. November 2026")} · {a["read"]} Minuten Lesezeit · Von Daniel, Medialyte</p>'
-    out = page_hero(ctx, [("Start", "/"), ("Ratgeber", "/ratgeber/"), (a["crumb"], "")], a["h1"], a["lead"])
+    author = (f'<div class="rauthor"><span class="rauthor__mark" aria-hidden="true">D</span>'
+              f'<p><b>Daniel, Medialyte</b>Fragen zu diesem Thema? Schreiben Sie uns – wir antworten persönlich.</p>{btn_wa(ctx)}</div>')
+    out = '<div class="rprog" aria-hidden="true"><i></i></div>'
+    out += page_hero(ctx, [("Start", "/"), ("Ratgeber", "/ratgeber/"), (a["crumb"], "")], a["h1"], a["lead"],
+                     rui.hero_meta(a), rui.hero_cover(path, a))
     out += (f'<section class="section section--flush"><div class="wrap"><div class="legal">{_toc(sections)}'
-            f'<article class="prose">{meta}{body}</article></div></div></section>')
-    rel = [rag_tile(p) for p in a.get("rel_rag", [])] + svc_tiles(*a["rel"])
-    out += related(ctx, "Weiterlesen", rel, deep=True)
+            f'<article class="prose" data-rarticle>{rui.kurz(path)}{body}{author}</article></div></div></section>')
+    # Weiterlesen: verwandte Beiträge als Karten, danach die passenden Leistungen
+    more = [p for p in a.get("rel_rag", []) if p != path]
+    more += [p for p, x in ARTICLES.items() if p != path and p not in more and x["thema"] == a["thema"]]
+    more += [p for p in ARTICLES if p != path and p not in more]
+    cards = "".join(rui.card(ctx, p, ARTICLES[p], i=i) for i, p in enumerate(more[:3]))
+    out += (f'<section class="section section--deep"><div class="wrap">{sh("Weiterlesen")}<ul class="rgrid">{cards}</ul>'
+            f'<h3 class="rsub">Passende Leistungen</h3>{tiles(ctx, svc_tiles(*a["rel"]), 3)}</div></section>')
     out += closing(ctx, a.get("close", "Lieber gleich mit Profis sprechen?"), "Das Erstgespräch ist kostenfrei.",
                    "Wir schauen uns Ihre Situation an und sagen Ihnen ehrlich, was sich lohnt. Ihr Angebot erhalten Sie innerhalb von 48 Stunden.")
     return out
@@ -786,6 +796,7 @@ ARTICLES = {
 ARTICLES.update(NEW_ARTICLES)
 for _p, _a in ARTICLES.items():
     _a.setdefault("thema", THEMA_ALT.get(_p, "website"))
+    _a["path"] = _p
 
 
 def rag_tile(path):
@@ -794,17 +805,23 @@ def rag_tile(path):
 
 
 def render_ratgeber(ctx):
+    newest = max(a.get("iso", "2026-11-04") for a in ARTICLES.values())
+    feat = next(p for p, a in ARTICLES.items() if a.get("iso") == newest)
     out = page_hero(ctx, [("Start", "/"), ("Ratgeber", "")], 'Ratgeber – <span class="quiet">Wissen für Ihren Auftritt.</span>',
                     f"Was kostet eine Website? Gilt das Barrierefreiheitsgesetz auch für mich? Wann lohnt sich ein KI-Agent? In {len(ARTICLES)} Beiträgen beantworten wir die Fragen, die Betriebe uns am häufigsten stellen – verständlich und ohne Fachchinesisch.",
-                    btn_book(ctx) + btn_wa(ctx))
-    toc = "".join(f'<li><a href="#{k}">{t}</a></li>' for k, t, _ in THEMEN)
-    out += f'<section class="section section--flush"><div class="wrap"><nav class="prose__toc faq-toc" aria-label="Themen"><p>Themen</p><ol>{toc}</ol></nav></div></section>'
-    for i, (k, t, lead) in enumerate(THEMEN):
-        items = [(p, a["icon"], "", a["crumb"], e(a["teaser"])) for p, a in ARTICLES.items() if a["thema"] == k]
-        out += (f'<section class="section{" section--deep" if i % 2 == 0 else ""}" id="{k}"><div class="wrap">'
-                f'{sh(t, lead, split=True)}{tiles(ctx, items, 3 if len(items) % 3 == 0 else 2)}</div></section>')
+                    btn_book(ctx) + btn_wa(ctx), rui.featured(ctx, feat, ARTICLES[feat]))
+    order = sorted(ARTICLES, key=lambda p: [k for k, _, _ in THEMEN].index(ARTICLES[p]["thema"]))
+    cards = "".join(rui.card(ctx, p, ARTICLES[p], neu=ARTICLES[p].get("iso") == newest, i=i, cls=" rcard--dup" if p == feat else "")
+                    for i, p in enumerate(order))
+    counts = {k: sum(1 for a in ARTICLES.values() if a["thema"] == k) for k, _, _ in THEMEN}
+    chips = (f'<button class="chip" type="button" data-th="alle" aria-pressed="true">Alle<b>{len(ARTICLES)}</b></button>'
+             + "".join(f'<button class="chip" type="button" data-th="{k}" aria-pressed="false">{rui.THEMA_UI[k][0]}<b>{counts[k]}</b></button>' for k, _, _ in THEMEN))
+    out += (f'<section class="section section--flush" id="beitraege"><div class="wrap">'
+            f'<div class="rfilter" data-rfilter hidden><div class="chips" role="group" aria-label="Nach Thema filtern">{chips}</div>'
+            f'<span class="rfilter__n" data-rcount aria-live="polite">{len(ARTICLES) - 1} Beiträge</span></div>'
+            f'<ul class="rgrid" data-rgrid>{cards}</ul></div></section>')
     return (out
-            + related(ctx, "Unsere Leistungen", svc_tiles("/leistungen/website-erstellung/", "/leistungen/kundenmanagement-system/", "/leistungen/seo/"), deep=len(THEMEN) % 2 == 0)
+            + related(ctx, "Unsere Leistungen", svc_tiles("/leistungen/website-erstellung/", "/leistungen/kundenmanagement-system/", "/leistungen/seo/"), deep=True)
             + closing(ctx))
 
 
